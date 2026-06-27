@@ -75,7 +75,7 @@ mkdir -p deploy/wanderlenstw/static/{app-web,papp-web}
 
 echo "==> [4/8] Build wanderlens-web (.output for Docker)"
 cd "$DEPLOY_DIR/wanderlens-web"
-npm ci
+npm ci || npm install
 npm run build
 
 echo "==> [5/8] Docker build (may take 15–30 min)"

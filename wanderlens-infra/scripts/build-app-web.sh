@@ -15,7 +15,7 @@ build_app() {
   local out="$2"
   echo "==> Building $dir"
   cd "$MONO_ROOT/$dir"
-  npm ci
+  npm ci || npm install
   EXPO_PUBLIC_API_BASE="$API_BASE" npx expo export --platform web
   rm -rf "$out"/*
   if [ -d dist ]; then
