@@ -14,9 +14,13 @@
 
 **常見坑**
 
-- **Web Docker**：須先在 `wanderlens-web` 執行 `npm run build`，再 `docker compose build web`
+- **Web Docker**：須先在 `wanderlens-web` 執行 `npm run build`，再 `docker compose build web`（映像只 COPY `.output`，不在容器內 build）
+- **`NUXT_PUBLIC_API_BASE`（重要）**：Nuxt 在 **build 時**把此值寫進前端 bundle。本機開發 build 用 `http://localhost:8080/api`（或不設，沿用 `nuxt.config` 預設）；**部署 wanderlenstw.com 前**必須設為 `https://api.wanderlenstw.com/api`，否則瀏覽器會打到錯誤的 API（介紹頁等會載入失敗）
 - **Expo Web**：`wanderlens-app` 與 `wanderlens-provider-app` 預設皆用 **8081**，同時只跑一個
+- **App 靜態部署（production）**：`npx expo export --platform web` 後上傳 `dist/` 至 `wanderlens-infra/deploy/wanderlenstw/static/app-web` 與 `papp-web`，並 `chmod -R a+rX`（詳 [deploy 說明](wanderlens-infra/deploy/wanderlenstw/README.md)）
 - **E2E**：未設 `GOOGLE_PLACES_API_KEY` 時 `app-flow` 會 fail；未啟 Expo Web 時 App UI 測試會 skip
+
+**六端資料流**：攝影師在 Provider Web / App 維護的 profile（基本資料、特色、作品、服務地區等）經 `wanderlens-api` 同步至消費者 Web / App 的公開介紹頁；UI 可不同，但資料不可斷裂。
 
 **驗收現況**（2026-06-27）：Docker 運行下 `npm run test:e2e:all` → **42 passed / 1 failed / 4 skipped**（詳 [WanderLens_09](WanderLens_09_待補強與缺口清單.md) §2.5、§14.13）
 
@@ -42,6 +46,23 @@ docker compose up -d
 示範帳號：`consumer1` / `photographer1` / `admin`，密碼 `123456`
 
 詳見 [wanderlens-infra/README.md](wanderlens-infra/README.md)（含 **web 映像須先本機 `npm run build`** 等注意事項）。
+
+### Production Demo（wanderlenstw.com）
+
+線上示範環境（帳號密碼同本機：`consumer1` / `photographer1` / `admin`，`123456`）：
+
+| 端 | URL |
+|------|-----|
+| 消費者 Web | https://www.wanderlenstw.com |
+| 攝影師 Web | https://provider.wanderlenstw.com |
+| 營運後台 | https://admin.wanderlenstw.com |
+| 消費者 App（Web） | https://app.wanderlenstw.com |
+| 攝影師 App（Web） | https://papp.wanderlenstw.com |
+| API | https://api.wanderlenstw.com/api |
+
+示範攝影師公開介紹頁：`https://www.wanderlenstw.com/photographer/11111111-1111-1111-1111-111111111111`
+
+伺服器部署與更新流程：[wanderlens-infra/deploy/wanderlenstw/README.md](wanderlens-infra/deploy/wanderlenstw/README.md)
 
 ### 本機開發（單一子專案）
 
@@ -129,4 +150,4 @@ CI 定義：[.github/workflows/](.github/workflows/)（與 `wanderlens-infra/.gi
 | `pw/` | 舊 ad-hoc 腳本目錄（見 [pw/README.md](pw/README.md)） |
 | `playwright.config.ts` | E2E 設定 |
 
-*最後更新：2026-06-27（修訂版 A + 總 README「開始之前」補強）*
+*最後更新：2026-06-27（六端 profile 資料流、production demo URL、`NUXT_PUBLIC_API_BASE` 建置說明）*
