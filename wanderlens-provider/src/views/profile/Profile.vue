@@ -36,9 +36,8 @@ const uploadAvatar = async (options: any) => {
 
 const save = async () => {
   try {
-    await api.updateProvider({
-      id: authStore.userId,
-      nickName: username.value,
+    await api.updateProfile({
+      username: username.value,
       avatar: avatar.value,
     })
     authStore.setUsername(username.value)

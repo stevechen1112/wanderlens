@@ -114,15 +114,17 @@ public class SearchServiceImpl implements SearchService {
                 result.setRating(provider.getRating());
                 result.setAvailable(true);
 
-                // 定價從配置取得（後續可從 provider_profile 或 area_pricing 取得）
-                result.setUnitPrice(defaultUnitPrice);
+                // 定價：攝影師自訂優先，否則平台預設
+                int unitPrice = provider.getUnitPrice() != null && provider.getUnitPrice() > 0
+                        ? provider.getUnitPrice() : defaultUnitPrice;
+                result.setUnitPrice(unitPrice);
 
                 int transportationFee = resolveTransportationFee(request, provider);
                 result.setTransportationFee(transportationFee);
 
                 // 總費用 = 時長 × 單價 + 交通費（支援小數小時）
                 BigDecimal totalFee = durationHours
-                        .multiply(BigDecimal.valueOf(defaultUnitPrice))
+                        .multiply(BigDecimal.valueOf(unitPrice))
                         .add(BigDecimal.valueOf(transportationFee))
                         .setScale(0, RoundingMode.HALF_UP);
                 result.setTotalFee(totalFee.intValue());

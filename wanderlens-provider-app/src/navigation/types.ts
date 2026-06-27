@@ -10,6 +10,12 @@ export type ConversationStackParamList = {
 
 export type ProfileStackParamList = {
   ProfileMain: undefined
+  AccountHub: undefined
+  BasicInfo: undefined
+  Features: undefined
+  Works: undefined
+  ServiceArea: undefined
+  BankInfo: undefined
   Rating: undefined
   Notifications: undefined
 }

@@ -26,6 +26,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -60,9 +64,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             throw new ServiceException(ResultCode.BAD_REQUEST, "攝影師目前未上架");
         }
 
+        com.wanderlens.api.entity.Provider secondPhotographer = null;
         if (request.getSecondPhotographerId() != null) {
-            com.wanderlens.api.entity.Provider second = providerMapper.selectById(request.getSecondPhotographerId());
-            if (second == null || !"PHOTOGRAPHER".equals(second.getProviderType()) || !"Y".equals(second.getGoLive())) {
+            secondPhotographer = providerMapper.selectById(request.getSecondPhotographerId());
+            if (secondPhotographer == null || !"PHOTOGRAPHER".equals(secondPhotographer.getProviderType())
+                    || !"Y".equals(secondPhotographer.getGoLive())) {
                 throw new ServiceException(ResultCode.BAD_REQUEST, "第二位攝影師不可用");
             }
             if (request.getSecondPhotographerId().equals(request.getPhotographerId())) {
@@ -107,13 +113,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         // ── 計算費用 ──
-        // 從 Spring 配置取得預設單價
-        int unitPrice = defaultUnitPrice;
-        int hours = request.getShootingDuration().intValue();
-        // 支援小數時長：用 BigDecimal 精確計算
-        java.math.BigDecimal serviceFeeBD = request.getShootingDuration()
-                .multiply(java.math.BigDecimal.valueOf(unitPrice))
-                .setScale(0, java.math.RoundingMode.HALF_UP);
+        int unitPrice = resolveUnitPrice(photographer);
+        java.math.BigDecimal duration = request.getShootingDuration();
+        java.math.BigDecimal serviceFeeBD = duration
+                .multiply(java.math.BigDecimal.valueOf(unitPrice));
+        if (secondPhotographer != null) {
+            serviceFeeBD = serviceFeeBD.add(duration.multiply(
+                    java.math.BigDecimal.valueOf(resolveUnitPrice(secondPhotographer))));
+        }
+        serviceFeeBD = serviceFeeBD.setScale(0, java.math.RoundingMode.HALF_UP);
         int serviceFee = serviceFeeBD.intValue();
         // 交通費：目前為 0（需 Google Maps API 整合後計算）
         int transportationFee = 0;
@@ -150,6 +158,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         log.info("建立訂單: orderNo={}, consumerId={}, photographerId={}",
                 order.getOrderNo(), consumerId, request.getPhotographerId());
+        enrichOrder(order);
         return order;
     }
 
@@ -491,19 +500,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public List<Order> getProviderOrders(Long providerId) {
-        return list(new LambdaQueryWrapper<Order>()
+        List<Order> orders = list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getPhotographerId, providerId)
                 .notIn(Order::getStatus,
                         OrderStatus.CANCELLED.getCode(),
                         OrderStatus.REFUNDED.getCode())
                 .orderByDesc(Order::getShootingDate));
+        enrichOrders(orders);
+        return orders;
     }
 
     @Override
     public List<Order> getConsumerOrders(Long consumerId) {
-        return list(new LambdaQueryWrapper<Order>()
+        List<Order> orders = list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getConsumerId, consumerId)
                 .orderByDesc(Order::getCreatedAt));
+        enrichOrders(orders);
+        return orders;
     }
 
     @Override
@@ -511,6 +524,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Page<Order> p = page(new Page<>(page, size), new LambdaQueryWrapper<Order>()
                 .eq(Order::getConsumerId, consumerId)
                 .orderByDesc(Order::getCreatedAt));
+        enrichOrders(p.getRecords());
         return new com.wanderlens.api.common.PageResult<>(p.getRecords(), p.getTotal(), page, size);
     }
 
@@ -519,14 +533,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Page<Order> p = page(new Page<>(page, size), new LambdaQueryWrapper<Order>()
                 .eq(Order::getStatus, status.getCode())
                 .orderByDesc(Order::getCreatedAt));
+        enrichOrders(p.getRecords());
         return new com.wanderlens.api.common.PageResult<>(p.getRecords(), p.getTotal(), page, size);
     }
 
     @Override
     public List<Order> getOrdersByStatus(OrderStatus status) {
-        return list(new LambdaQueryWrapper<Order>()
+        List<Order> orders = list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getStatus, status.getCode())
                 .orderByDesc(Order::getCreatedAt));
+        enrichOrders(orders);
+        return orders;
     }
 
     @Override
@@ -555,5 +572,54 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 return;
             }
         }
+    }
+
+    @Override
+    public void enrichOrder(Order order) {
+        if (order == null || order.getPhotographerId() == null) {
+            return;
+        }
+        com.wanderlens.api.entity.Provider provider = providerMapper.selectById(order.getPhotographerId());
+        if (provider == null) {
+            return;
+        }
+        String name = provider.getNickName() != null ? provider.getNickName() : provider.getName();
+        order.setPhotographerName(name);
+        order.setPhotographerUuid(provider.getProviderUuid());
+    }
+
+    @Override
+    public void enrichOrders(List<Order> orders) {
+        if (orders == null || orders.isEmpty()) {
+            return;
+        }
+        Set<Long> ids = orders.stream()
+                .map(Order::getPhotographerId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (ids.isEmpty()) {
+            return;
+        }
+        List<com.wanderlens.api.entity.Provider> providers = providerMapper.selectList(
+                new LambdaQueryWrapper<com.wanderlens.api.entity.Provider>()
+                        .in(com.wanderlens.api.entity.Provider::getId, ids));
+        Map<Long, com.wanderlens.api.entity.Provider> map = providers.stream()
+                .collect(Collectors.toMap(com.wanderlens.api.entity.Provider::getId, p -> p));
+        for (Order order : orders) {
+            com.wanderlens.api.entity.Provider provider = map.get(order.getPhotographerId());
+            if (provider == null) {
+                continue;
+            }
+            String name = provider.getNickName() != null ? provider.getNickName() : provider.getName();
+            order.setPhotographerName(name);
+            order.setPhotographerUuid(provider.getProviderUuid());
+        }
+    }
+
+    private int resolveUnitPrice(com.wanderlens.api.entity.Provider provider) {
+        if (provider != null && provider.getUnitPrice() != null && provider.getUnitPrice() > 0) {
+            return provider.getUnitPrice();
+        }
+        return defaultUnitPrice;
     }
 }

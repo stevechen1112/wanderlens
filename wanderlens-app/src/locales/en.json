@@ -169,5 +169,18 @@
     "prev": "Back",
     "hint": "Notice",
     "errorTitle": "Error"
+  },
+  "providerDetail": {
+    "title": "Photographer",
+    "professional": "Background",
+    "about": "About",
+    "noIntro": "No bio yet",
+    "services": "Services",
+    "features": "Highlights",
+    "works": "Portfolio",
+    "noWorks": "No portfolio yet",
+    "areas": "Service areas",
+    "noAreas": "Not set",
+    "hourlyRate": "Hourly rate"
   }
 }

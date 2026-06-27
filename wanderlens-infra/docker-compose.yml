@@ -152,7 +152,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      NUXT_PUBLIC_API_BASE: http://localhost:8080/api
+      NUXT_PUBLIC_API_BASE: https://api.wanderlenstw.com/api
       HOST: 0.0.0.0
       PORT: 3001
     depends_on:

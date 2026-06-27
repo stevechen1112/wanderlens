@@ -8,6 +8,9 @@ import java.util.List;
 public interface ProviderRatingService {
     ProviderRating submitRating(Long consumerId, Long orderId, Long providerId, int stars, String comments);
     List<ProviderRating> getByProviderId(Long providerId, int page, int size);
+
+    List<ProviderRating> getRecentRatings(int page, int size);
+
     RatingSummaryDto getSummary(Long providerId);
     void recalculateProviderRating(Long providerId);
 }

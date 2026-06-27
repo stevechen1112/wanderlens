@@ -117,6 +117,14 @@ public class Order {
     /** 推薦碼 */
     private String referralCode;
 
+    /** 回傳用：攝影師暱稱（非 DB 欄位） */
+    @TableField(exist = false)
+    private String photographerName;
+
+    /** 回傳用：攝影師公開 UUID（非 DB 欄位） */
+    @TableField(exist = false)
+    private String photographerUuid;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

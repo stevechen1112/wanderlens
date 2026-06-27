@@ -69,6 +69,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="8">
+          <el-form-item :label="t('profilePage.unitPrice')">
+            <el-input-number v-model="form.unitPrice" :min="0" :step="100" :placeholder="t('profilePage.unitPriceHint')" />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-divider>{{ t('profilePage.multilingual') }}</el-divider>
       <el-form-item :label="t('profilePage.nickNameEn')">
@@ -123,7 +130,10 @@ const geocoding = ref(false)
 const saving = ref(false)
 const serviceTypeOptions = ref<any[]>([])
 
-const frontendUrl = computed(() => `http://localhost:3001/photographer/${form.providerUuid || ''}`)
+const frontendUrl = computed(() => {
+  const base = import.meta.env.VITE_CONSUMER_WEB_URL || 'https://wanderlenstw.com'
+  return `${base.replace(/\/$/, '')}/photographer/${form.providerUuid || ''}`
+})
 
 const connectLineNotify = () => {
   // 開啟 LINE Notify 授權頁面
@@ -193,7 +203,14 @@ const uploadBanner = async (options: any) => {
 const save = async () => {
   saving.value = true
   try {
-    await api.updateProvider(form)
+    const payload = {
+      ...form,
+      id: authStore.resolvedProviderId,
+      serviceItem: Array.isArray(form.serviceTypes)
+        ? form.serviceTypes.join(',')
+        : form.serviceItem,
+    }
+    await api.updateProvider(payload)
     ElMessage.success(t('profilePage.saveSuccess'))
   } catch {
     ElMessage.error(t('profilePage.saveFailed'))
@@ -217,10 +234,13 @@ onMounted(async () => {
     serviceTypeOptions.value = stRes.data || []
   } catch { /* 靜默 */ }
 
-  if (authStore.userId) {
+  if (authStore.resolvedProviderId) {
     try {
-      const res: any = await api.getProvider(authStore.userId)
+      const res: any = await api.getProvider(authStore.resolvedProviderId)
       Object.assign(form, res.data)
+      form.serviceTypes = form.serviceItem
+        ? String(form.serviceItem).split(',').map((s: string) => Number(s.trim())).filter(Boolean)
+        : []
       if (form.city) loadDistricts(form.city)
     } catch { /* 靜默 */ }
   }

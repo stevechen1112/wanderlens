@@ -102,4 +102,11 @@ public interface OrderService extends IService<Order> {
      * 產生訂單編號
      */
     String generateOrderNo();
+
+    /**
+     * 補齊訂單回傳用攝影師名稱與 UUID
+     */
+    void enrichOrder(Order order);
+
+    void enrichOrders(List<Order> orders);
 }

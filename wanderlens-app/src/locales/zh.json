@@ -169,5 +169,18 @@
     "prev": "上一步",
     "hint": "提示",
     "errorTitle": "錯誤"
+  },
+  "providerDetail": {
+    "title": "攝影師介紹",
+    "professional": "專業背景",
+    "about": "關於攝影師",
+    "noIntro": "尚無自我介紹",
+    "services": "服務項目",
+    "features": "攝影特色",
+    "works": "作品集",
+    "noWorks": "尚無作品展示",
+    "areas": "可服務地區",
+    "noAreas": "尚未設定",
+    "hourlyRate": "每小時費用"
   }
 }

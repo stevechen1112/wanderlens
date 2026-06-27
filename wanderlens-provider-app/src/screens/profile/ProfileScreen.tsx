@@ -33,6 +33,7 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
   }
 
   const menuItems = [
+    { icon: 'create-outline' as const, label: t('account.hubTitle'), screen: 'AccountHub', color: colors.primary },
     { icon: 'star-outline' as const, label: t('rating.myRating'), screen: 'Rating', color: colors.warning },
     { icon: 'notifications-outline' as const, label: t('notification.center'), screen: 'Notifications', color: colors.primary },
   ]

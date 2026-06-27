@@ -11,6 +11,9 @@
           <el-descriptions-item label="縣市">{{ provider.city }}</el-descriptions-item>
           <el-descriptions-item label="上架">{{ provider.goLive === 'Y' ? '是' : '否' }}</el-descriptions-item>
           <el-descriptions-item label="評價">{{ provider.rating }}</el-descriptions-item>
+          <el-descriptions-item label="身份別">{{ provider.career || '—' }}</el-descriptions-item>
+          <el-descriptions-item label="年資">{{ provider.experience != null ? provider.experience + ' 年' : '—' }}</el-descriptions-item>
+          <el-descriptions-item label="時薪">{{ provider.unitPrice ? '$' + provider.unitPrice + '/hr' : '平台預設' }}</el-descriptions-item>
           <el-descriptions-item label="違規">{{ provider.violationCount }} ({{ provider.violationLevel }})</el-descriptions-item>
           <el-descriptions-item label="介紹" :span="2">{{ provider.intro || '—' }}</el-descriptions-item>
         </el-descriptions>
@@ -110,7 +113,7 @@ const loadTab = async (tab: string) => {
       schedule.value = res.data || []
     } else if (tab === 'area') {
       tabLoading.area = true
-      const res: any = await request.get(`/providers/service-area/${providerId}`)
+      const res: any = await request.get(`/providers/service-area/${providerId}`, { params: { view: 'flat' } })
       serviceAreas.value = res.data || []
     } else if (tab === 'bank') {
       tabLoading.bank = true
@@ -126,7 +129,7 @@ const loadTab = async (tab: string) => {
       works.value = res.data || []
     } else if (tab === 'rating') {
       tabLoading.rating = true
-      const res: any = await request.get(`/providers/rating/${providerId}`)
+      const res: any = await request.get(`/providers/rating/${providerId}/list`)
       ratings.value = res.data || []
     }
   } catch { /* tab error */ }

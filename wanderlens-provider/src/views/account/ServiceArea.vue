@@ -39,11 +39,12 @@ const areaTree = ref<any[]>([])
 const selectedKeys = ref<number[]>([])
 
 const save = async () => {
+  const providerId = authStore.resolvedProviderId
+  if (!providerId) return
   const checked = treeRef.value?.getCheckedKeys() || []
-  const halfChecked = treeRef.value?.getHalfCheckedKeys() || []
   try {
-    await api.setServiceArea(authStore.userId!, {
-      rootNodes: halfChecked,
+    await api.setServiceArea(providerId, {
+      rootNodes: areaTree.value.map((n: { id: number }) => n.id),
       selectedNodes: checked,
     })
     ElMessage.success(t('serviceAreaPage.saveSuccess'))
@@ -53,8 +54,10 @@ const save = async () => {
 }
 
 onMounted(async () => {
+  const providerId = authStore.resolvedProviderId
+  if (!providerId) return
   try {
-    const res: any = await api.getServiceArea(authStore.userId!)
+    const res: any = await api.getServiceArea(providerId)
     const raw = res.data?.rootNodes || []
     const buildTreeName = (nodes: any[]) => {
       nodes.forEach((n) => {

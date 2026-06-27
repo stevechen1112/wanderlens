@@ -9,6 +9,7 @@ import { useColors, type AppColors } from '@/theme'
 import { orderApi, paymentApi } from '@/api'
 import Button from '@/components/Button'
 import StateView from '@/components/StateView'
+import { navigationRef } from '@/navigation/RootNavigator'
 import { t } from '@/i18n'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -249,6 +250,15 @@ export default function OrderDetailScreen({ route, navigation }: any) {
               <Ionicons name="person-outline" size={18} color={colors.textSecondary} />
               <Text style={styles.infoLabel}>攝影師</Text>
               <Text style={styles.infoValue}>{order.photographerName}</Text>
+              {order.photographerUuid ? (
+                <TouchableOpacity
+                  onPress={() => navigationRef.navigate('ProviderDetail', { providerUuid: order.photographerUuid })}
+                  accessibilityRole="button"
+                  accessibilityLabel="查看攝影師介紹"
+                >
+                  <Ionicons name="open-outline" size={18} color={colors.primary} />
+                </TouchableOpacity>
+              ) : null}
             </View>
           ) : null}
           <View style={styles.infoRow}>

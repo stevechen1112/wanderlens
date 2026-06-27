@@ -41,6 +41,9 @@ public class ProviderServiceImpl extends ServiceImpl<ProviderMapper, Provider> i
         provider.setAddress(request.getAddress());
         provider.setServiceItem(request.getServiceItem());
         provider.setIntro(request.getIntro());
+        if (request.getExperienceYears() != null) {
+            provider.setExperience(java.math.BigDecimal.valueOf(request.getExperienceYears()));
+        }
         provider.setRating(new BigDecimal("0.0"));
         provider.setGoLive("N");
         provider.setViolationCount(0);

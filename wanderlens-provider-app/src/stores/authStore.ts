@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({
       token,
       user,
-      providerId: user.providerId ?? user.userId,
+      providerId: user.providerId ?? null,
       isAuthenticated: true,
       isLoading: false,
     })
@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({
           token,
           user,
-          providerId: user.providerId ?? user.userId,
+          providerId: user.providerId ?? null,
           isAuthenticated: true,
           isLoading: false,
         })

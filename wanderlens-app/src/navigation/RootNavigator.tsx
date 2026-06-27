@@ -9,12 +9,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import TabNavigator from '@/navigation/TabNavigator'
 import PaymentWebViewScreen from '@/screens/payment/PaymentWebViewScreen'
 import InstantShootScreen from '@/screens/instant/InstantShootScreen'
+import ProviderDetailScreen from '@/screens/provider/ProviderDetailScreen'
 import { useNotificationNavigation } from '@/hooks/useNotificationNavigation'
 import { useTheme } from '@/theme'
 
 export type RootStackParamList = {
   MainTabs: undefined
   InstantShoot: undefined
+  ProviderDetail: { providerUuid: string }
   PaymentWebView: {
     paymentForm?: string
     orderId?: number
@@ -42,6 +44,7 @@ function NavigationRoot() {
       <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
         <Stack.Screen name="MainTabs" component={TabNavigator} />
         <Stack.Screen name="InstantShoot" component={InstantShootScreen} />
+        <Stack.Screen name="ProviderDetail" component={ProviderDetailScreen} />
         <Stack.Screen
           name="PaymentWebView"
           component={PaymentWebViewScreen}

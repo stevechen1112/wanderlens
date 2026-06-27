@@ -32,8 +32,10 @@ const handleLogin = async () => {
                 router.push('/dashboard');
             }
         }
-        catch {
-            ElMessage.error(t('auth.loginFailed'));
+        catch (err) {
+            const ax = err;
+            const msg = ax.response?.data?.message;
+            ElMessage.error(msg || (ax.response ? t('auth.loginFailed') : t('auth.networkError')));
         }
         finally {
             loading.value = false;

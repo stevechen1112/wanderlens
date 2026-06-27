@@ -81,10 +81,12 @@ const handleLogin = async () => {
           res.data.empno,
           res.data.username,
           res.data.role,
-          res.data.avatar
+          res.data.avatar,
+          res.data.providerId,
         )
         try {
-          const providerRes: any = await api.getProvider(res.data.userId)
+          const providerId = res.data.providerId ?? res.data.userId
+          const providerRes: any = await api.getProvider(providerId)
           const pType = providerRes.data?.providerType || 'PHOTOGRAPHER'
           authStore.setProviderType(pType)
         } catch { /* 靜默 */ }

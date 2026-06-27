@@ -5,6 +5,7 @@ export interface BookingData {
   photographerUuid: string
   photographerName: string
   secondPhotographerId: number | null
+  secondPhotographerUuid: string
   secondPhotographerName: string
   secondAvailabilityId: number | null
   secondUnitPrice: number
@@ -39,6 +40,7 @@ const defaultData = (): BookingData => ({
   photographerUuid: '',
   photographerName: '',
   secondPhotographerId: null,
+  secondPhotographerUuid: '',
   secondPhotographerName: '',
   secondAvailabilityId: null,
   secondUnitPrice: 0,

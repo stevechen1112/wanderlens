@@ -57,6 +57,7 @@ public class OrderController {
             return Result.error(ResultCode.ORDER_NOT_FOUND.getCode(), ResultCode.ORDER_NOT_FOUND.getMessage());
         }
         authUtil.requireOrderAccess(request, order);
+        orderService.enrichOrder(order);
         return Result.ok(order);
     }
 
@@ -89,6 +90,7 @@ public class OrderController {
             return Result.error(ResultCode.ORDER_NOT_FOUND.getCode(), ResultCode.ORDER_NOT_FOUND.getMessage());
         }
         authUtil.requireOrderAccess(request, order);
+        orderService.enrichOrder(order);
         return Result.ok(order);
     }
 
@@ -112,6 +114,7 @@ public class OrderController {
         Page<Order> p = orderService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(page, size),
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<Order>()
                         .orderByDesc(Order::getCreatedAt));
+        orderService.enrichOrders(p.getRecords());
         return Result.ok(new PageResult<>(p.getRecords(), p.getTotal(), page, size));
     }
 

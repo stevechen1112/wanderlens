@@ -110,6 +110,25 @@ export const authApi = {
 
 export const providerApi = {
   getProvider: (id: number) => client.get(`/providers/${id}`),
+  updateProvider: (data: Record<string, unknown>) => client.post('/providers', data),
+  getFeatures: (providerId: number) => client.get(`/providers/feature/${providerId}`),
+  setFeature: (data: Record<string, unknown>) => client.post('/providers/feature', data),
+  deleteFeature: (featureId: number, providerId: number) =>
+    client.delete(`/providers/feature/${featureId}`, { params: { providerId } }),
+  getWorks: (providerId: number) => client.get(`/providers/works/${providerId}`),
+  addWork: (data: { providerId: number; fileUuid: string }) => client.post('/providers/works', data),
+  deleteWork: (workId: number, providerId: number) =>
+    client.delete(`/providers/works/${workId}`, { params: { providerId } }),
+  uploadFile: (usage: string, formData: FormData) =>
+    client.post(`/files/upload/${usage}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  getServiceTypes: () => client.get('/service-types'),
+  getServiceArea: (providerId: number) => client.get(`/providers/service-area/${providerId}`),
+  setServiceArea: (providerId: number, data: { rootNodes: number[]; selectedNodes: number[] }) =>
+    client.post(`/providers/service-area/${providerId}`, data),
+  getBank: () => client.get('/providers/bank'),
+  setBank: (data: Record<string, unknown>) => client.post('/providers/bank', data),
   getSchedule: (providerId: number) => client.get(`/providers/${providerId}/schedule`),
   setSchedule: (data: { providerId: number; dates: string[]; slotStart: string; slotEnd: string }) =>
     client.post('/providers/schedule', data),

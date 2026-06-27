@@ -7,6 +7,9 @@ export default {
   me: () =>
     request.get('/auth/me'),
 
+  updateProfile: (data: { username?: string; avatar?: string }) =>
+    request.put('/auth/me', data),
+
   changePassword: (oldPassword: string, newPassword: string) =>
     request.post('/auth/change-password', { oldPassword, newPassword, confirmPassword: newPassword }),
 
@@ -27,8 +30,8 @@ export default {
   setSchedule: (data: any) =>
     request.post('/providers/schedule', data),
 
-  deleteSchedule: (sid: number) =>
-    request.delete(`/providers/schedule/${sid}`),
+  deleteSchedule: (sid: number, providerId: number) =>
+    request.delete(`/providers/schedule/${sid}`, { params: { providerId } }),
 
   // 服務地區
   getServiceArea: (providerId: number) =>
@@ -51,12 +54,18 @@ export default {
   setFeature: (data: any) =>
     request.post('/providers/feature', data),
 
+  deleteFeature: (featureId: number, providerId: number) =>
+    request.delete(`/providers/feature/${featureId}`, { params: { providerId } }),
+
   // 作品集
   getWorks: (providerId: number) =>
     request.get(`/providers/works/${providerId}`),
 
-  deleteWork: (id: number) =>
-    request.delete(`/providers/works/${id}`),
+  addWork: (data: { providerId: number; fileUuid: string }) =>
+    request.post('/providers/works', data),
+
+  deleteWork: (id: number, providerId: number) =>
+    request.delete(`/providers/works/${id}`, { params: { providerId } }),
 
   // 評價
   getRating: (providerId: number) =>

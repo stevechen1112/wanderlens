@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --wl-primary: #F37A69;
   --wl-primary-dark: #D85A49;

@@ -13,6 +13,12 @@ import ConversationListScreen from '@/screens/conversation/ConversationListScree
 import ConversationRoomScreen from '@/screens/conversation/ConversationRoomScreen'
 import EarningsScreen from '@/screens/earnings/EarningsScreen'
 import ProfileScreen from '@/screens/profile/ProfileScreen'
+import AccountHubScreen from '@/screens/account/AccountHubScreen'
+import BasicInfoScreen from '@/screens/account/BasicInfoScreen'
+import FeaturesScreen from '@/screens/account/FeaturesScreen'
+import WorksScreen from '@/screens/account/WorksScreen'
+import ServiceAreaScreen from '@/screens/account/ServiceAreaScreen'
+import BankInfoScreen from '@/screens/account/BankInfoScreen'
 import RatingScreen from '@/screens/rating/RatingScreen'
 import NotificationScreen from '@/screens/notification/NotificationScreen'
 import type {
@@ -60,6 +66,12 @@ function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
+      <ProfileStack.Screen name="AccountHub" component={AccountHubScreen} />
+      <ProfileStack.Screen name="BasicInfo" component={BasicInfoScreen} />
+      <ProfileStack.Screen name="Features" component={FeaturesScreen} />
+      <ProfileStack.Screen name="Works" component={WorksScreen} />
+      <ProfileStack.Screen name="ServiceArea" component={ServiceAreaScreen} />
+      <ProfileStack.Screen name="BankInfo" component={BankInfoScreen} />
       <ProfileStack.Screen name="Rating" component={RatingScreen} />
       <ProfileStack.Screen name="Notifications" component={NotificationScreen} />
     </ProfileStack.Navigator>

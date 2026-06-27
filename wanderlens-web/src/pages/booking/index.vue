@@ -148,13 +148,33 @@
           <span class="text-text-secondary">{{ $t('search.location') }}</span>
           <span class="font-semibold">{{ bookingStore.data.shootingLocation }}</span>
         </div>
-        <div class="flex justify-between py-2">
+        <div class="flex justify-between items-center py-2">
           <span class="text-text-secondary">{{ $t('booking.photographer') }}</span>
-          <span class="font-semibold">{{ bookingStore.data.photographerName || '-' }}</span>
+          <div class="flex items-center gap-3">
+            <span class="font-semibold">{{ bookingStore.data.photographerName || '-' }}</span>
+            <NuxtLink
+              v-if="bookingStore.data.photographerUuid"
+              :to="`/photographer/${bookingStore.data.photographerUuid}`"
+              class="text-primary text-sm font-medium hover:underline"
+              target="_blank"
+            >
+              查看介紹
+            </NuxtLink>
+          </div>
         </div>
-        <div v-if="bookingStore.data.secondPhotographerId" class="flex justify-between py-2">
+        <div v-if="bookingStore.data.secondPhotographerId" class="flex justify-between items-center py-2">
           <span class="text-text-secondary">{{ $t('checkout.secondPhotographer') }}</span>
-          <span class="font-semibold">{{ bookingStore.data.secondPhotographerName || '-' }}</span>
+          <div class="flex items-center gap-3">
+            <span class="font-semibold">{{ bookingStore.data.secondPhotographerName || '-' }}</span>
+            <NuxtLink
+              v-if="bookingStore.data.secondPhotographerUuid"
+              :to="`/photographer/${bookingStore.data.secondPhotographerUuid}`"
+              class="text-primary text-sm font-medium hover:underline"
+              target="_blank"
+            >
+              查看介紹
+            </NuxtLink>
+          </div>
         </div>
         <div class="wl-divider" />
         <div class="flex justify-between text-lg font-extrabold">

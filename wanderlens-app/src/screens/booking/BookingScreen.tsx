@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { shadows, useColors, type AppColors } from '@/theme'
 import { bookingApi, paymentApi } from '@/api'
+import { navigationRef } from '@/navigation/RootNavigator'
 import { useAuthStore } from '@/stores/authStore'
 import ScreenHeader from '@/components/ScreenHeader'
 import DateTimeField from '@/components/DateTimeField'
@@ -218,7 +219,9 @@ export default function BookingScreen({ navigation, route }: { navigation: any; 
   }
 
   const shootingDuration = calcDurationHours(timeStart, timeEnd)
-  const totalFee = selectedProvider?.totalFee || 0
+  const secondFee =
+    photographerCount >= 2 && selectedSecondProvider ? (selectedSecondProvider.totalFee || 0) : 0
+  const totalFee = (selectedProvider?.totalFee || 0) + secondFee
 
   const handleCreateOrder = async () => {
     if (!selectedProvider || !selectedServiceType) return
@@ -564,6 +567,19 @@ export default function BookingScreen({ navigation, route }: { navigation: any; 
                         ) : null}
                         <Text style={styles.priceText}>$ {provider.totalFee.toLocaleString()}</Text>
                       </View>
+                      <TouchableOpacity
+                        style={styles.profileBtn}
+                        onPress={(e) => {
+                          e.stopPropagation?.()
+                          if (provider.providerUuid) {
+                            navigationRef.navigate('ProviderDetail', { providerUuid: provider.providerUuid })
+                          }
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="查看攝影師介紹"
+                      >
+                        <Ionicons name="person-circle-outline" size={22} color={colors.primary} />
+                      </TouchableOpacity>
                       {selectedProvider?.providerId === provider.providerId && (
                         <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
                       )}
@@ -587,6 +603,19 @@ export default function BookingScreen({ navigation, route }: { navigation: any; 
                           <Text style={styles.optionTitle}>{provider.nickName}</Text>
                           <Text style={styles.optionSubtitle}>{provider.city}</Text>
                         </View>
+                        <TouchableOpacity
+                          style={styles.profileBtn}
+                          onPress={(e) => {
+                            e.stopPropagation?.()
+                            if (provider.providerUuid) {
+                              navigationRef.navigate('ProviderDetail', { providerUuid: provider.providerUuid })
+                            }
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="查看攝影師介紹"
+                        >
+                          <Ionicons name="person-circle-outline" size={22} color={colors.primary} />
+                        </TouchableOpacity>
                         {selectedSecondProvider?.providerId === provider.providerId && (
                           <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
                         )}
@@ -841,6 +870,7 @@ const makeStyles = (colors: AppColors) => StyleSheet.create({
   optionSubtitle: { fontSize: 14, color: colors.textSecondary },
   ratingText: { fontSize: 13, color: colors.warning, marginTop: 2 },
   priceText: { fontSize: 16, fontWeight: 'bold', color: colors.primary, marginTop: 4 },
+  profileBtn: { padding: 6, marginRight: 4 },
   configGrid: { flexDirection: 'row', gap: 10, marginBottom: 8 },
   configCard: {
     flex: 1, alignItems: 'center', backgroundColor: colors.surface, borderRadius: 12,

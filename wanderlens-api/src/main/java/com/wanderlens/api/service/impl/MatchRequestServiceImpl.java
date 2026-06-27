@@ -181,6 +181,7 @@ public class MatchRequestServiceImpl implements MatchRequestService {
         entity.setStatus(MatchRequestStatus.MATCH_FOUND.getCode());
         entity.setMatchedProviderId(providerId);
         entity.setOrderId(order.getId());
+        entity.setEstimatedFee(order.getTotalFee());
         matchRequestMapper.updateById(entity);
         cacheRequest(entity);
 
@@ -304,7 +305,8 @@ public class MatchRequestServiceImpl implements MatchRequestService {
             Provider p = providerMapper.selectById(providerId);
             if (p == null) continue;
             double distance = calcDistance(entity, p);
-            int income = new BigDecimal(defaultUnitPrice).multiply(entity.getDurationHours())
+            int unitPrice = p.getUnitPrice() != null && p.getUnitPrice() > 0 ? p.getUnitPrice() : defaultUnitPrice;
+            int income = new BigDecimal(unitPrice).multiply(entity.getDurationHours())
                     .multiply(BigDecimal.valueOf(0.8)).setScale(0, RoundingMode.HALF_UP).intValue();
             MatchBroadcastPayload payload = MatchBroadcastPayload.builder()
                     .type("NEW_REQUEST")

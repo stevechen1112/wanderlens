@@ -58,6 +58,7 @@ const selectProvider = () => {
   if (target.value === 'second') {
     bookingStore.setData({
       secondPhotographerId: p.providerId,
+      secondPhotographerUuid: p.providerUuid || '',
       secondPhotographerName: p.nickName,
       secondAvailabilityId: p.availabilityId ?? null,
       secondUnitPrice: p.unitPrice || 0,

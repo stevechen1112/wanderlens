@@ -137,3 +137,6 @@ export const matchApi = {
   cancelRequest: (id: number) => client.delete(`/match/request/${id}`),
   payAfterMatch: (id: number) => client.post(`/match/request/${id}/pay`),
 }
+
+export { providerApi } from './providerApi'
+export type { ProviderPublicProfile } from './providerApi'

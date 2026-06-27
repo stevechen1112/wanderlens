@@ -56,6 +56,8 @@ const showDialog = ref(false)
 const editing = ref(false)
 const form = reactive<any>({ language: 'tw', featureType: '', featureContent: '' })
 
+const providerId = () => authStore.resolvedProviderId!
+
 const openAdd = () => {
   Object.assign(form, { language: 'tw', featureType: '', featureContent: '', id: undefined })
   editing.value = false
@@ -75,7 +77,7 @@ const remove = async (id: number) => {
       confirmButtonText: t('common.confirm'),
       cancelButtonText: t('common.cancel'),
     })
-    await api.setFeature({ id, providerId: authStore.userId, active: 'N' })
+    await api.deleteFeature(id, providerId())
     features.value = features.value.filter((f) => f.id !== id)
     ElMessage.success(t('featuresPage.deleteSuccess'))
   } catch (err: any) {
@@ -85,7 +87,7 @@ const remove = async (id: number) => {
 
 const save = async () => {
   try {
-    await api.setFeature({ ...form, providerId: authStore.userId })
+    await api.setFeature({ ...form, providerId: providerId() })
     ElMessage.success(t('featuresPage.saveSuccess'))
     showDialog.value = false
     loadFeatures()
@@ -95,8 +97,9 @@ const save = async () => {
 }
 
 const loadFeatures = async () => {
+  if (!providerId()) return
   try {
-    const res: any = await api.getFeature(authStore.userId!)
+    const res: any = await api.getFeature(providerId())
     features.value = res.data || []
   } catch {
     // silent

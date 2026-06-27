@@ -77,6 +77,15 @@ public class Provider {
     /** 介紹（韓） */
     private String introKr;
 
+    /** 身份別（全職攝影/兼職攝影等） */
+    private String career;
+
+    /** 攝影年資（年，可 0.5 遞增） */
+    private java.math.BigDecimal experience;
+
+    /** 每小時單價；未設定時搜尋/公開頁 fallback 平台預設 */
+    private Integer unitPrice;
+
     /** 評價 */
     private BigDecimal rating;
 

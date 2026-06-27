@@ -12,6 +12,7 @@ import com.wanderlens.api.service.StylistService;
 import com.wanderlens.api.util.ConfigurationResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public class MultiPoolSearchServiceImpl implements MultiPoolSearchService {
     private final StudioService studioService;
     private final StylistService stylistService;
     private final ConfigurationResolver configurationResolver;
+
+    @Value("${wanderlens.pricing.default-unit-price:800}")
+    private int defaultUnitPrice;
 
     @Override
     public MultiPoolSearchResult searchMultiPool(SearchProviderRequest request) {
@@ -98,6 +102,8 @@ public class MultiPoolSearchServiceImpl implements MultiPoolSearchService {
         sr.setBannerImg(s.getBannerImg());
         sr.setRating(s.getRating());
         sr.setAvailable(true);
+        int unitPrice = s.getUnitPrice() != null && s.getUnitPrice() > 0 ? s.getUnitPrice() : defaultUnitPrice;
+        sr.setUnitPrice(unitPrice);
         return sr;
     }
 }

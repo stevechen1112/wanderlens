@@ -60,9 +60,12 @@ const authStore = useAuthStore()
 const works = ref<any[]>([])
 const publicAlbums = ref<any[]>([])
 
+const providerId = () => authStore.resolvedProviderId!
+
 const loadPublicAlbums = async () => {
+  if (!providerId()) return
   try {
-    const res: any = await api.getPublicAlbums(authStore.userId!)
+    const res: any = await api.getPublicAlbums(providerId())
     publicAlbums.value = res.data || []
   } catch {
     publicAlbums.value = []
@@ -89,14 +92,12 @@ const uploadWork = async (options: any) => {
   }
   try {
     const res: any = await api.uploadFile('provider_works', options.file)
-    await api.setFeature({
-      providerId: authStore.userId,
-      type: 'WORK',
-      imageUrl: res.data?.url,
-      active: 'Y',
-    })
-    const worksRes: any = await api.getWorks(authStore.userId!)
-    works.value = worksRes.data || []
+    const fileUuid = res.data?.uuid
+    if (!fileUuid) {
+      throw new Error('missing uuid')
+    }
+    const workRes: any = await api.addWork({ providerId: providerId(), fileUuid })
+    works.value.push(workRes.data)
     ElMessage.success(t('photoWorksPage.uploadSuccess'))
   } catch {
     ElMessage.error(t('photoWorksPage.uploadFailed'))
@@ -105,19 +106,22 @@ const uploadWork = async (options: any) => {
 
 const remove = async (id: number) => {
   try {
-    await api.deleteWork(id)
+    await api.deleteWork(id, providerId())
     works.value = works.value.filter((w) => w.id !== id)
+  } catch {
+    ElMessage.error(t('photoWorksPage.uploadFailed'))
+  }
+}
+
+const loadWorks = async () => {
+  if (!providerId()) return
+  try {
+    const res: any = await api.getWorks(providerId())
+    works.value = res.data || []
   } catch {
     // silent
   }
 }
 
-onMounted(async () => {
-  try {
-    const res: any = await api.getWorks(authStore.userId!)
-    works.value = res.data || []
-  } catch {
-    // silent
-  }
-})
+onMounted(loadWorks)
 </script>

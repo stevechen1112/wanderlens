@@ -6,3 +6,6 @@ dist
 .DS_Store
 .idea
 .vscode
+# 勿將 tsc/vue 編譯產物提交到 src（會蓋過 .ts/.vue，導致 Vite 載入舊版）
+src/**/*.js
+src/**/*.js.map

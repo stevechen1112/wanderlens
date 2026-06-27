@@ -41,9 +41,18 @@
             <span class="text-text-secondary">城市</span>
             <span class="font-medium">{{ order.city }}</span>
           </div>
-          <div v-if="order.photographerName" class="flex justify-between">
+          <div v-if="order.photographerName" class="flex justify-between items-center">
             <span class="text-text-secondary">攝影師</span>
-            <span class="font-medium">{{ order.photographerName }}</span>
+            <div class="flex items-center gap-2">
+              <span class="font-medium">{{ order.photographerName }}</span>
+              <NuxtLink
+                v-if="order.photographerUuid"
+                :to="`/photographer/${order.photographerUuid}`"
+                class="text-primary text-xs font-medium hover:underline"
+              >
+                查看介紹
+              </NuxtLink>
+            </div>
           </div>
           <div class="flex justify-between">
             <span class="text-text-secondary">人數</span>

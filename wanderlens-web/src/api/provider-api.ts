@@ -4,6 +4,9 @@ export const useProviderApi = () => {
   const api = useApi()
 
   return {
+    getPublicProfile: (uuid: string) =>
+      api.get(`/providers/info/${uuid}/profile`),
+
     getInfo: (uuid: string) =>
       api.get(`/providers/info/${uuid}`),
 

@@ -15,6 +15,13 @@ import { radius, spacing } from '@/theme/spacing'
 import { useLocale } from '@/i18n'
 import { haptics } from '@/utils/haptics'
 import { formatSlotTime } from '@/utils/format'
+import {
+  buildMondayFirstCalendar,
+  endHourOptions,
+  normalizeScheduleSlot,
+  SCHEDULE_HOURS,
+  type TimeRange,
+} from '@/utils/schedule'
 
 type SlotStatus = 'available' | 'booked' | 'blocked'
 
@@ -32,7 +39,38 @@ const makeStatusConfig = (colors: AppColors): Record<SlotStatus, { color: string
 
 const COL_WIDTH = `${100 / 7}%` as const
 
-const HOURS = Array.from({ length: 15 }, (_, i) => `${String(i + 8).padStart(2, '0')}:00`)
+function TimeChipRow({
+  label,
+  value,
+  options,
+  onChange,
+  colors,
+  styles,
+}: {
+  label: string
+  value: string
+  options: string[]
+  onChange: (v: string) => void
+  colors: AppColors
+  styles: ReturnType<typeof makeStyles>
+}) {
+  return (
+    <View style={styles.timeRow}>
+      <Text style={styles.timeLabel}>{label}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {options.map((h) => (
+          <TouchableOpacity
+            key={`${label}-${h}`}
+            style={[styles.timeChip, value === h && styles.timeChipActive]}
+            onPress={() => onChange(h)}
+          >
+            <Text style={[styles.timeChipText, value === h && styles.timeChipTextActive]}>{h}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  )
+}
 
 export default function ScheduleScreen() {
   const colors = useColors()
@@ -49,19 +87,22 @@ export default function ScheduleScreen() {
   const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [selectMode, setSelectMode] = useState(false)
   const [selectedDates, setSelectedDates] = useState<string[]>([])
-  const [batchVisible, setBatchVisible] = useState(false)
-  const [batchStart, setBatchStart] = useState('10:00')
-  const [batchEnd, setBatchEnd] = useState('12:00')
-  const [batchMode, setBatchMode] = useState<'available' | 'block'>('available')
+  const [setupVisible, setSetupVisible] = useState(false)
+  const [setupDates, setSetupDates] = useState<string[]>([])
+  const [setupRanges, setSetupRanges] = useState<TimeRange[]>([{ start: '09:00', end: '12:00' }])
+  const [setupMode, setSetupMode] = useState<'available' | 'block'>('available')
   const [excludeWeekend, setExcludeWeekend] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [quickStart, setQuickStart] = useState('09:00')
+  const [quickEnd, setQuickEnd] = useState('12:00')
+  const [quickSaving, setQuickSaving] = useState(false)
 
   const loadSchedule = useCallback(async () => {
     if (!providerId) return
     setError(false)
     try {
-      const res: { data?: ScheduleSlot[] } = await providerApi.getSchedule(providerId)
-      setSlots(res.data || [])
+      const res: { data?: Record<string, unknown>[] } = await providerApi.getSchedule(providerId)
+      setSlots((res.data || []).map((row) => normalizeScheduleSlot(row)))
     } catch {
       setError(true)
     } finally {
@@ -72,33 +113,14 @@ export default function ScheduleScreen() {
 
   React.useEffect(() => { loadSchedule() }, [loadSchedule])
 
-  const calendarDays = useMemo(() => {
-    const start = viewMonth.startOf('month')
-    const end = viewMonth.endOf('month')
-    const days: Array<{ date: string; day: number; inMonth: boolean }> = []
-    const startPad = start.day()
-    for (let i = startPad - 1; i >= 0; i--) {
-      const d = start.subtract(i + 1, 'day')
-      days.push({ date: d.format('YYYY-MM-DD'), day: d.date(), inMonth: false })
-    }
-    for (let d = 1; d <= end.date(); d++) {
-      const date = viewMonth.date(d).format('YYYY-MM-DD')
-      days.push({ date, day: d, inMonth: true })
-    }
-    const remaining = 42 - days.length
-    for (let i = 1; i <= remaining; i++) {
-      const d = end.add(i, 'day')
-      days.push({ date: d.format('YYYY-MM-DD'), day: d.date(), inMonth: false })
-    }
-    return days
-  }, [viewMonth])
+  const calendarDays = useMemo(() => buildMondayFirstCalendar(viewMonth), [viewMonth])
 
   const slotsByDate = useMemo(() => {
     const map: Record<string, ScheduleSlot[]> = {}
     slots.forEach((s) => {
-      const key = s.scheduleDate
-      if (!map[key]) map[key] = []
-      map[key].push(s)
+      if (!s.scheduleDate) return
+      if (!map[s.scheduleDate]) map[s.scheduleDate] = []
+      map[s.scheduleDate].push(s)
     })
     return map
   }, [slots])
@@ -111,78 +133,163 @@ export default function ScheduleScreen() {
     return indicators
   }, [slotsByDate])
 
-  const selectedSlots = (slotsByDate[selectedDate] || []).sort((a, b) =>
-    (a.slotStart || '').localeCompare(b.slotStart || ''))
+  const selectedSlots = (slotsByDate[selectedDate] || [])
+    .filter((s) => s.active !== 'N')
+    .sort((a, b) => (a.slotStart || '').localeCompare(b.slotStart || ''))
 
   const prevMonth = () => setViewMonth(viewMonth.subtract(1, 'month'))
   const nextMonth = () => setViewMonth(viewMonth.add(1, 'month'))
 
   const toggleDateSelection = (date: string, inMonth: boolean) => {
     if (!inMonth) return
+    setSelectedDate(date)
     if (!selectMode) {
-      setSelectedDate(date)
+      setSelectedDates([date])
       return
     }
     setSelectedDates((prev) =>
-      prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date])
+      prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date],
+    )
   }
 
-  const selectWholeMonth = () => {
-    const days = calendarDays.filter((d) => d.inMonth).map((d) => d.date)
-    const filtered = excludeWeekend
-      ? days.filter((d) => {
-          const wd = dayjs(d).day()
-          return wd !== 0 && wd !== 6
-        })
-      : days
-    setSelectedDates(filtered)
+  const selectWeekdaysInMonth = () => {
+    const days = calendarDays
+      .filter((d) => {
+        if (!d.inMonth) return false
+        const wd = dayjs(d.date).day()
+        return wd !== 0 && wd !== 6
+      })
+      .map((d) => d.date)
+    setSelectedDates(days)
+    setSelectMode(true)
   }
 
-  const saveBatchSlots = async () => {
-    if (!providerId) return
-    const dates = selectedDates.length > 0
-      ? selectedDates
-      : calendarDays.filter((d) => d.inMonth).map((d) => d.date)
-    const filtered = excludeWeekend
-      ? dates.filter((d) => {
-          const wd = dayjs(d).day()
-          return wd !== 0 && wd !== 6
-        })
-      : dates
-    if (filtered.length === 0) {
+  const resolveSetupDates = (): string[] => {
+    let dates = setupDates.length > 0
+      ? setupDates
+      : selectedDates.length > 0
+        ? selectedDates
+        : selectMode
+          ? []
+          : [selectedDate]
+    if (dates.length === 0) {
+      dates = calendarDays.filter((d) => d.inMonth).map((d) => d.date)
+    }
+    if (excludeWeekend) {
+      dates = dates.filter((d) => {
+        const wd = dayjs(d).day()
+        return wd !== 0 && wd !== 6
+      })
+    }
+    return dates
+  }
+
+  const openSetupModal = () => {
+    const preset = selectedDates.length > 0
+      ? [...selectedDates]
+      : selectMode
+        ? []
+        : [selectedDate]
+    setSetupDates(preset)
+    setSetupRanges([{ start: '09:00', end: '12:00' }])
+    setSetupMode('available')
+    setExcludeWeekend(false)
+    setSetupVisible(true)
+  }
+
+  const validateRanges = (ranges: TimeRange[]): boolean => {
+    for (const range of ranges) {
+      if (!range.start || !range.end || range.start >= range.end) {
+        Alert.alert(t('schedule.timeError'), t('schedule.timeErrorDesc'))
+        return false
+      }
+    }
+    return true
+  }
+
+  const saveSlotsForDates = async (
+    dates: string[],
+    ranges: TimeRange[],
+    mode: 'available' | 'block',
+  ): Promise<number> => {
+    if (!providerId) return 0
+    let total = 0
+    for (const range of ranges) {
+      const payload = {
+        providerId,
+        dates,
+        slotStart: range.start,
+        slotEnd: range.end,
+      }
+      if (mode === 'block') {
+        const res: { data?: { blocked?: number } } = await providerApi.blockSchedule(payload)
+        total += res.data?.blocked ?? 0
+      } else {
+        const res: { data?: { created?: number } } = await providerApi.setSchedule(payload)
+        total += res.data?.created ?? 0
+      }
+    }
+    return total
+  }
+
+  const saveSetup = async () => {
+    const dates = resolveSetupDates()
+    if (dates.length === 0) {
       Alert.alert(t('schedule.pickDate'), t('schedule.pickDateDesc'))
       return
     }
-    if (batchStart >= batchEnd) {
-      Alert.alert(t('schedule.timeError'), t('schedule.timeErrorDesc'))
-      return
-    }
+    if (!validateRanges(setupRanges)) return
+
     setSaving(true)
     try {
-      const payload = {
-        providerId,
-        dates: filtered,
-        slotStart: batchStart,
-        slotEnd: batchEnd,
-      }
-      if (batchMode === 'block') {
-        const res: { data?: { blocked?: number } } = await providerApi.blockSchedule(payload)
-        const blocked = res.data?.blocked ?? 0
-        Alert.alert(t('schedule.blockSuccess'), blocked > 0 ? t('schedule.blockedCount', { n: blocked }) : t('schedule.blockedNone'))
-      } else {
-        const res: { data?: { created?: number } } = await providerApi.setSchedule(payload)
-        const created = res.data?.created ?? 0
-        Alert.alert(t('schedule.setSuccess'), created > 0 ? t('schedule.createdCount', { n: created }) : t('schedule.createdNone'))
-      }
+      const total = await saveSlotsForDates(dates, setupRanges, setupMode)
       haptics.success()
-      setBatchVisible(false)
+      setSetupVisible(false)
       setSelectedDates([])
       setSelectMode(false)
+      if (setupMode === 'block') {
+        Alert.alert(
+          t('schedule.blockSuccess'),
+          total > 0 ? t('schedule.blockedCount', { n: total }) : t('schedule.blockedNone'),
+        )
+      } else {
+        Alert.alert(
+          t('schedule.setSuccess'),
+          total > 0 ? t('schedule.createdCount', { n: total }) : t('schedule.createdNone'),
+        )
+      }
       await loadSchedule()
     } catch {
       Alert.alert(t('schedule.saveFailed'), t('schedule.saveFailedDesc'))
     } finally {
       setSaving(false)
+    }
+  }
+
+  const saveQuickAdd = async () => {
+    if (!providerId || !selectedDate) return
+    if (quickStart >= quickEnd) {
+      Alert.alert(t('schedule.timeError'), t('schedule.timeErrorDesc'))
+      return
+    }
+    setQuickSaving(true)
+    try {
+      const total = await saveSlotsForDates(
+        [selectedDate],
+        [{ start: quickStart, end: quickEnd }],
+        'available',
+      )
+      haptics.success()
+      if (total === 0) {
+        Alert.alert(t('schedule.setSuccess'), t('schedule.createdNone'))
+      } else {
+        Alert.alert(t('schedule.setSuccess'), t('schedule.createdCount', { n: total }))
+      }
+      await loadSchedule()
+    } catch {
+      Alert.alert(t('schedule.saveFailed'), t('schedule.saveFailedDesc'))
+    } finally {
+      setQuickSaving(false)
     }
   }
 
@@ -196,6 +303,7 @@ export default function ScheduleScreen() {
         onPress: async () => {
           try {
             await providerApi.deleteSchedule(slot.id, providerId)
+            haptics.success()
             await loadSchedule()
           } catch {
             Alert.alert(t('schedule.deleteFailed'), t('schedule.deleteFailedDesc'))
@@ -226,37 +334,47 @@ export default function ScheduleScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScreenHeader title={t('schedule.title')} subtitle={t('schedule.subtitle')} large />
+
       <View style={styles.toolbar}>
         <View style={styles.toolbarRow}>
-          <Text style={styles.toolbarLabel}>{t('schedule.batchSelect')}</Text>
+          <Text style={styles.toolbarLabel}>{t('schedule.multiSelect')}</Text>
           <Switch
             value={selectMode}
             onValueChange={(v) => {
               setSelectMode(v)
               if (!v) setSelectedDates([])
+              else if (selectedDate) setSelectedDates([selectedDate])
             }}
             trackColor={{ true: colors.primary }}
             accessibilityRole="switch"
-            accessibilityLabel={t('schedule.batchSelect')}
+            accessibilityLabel={t('schedule.multiSelect')}
           />
         </View>
         <View style={styles.toolbarActions}>
-          <TouchableOpacity style={styles.toolBtn} onPress={() => setBatchVisible(true)} accessibilityRole="button" accessibilityLabel={t('schedule.batchConfig')}>
-            <Ionicons name="copy-outline" size={16} color={colors.primary} />
-            <Text style={styles.toolBtnText}>{t('schedule.batchConfig')}</Text>
+          <TouchableOpacity style={styles.toolBtnPrimary} onPress={openSetupModal}>
+            <Ionicons name="add-circle-outline" size={16} color={colors.white} />
+            <Text style={styles.toolBtnPrimaryText}>{t('schedule.setSlots')}</Text>
           </TouchableOpacity>
           {selectMode ? (
-            <TouchableOpacity style={styles.toolBtn} onPress={selectWholeMonth} accessibilityRole="button" accessibilityLabel={t('schedule.selectMonth')}>
+            <TouchableOpacity style={styles.toolBtn} onPress={selectWeekdaysInMonth}>
               <Ionicons name="calendar-outline" size={16} color={colors.secondary} />
-              <Text style={styles.toolBtnText}>{t('schedule.selectMonth')}</Text>
+              <Text style={styles.toolBtnText}>{t('schedule.selectWeekdays')}</Text>
             </TouchableOpacity>
           ) : null}
         </View>
       </View>
+
+      <Text style={styles.hint}>{t('schedule.hint')}</Text>
+
       <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadSchedule() }} colors={[colors.primary]} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true); loadSchedule() }}
+            colors={[colors.primary]}
+          />
+        }
       >
-        {/* 月曆 */}
         <View style={styles.calendarCard}>
           <View style={styles.monthNav}>
             <TouchableOpacity onPress={prevMonth} style={styles.navBtn}>
@@ -276,7 +394,7 @@ export default function ScheduleScreen() {
 
           <View style={styles.daysGrid}>
             {calendarDays.map((cell) => {
-              const isSelected = cell.date === selectedDate
+              const isFocused = cell.date === selectedDate && cell.inMonth
               const isMultiSelected = selectedDates.includes(cell.date)
               const isToday = cell.date === dayjs().format('YYYY-MM-DD')
               const indicators = dayIndicators[cell.date] || []
@@ -286,21 +404,24 @@ export default function ScheduleScreen() {
                   style={[
                     styles.dayCell,
                     !cell.inMonth && styles.dayCellMuted,
-                    isSelected && !selectMode && styles.dayCellSelected,
-                    isMultiSelected && styles.dayCellMultiSelected,
-                    isToday && !isSelected && !isMultiSelected && styles.dayCellToday,
+                    isFocused && styles.dayCellSelected,
+                    isMultiSelected && selectMode && styles.dayCellMultiSelected,
+                    isToday && !isFocused && !isMultiSelected && styles.dayCellToday,
                   ]}
                   onPress={() => toggleDateSelection(cell.date, cell.inMonth)}
                   onLongPress={() => {
-                    if (!selectMode) setSelectMode(true)
+                    if (!selectMode) {
+                      setSelectMode(true)
+                      setSelectedDates([cell.date])
+                    }
                     toggleDateSelection(cell.date, cell.inMonth)
                   }}
                 >
                   <Text style={[
                     styles.dayNum,
                     !cell.inMonth && styles.dayNumMuted,
-                    isSelected && styles.dayNumSelected,
-                    isMultiSelected && styles.dayNumMultiSelected,
+                    isFocused && styles.dayNumSelected,
+                    isMultiSelected && selectMode && styles.dayNumMultiSelected,
                   ]}>
                     {cell.day}
                   </Text>
@@ -316,7 +437,6 @@ export default function ScheduleScreen() {
             })}
           </View>
 
-          {/* 圖例 */}
           <View style={styles.legend}>
             {(Object.keys(STATUS_CONFIG) as SlotStatus[]).map((key) => (
               <View key={key} style={styles.legendItem}>
@@ -327,11 +447,11 @@ export default function ScheduleScreen() {
           </View>
         </View>
 
-        {/* 當日時段 */}
         <View style={styles.slotsSection}>
           <Text style={styles.slotsTitle}>
             {t('schedule.slotsTitle', { date: dayjs(selectedDate).format(t('schedule.dayFormat')) })}
           </Text>
+
           {selectedSlots.length === 0 ? (
             <View style={styles.emptySlots}>
               <Ionicons name="time-outline" size={36} color={colors.textSecondary} />
@@ -347,9 +467,7 @@ export default function ScheduleScreen() {
                     <Text style={[styles.slotBadgeText, { color: cfg.color }]}>{t(`schedule.${status}`)}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.slotTime}>
-                      {formatSlotTime(slot.slotStart, slot.slotEnd)}
-                    </Text>
+                    <Text style={styles.slotTime}>{formatSlotTime(slot.slotStart, slot.slotEnd)}</Text>
                     {slot.lockedByOrderId ? (
                       <Text style={styles.slotOrder}>{t('schedule.slotBooked', { id: slot.lockedByOrderId })}</Text>
                     ) : (
@@ -357,7 +475,7 @@ export default function ScheduleScreen() {
                     )}
                   </View>
                   {!slot.lockedByOrderId ? (
-                    <TouchableOpacity onPress={() => deleteSlot(slot)} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('schedule.deleteSlot')}>
+                    <TouchableOpacity onPress={() => deleteSlot(slot)} hitSlop={8}>
                       <Ionicons name="trash-outline" size={18} color={colors.textSecondary} />
                     </TouchableOpacity>
                   ) : (
@@ -367,77 +485,141 @@ export default function ScheduleScreen() {
               )
             })
           )}
+
+          <View style={styles.quickAddCard}>
+            <Text style={styles.quickAddTitle}>{t('schedule.quickAddTitle')}</Text>
+            <Text style={styles.quickAddHint}>{t('schedule.quickAddHint')}</Text>
+            <TimeChipRow
+              label={t('schedule.startTime')}
+              value={quickStart}
+              options={SCHEDULE_HOURS}
+              onChange={(v) => {
+                setQuickStart(v)
+                if (quickEnd <= v) setQuickEnd(endHourOptions(v)[0] || '22:00')
+              }}
+              colors={colors}
+              styles={styles}
+            />
+            <TimeChipRow
+              label={t('schedule.endTime')}
+              value={quickEnd}
+              options={endHourOptions(quickStart)}
+              onChange={setQuickEnd}
+              colors={colors}
+              styles={styles}
+            />
+            <TouchableOpacity
+              style={[styles.quickAddBtn, quickSaving && styles.quickAddBtnDisabled]}
+              onPress={saveQuickAdd}
+              disabled={quickSaving}
+            >
+              <Text style={styles.quickAddBtnText}>
+                {quickSaving ? t('common.saving') : t('schedule.quickAddBtn')}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
 
-      <Modal visible={batchVisible} transparent animationType="slide">
+      <Modal visible={setupVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>{batchMode === 'block' ? t('schedule.batchBlockTitle') : t('schedule.batchConfigTitle')}</Text>
-            <View style={styles.modeRow}>
+          <ScrollView style={styles.modalScroll} contentContainerStyle={styles.modalScrollContent}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>{t('schedule.setupTitle')}</Text>
+              <Text style={styles.modalHint}>
+                {setupDates.length > 0 || selectedDates.length > 0
+                  ? t('schedule.selectedDays', {
+                      n: setupDates.length || selectedDates.length,
+                    })
+                  : t('schedule.applyFocusedOrMonth')}
+              </Text>
+
+              <View style={styles.modeRow}>
+                <TouchableOpacity
+                  style={[styles.modeChip, setupMode === 'available' && styles.modeChipActive]}
+                  onPress={() => setSetupMode('available')}
+                >
+                  <Text style={[styles.modeChipText, setupMode === 'available' && styles.modeChipTextActive]}>
+                    {t('schedule.open')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modeChip, setupMode === 'block' && styles.modeChipActiveBlock]}
+                  onPress={() => setSetupMode('block')}
+                >
+                  <Text style={[styles.modeChipText, setupMode === 'block' && styles.modeChipTextActive]}>
+                    {t('schedule.blockOption')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.sectionLabel}>{t('schedule.timeRanges')}</Text>
+              {setupRanges.map((range, idx) => (
+                <View key={`range-${idx}`} style={styles.rangeBlock}>
+                  <View style={styles.rangeHeader}>
+                    <Text style={styles.rangeTitle}>{t('schedule.rangeLabel', { n: idx + 1 })}</Text>
+                    {setupRanges.length > 1 ? (
+                      <TouchableOpacity onPress={() => setSetupRanges(setupRanges.filter((_, i) => i !== idx))}>
+                        <Text style={styles.rangeRemove}>{t('schedule.removeRange')}</Text>
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                  <TimeChipRow
+                    label={t('schedule.startTime')}
+                    value={range.start}
+                    options={SCHEDULE_HOURS}
+                    onChange={(v) => {
+                      const next = [...setupRanges]
+                      next[idx] = {
+                        start: v,
+                        end: next[idx].end <= v ? (endHourOptions(v)[0] || '22:00') : next[idx].end,
+                      }
+                      setSetupRanges(next)
+                    }}
+                    colors={colors}
+                    styles={styles}
+                  />
+                  <TimeChipRow
+                    label={t('schedule.endTime')}
+                    value={range.end}
+                    options={endHourOptions(range.start)}
+                    onChange={(v) => {
+                      const next = [...setupRanges]
+                      next[idx] = { ...next[idx], end: v }
+                      setSetupRanges(next)
+                    }}
+                    colors={colors}
+                    styles={styles}
+                  />
+                </View>
+              ))}
               <TouchableOpacity
-                style={[styles.modeChip, batchMode === 'available' && styles.modeChipActive]}
-                onPress={() => setBatchMode('available')}
-                accessibilityRole="button"
-                accessibilityLabel={t('schedule.open')}
+                style={styles.addRangeBtn}
+                onPress={() => setSetupRanges([...setupRanges, { start: '14:00', end: '18:00' }])}
               >
-                <Text style={[styles.modeChipText, batchMode === 'available' && styles.modeChipTextActive]}>{t('schedule.open')}</Text>
+                <Ionicons name="add" size={18} color={colors.primary} />
+                <Text style={styles.addRangeText}>{t('schedule.addRange')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modeChip, batchMode === 'block' && styles.modeChipActiveBlock]}
-                onPress={() => setBatchMode('block')}
-                accessibilityRole="button"
-                accessibilityLabel={t('schedule.blockOption')}
-              >
-                <Text style={[styles.modeChipText, batchMode === 'block' && styles.modeChipTextActive]}>{t('schedule.blockOption')}</Text>
-              </TouchableOpacity>
+
+              <View style={styles.toolbarRow}>
+                <Text style={styles.toolbarLabel}>{t('schedule.excludeWeekend')}</Text>
+                <Switch
+                  value={excludeWeekend}
+                  onValueChange={setExcludeWeekend}
+                  trackColor={{ true: colors.primary }}
+                />
+              </View>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.modalCancel} onPress={() => setSetupVisible(false)}>
+                  <Text style={styles.modalCancelText}>{t('common.cancel')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalConfirm} onPress={saveSetup} disabled={saving}>
+                  <Text style={styles.modalConfirmText}>{saving ? t('common.saving') : t('common.save')}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={styles.modalHint}>
-              {selectedDates.length > 0
-                ? t('schedule.selectedDays', { n: selectedDates.length })
-                : t('schedule.applyAllMonth')}
-            </Text>
-            <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>{t('schedule.startTime')}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {HOURS.map((h) => (
-                  <TouchableOpacity
-                    key={`s-${h}`}
-                    style={[styles.timeChip, batchStart === h && styles.timeChipActive]}
-                    onPress={() => setBatchStart(h)}
-                  >
-                    <Text style={[styles.timeChipText, batchStart === h && styles.timeChipTextActive]}>{h}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-            <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>{t('schedule.endTime')}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {HOURS.map((h) => (
-                  <TouchableOpacity
-                    key={`e-${h}`}
-                    style={[styles.timeChip, batchEnd === h && styles.timeChipActive]}
-                    onPress={() => setBatchEnd(h)}
-                  >
-                    <Text style={[styles.timeChipText, batchEnd === h && styles.timeChipTextActive]}>{h}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-            <View style={styles.toolbarRow}>
-              <Text style={styles.toolbarLabel}>{t('schedule.excludeWeekend')}</Text>
-              <Switch value={excludeWeekend} onValueChange={setExcludeWeekend} trackColor={{ true: colors.primary }} accessibilityRole="switch" accessibilityLabel={t('schedule.excludeWeekend')} />
-            </View>
-            <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalCancel} onPress={() => setBatchVisible(false)} accessibilityRole="button" accessibilityLabel={t('common.cancel')}>
-                <Text style={styles.modalCancelText}>{t('common.cancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalConfirm} onPress={saveBatchSlots} disabled={saving} accessibilityRole="button" accessibilityLabel={t('common.save')}>
-                <Text style={styles.modalConfirmText}>{saving ? t('common.saving') : t('common.save')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </ScrollView>
         </View>
       </Modal>
     </SafeAreaView>
@@ -447,8 +629,13 @@ export default function ScheduleScreen() {
 const makeStyles = (colors: AppColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   toolbar: {
-    paddingHorizontal: spacing.lg, paddingBottom: spacing.sm,
-    flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xs,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
   },
   toolbarRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   toolbarLabel: { fontSize: 14, color: colors.textPrimary, fontWeight: '600' },
@@ -458,10 +645,21 @@ const makeStyles = (colors: AppColors) => StyleSheet.create({
     backgroundColor: colors.surface, paddingHorizontal: 10, paddingVertical: 6, borderRadius: radius.md,
   },
   toolBtnText: { fontSize: 12, fontWeight: '600', color: colors.textPrimary },
+  toolBtnPrimary: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: colors.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.md,
+  },
+  toolBtnPrimaryText: { fontSize: 13, fontWeight: '700', color: colors.white },
+  hint: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.sm,
+    lineHeight: 18,
+  },
   calendarCard: {
     backgroundColor: colors.surface, marginHorizontal: spacing.lg, marginBottom: spacing.lg,
     borderRadius: radius.lg, padding: spacing.lg,
-    width: 'auto', maxWidth: '100%', alignSelf: 'stretch', overflow: 'hidden',
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
   },
   monthNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg },
@@ -488,15 +686,18 @@ const makeStyles = (colors: AppColors) => StyleSheet.create({
   dayNumMultiSelected: { color: colors.secondary, fontWeight: '800' },
   dotRow: { flexDirection: 'row', gap: 2, marginTop: 2 },
   dot: { width: 4, height: 4, borderRadius: 2 },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: spacing.md, marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: colors.border },
+  legend: {
+    flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: spacing.md,
+    marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: colors.border,
+  },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   legendDot: { width: 8, height: 8, borderRadius: 4 },
   legendText: { fontSize: 11, color: colors.textSecondary },
   slotsSection: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xxxl },
   slotsTitle: { fontSize: 17, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.md },
   emptySlots: {
-    backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.xxxl,
-    alignItems: 'center', gap: spacing.sm,
+    backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.xl,
+    alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md,
   },
   emptySlotsText: { fontSize: 14, color: colors.textSecondary },
   slotCard: {
@@ -509,12 +710,38 @@ const makeStyles = (colors: AppColors) => StyleSheet.create({
   slotBadgeText: { fontSize: 11, fontWeight: '700' },
   slotTime: { fontSize: 16, fontWeight: '700', color: colors.textPrimary },
   slotOrder: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
-  modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
-  modalCard: {
-    backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl,
-    padding: spacing.lg, paddingBottom: spacing.xxxl,
+  quickAddCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    marginTop: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  modalTitle: { fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginBottom: spacing.sm },
+  quickAddTitle: { fontSize: 15, fontWeight: '700', color: colors.textPrimary, marginBottom: 4 },
+  quickAddHint: { fontSize: 12, color: colors.textSecondary, marginBottom: spacing.md, lineHeight: 18 },
+  quickAddBtn: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.primary,
+    borderRadius: radius.lg,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  quickAddBtnDisabled: { opacity: 0.6 },
+  quickAddBtnText: { color: colors.white, fontWeight: '700', fontSize: 15 },
+  modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
+  modalScroll: { maxHeight: '92%' },
+  modalScrollContent: { flexGrow: 1, justifyContent: 'flex-end' },
+  modalCard: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
+  },
+  modalTitle: { fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginBottom: spacing.xs },
+  modalHint: { fontSize: 13, color: colors.textSecondary, marginBottom: spacing.md },
+  sectionLabel: { fontSize: 14, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.sm },
   modeRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
   modeChip: {
     flex: 1, paddingVertical: 10, borderRadius: radius.md, backgroundColor: colors.background, alignItems: 'center',
@@ -523,14 +750,30 @@ const makeStyles = (colors: AppColors) => StyleSheet.create({
   modeChipActiveBlock: { backgroundColor: colors.textSecondary },
   modeChipText: { fontSize: 13, fontWeight: '700', color: colors.textPrimary },
   modeChipTextActive: { color: colors.white },
-  modalHint: { fontSize: 13, color: colors.textSecondary, marginBottom: spacing.lg },
-  timeRow: { marginBottom: spacing.md },
+  rangeBlock: {
+    backgroundColor: colors.background,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  rangeHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.xs },
+  rangeTitle: { fontSize: 13, fontWeight: '700', color: colors.textPrimary },
+  rangeRemove: { fontSize: 12, color: colors.primary, fontWeight: '600' },
+  addRangeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  addRangeText: { fontSize: 14, fontWeight: '600', color: colors.primary },
+  timeRow: { marginBottom: spacing.sm },
   timeLabel: { fontSize: 13, fontWeight: '600', color: colors.textPrimary, marginBottom: spacing.sm },
   timeChip: {
     paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.md,
-    backgroundColor: colors.background, marginRight: spacing.sm,
+    backgroundColor: colors.surface, marginRight: spacing.sm, borderWidth: 1, borderColor: colors.border,
   },
-  timeChipActive: { backgroundColor: colors.primary },
+  timeChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   timeChipText: { fontSize: 13, color: colors.textPrimary, fontWeight: '600' },
   timeChipTextActive: { color: colors.white },
   modalActions: { flexDirection: 'row', gap: spacing.md, marginTop: spacing.lg },

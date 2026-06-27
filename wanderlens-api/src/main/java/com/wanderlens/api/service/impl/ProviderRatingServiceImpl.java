@@ -120,6 +120,13 @@ public class ProviderRatingServiceImpl implements ProviderRatingService {
     }
 
     @Override
+    public List<ProviderRating> getRecentRatings(int page, int size) {
+        return providerRatingMapper.selectPage(new Page<>(page, size),
+                new LambdaQueryWrapper<ProviderRating>()
+                        .orderByDesc(ProviderRating::getCreatedAt)).getRecords();
+    }
+
+    @Override
     @Transactional
     public void recalculateProviderRating(Long providerId) {
         List<ProviderRating> ratings = providerRatingMapper.selectList(

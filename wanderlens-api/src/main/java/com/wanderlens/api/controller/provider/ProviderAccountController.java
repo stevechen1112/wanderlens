@@ -7,13 +7,20 @@ import com.wanderlens.api.common.ResultCode;
 import com.wanderlens.api.entity.*;
 import com.wanderlens.api.exception.ServiceException;
 import com.wanderlens.api.mapper.*;
+import com.wanderlens.api.entity.dto.AddProviderWorkRequest;
 import com.wanderlens.api.entity.dto.ProviderEarningsDto;
+import com.wanderlens.api.entity.dto.ProviderWorksViewDto;
 import com.wanderlens.api.entity.dto.RatingSummaryDto;
+import com.wanderlens.api.entity.dto.SaveServiceAreaRequest;
+import com.wanderlens.api.entity.dto.ServiceAreaResponse;
 import com.wanderlens.api.entity.dto.SetScheduleRequest;
 import com.wanderlens.api.entity.dto.SubmitRatingRequest;
+import com.wanderlens.api.service.ProviderProfileService;
+import com.wanderlens.api.util.ProviderIdResolver;
 import com.wanderlens.api.entity.enums.OrderStatus;
 import com.wanderlens.api.service.OrderService;
 import com.wanderlens.api.service.AvailabilityService;
+import com.wanderlens.api.service.ProviderAreaService;
 import com.wanderlens.api.service.ProviderRatingService;
 import com.wanderlens.api.service.ProviderService;
 import com.wanderlens.api.util.AuthUtil;
@@ -47,6 +54,9 @@ public class ProviderAccountController {
     private final ProviderWorksMapper providerWorksMapper;
     private final AvailabilityMapper availabilityMapper;
     private final AvailabilityService availabilityService;
+    private final ProviderAreaService providerAreaService;
+    private final ProviderProfileService providerProfileService;
+    private final ProviderIdResolver providerIdResolver;
     private final AuthUtil authUtil;
 
     @GetMapping
@@ -84,25 +94,33 @@ public class ProviderAccountController {
         if (existing == null) {
             throw new ServiceException(ResultCode.PROVIDER_NOT_FOUND);
         }
-        existing.setName(body.getName());
-        existing.setNickName(body.getNickName());
-        existing.setNickNameEn(body.getNickNameEn());
-        existing.setNickNameJp(body.getNickNameJp());
-        existing.setNickNameKr(body.getNickNameKr());
-        existing.setEmail(body.getEmail());
-        existing.setCity(body.getCity());
-        existing.setDistrictName(body.getDistrictName());
-        existing.setAddress(body.getAddress());
-        existing.setAddrLng(body.getAddrLng());
-        existing.setAddrLat(body.getAddrLat());
-        existing.setIntro(body.getIntro());
-        existing.setIntroEn(body.getIntroEn());
-        existing.setIntroJp(body.getIntroJp());
-        existing.setIntroKr(body.getIntroKr());
-        existing.setAvatar(body.getAvatar());
-        existing.setBannerImg(body.getBannerImg());
+        patchProvider(existing, body);
         providerService.updateById(existing);
         return Result.ok(existing);
+    }
+
+    private void patchProvider(Provider target, Provider patch) {
+        if (patch.getName() != null) target.setName(patch.getName());
+        if (patch.getNickName() != null) target.setNickName(patch.getNickName());
+        if (patch.getNickNameEn() != null) target.setNickNameEn(patch.getNickNameEn());
+        if (patch.getNickNameJp() != null) target.setNickNameJp(patch.getNickNameJp());
+        if (patch.getNickNameKr() != null) target.setNickNameKr(patch.getNickNameKr());
+        if (patch.getEmail() != null) target.setEmail(patch.getEmail());
+        if (patch.getCity() != null) target.setCity(patch.getCity());
+        if (patch.getDistrictName() != null) target.setDistrictName(patch.getDistrictName());
+        if (patch.getAddress() != null) target.setAddress(patch.getAddress());
+        if (patch.getAddrLng() != null) target.setAddrLng(patch.getAddrLng());
+        if (patch.getAddrLat() != null) target.setAddrLat(patch.getAddrLat());
+        if (patch.getIntro() != null) target.setIntro(patch.getIntro());
+        if (patch.getIntroEn() != null) target.setIntroEn(patch.getIntroEn());
+        if (patch.getIntroJp() != null) target.setIntroJp(patch.getIntroJp());
+        if (patch.getIntroKr() != null) target.setIntroKr(patch.getIntroKr());
+        if (patch.getAvatar() != null) target.setAvatar(patch.getAvatar());
+        if (patch.getBannerImg() != null) target.setBannerImg(patch.getBannerImg());
+        if (patch.getCareer() != null) target.setCareer(patch.getCareer());
+        if (patch.getExperience() != null) target.setExperience(patch.getExperience());
+        if (patch.getUnitPrice() != null) target.setUnitPrice(patch.getUnitPrice());
+        if (patch.getServiceItem() != null) target.setServiceItem(patch.getServiceItem());
     }
 
     @PostMapping("/live")
@@ -159,12 +177,26 @@ public class ProviderAccountController {
     }
 
     @GetMapping("/service-area/{providerId}")
-    @Operation(summary = "服務地區列表")
-    public Result<List<ProviderArea>> getServiceAreas(HttpServletRequest request,
-                                                      @PathVariable Long providerId) {
+    @Operation(summary = "服務地區（樹狀 + 已選，或 flat 列表）")
+    public Result<?> getServiceAreas(HttpServletRequest request,
+                                     @PathVariable Long providerId,
+                                     @RequestParam(defaultValue = "tree") String view) {
         authUtil.requireProviderOrAdmin(request, providerId);
-        return Result.ok(providerAreaMapper.selectList(
-                new LambdaQueryWrapper<ProviderArea>().eq(ProviderArea::getProviderId, providerId)));
+        if ("flat".equalsIgnoreCase(view)) {
+            return Result.ok(providerAreaMapper.selectList(
+                    new LambdaQueryWrapper<ProviderArea>().eq(ProviderArea::getProviderId, providerId)));
+        }
+        return Result.ok(providerAreaService.getServiceArea(providerId));
+    }
+
+    @PostMapping("/service-area/{providerId}")
+    @Operation(summary = "儲存服務地區")
+    public Result<Void> saveServiceAreas(HttpServletRequest request,
+                                         @PathVariable Long providerId,
+                                         @Valid @RequestBody SaveServiceAreaRequest body) {
+        authUtil.requireProviderOrAdmin(request, providerId);
+        providerAreaService.saveServiceArea(providerId, body);
+        return Result.ok();
     }
 
     @GetMapping("/bank")
@@ -178,26 +210,72 @@ public class ProviderAccountController {
         return Result.ok(bank);
     }
 
+    @PostMapping("/bank")
+    @Operation(summary = "儲存匯款資料")
+    public Result<ProviderBank> saveBank(HttpServletRequest request,
+                                         @RequestBody ProviderBank body,
+                                         @RequestParam(required = false) Long providerId) {
+        Long pid = body.getProviderId() != null ? body.getProviderId() : resolveProviderId(request, providerId);
+        authUtil.requireProviderOrAdmin(request, pid);
+        return Result.ok(providerProfileService.saveBank(pid, body));
+    }
+
     @GetMapping("/feature/{providerId}")
     @Operation(summary = "特色資料列表")
     public Result<List<ProviderFeature>> getFeatures(HttpServletRequest request,
                                                      @PathVariable Long providerId) {
         authUtil.requireProviderOrAdmin(request, providerId);
-        return Result.ok(providerFeatureMapper.selectList(
-                new LambdaQueryWrapper<ProviderFeature>()
-                        .eq(ProviderFeature::getProviderId, providerId)
-                        .orderByAsc(ProviderFeature::getSort)));
+        LambdaQueryWrapper<ProviderFeature> qw = new LambdaQueryWrapper<ProviderFeature>()
+                .eq(ProviderFeature::getProviderId, providerId)
+                .orderByAsc(ProviderFeature::getSort);
+        return Result.ok(providerFeatureMapper.selectList(qw));
+    }
+
+    @PostMapping("/feature")
+    @Operation(summary = "新增或更新特色資料")
+    public Result<ProviderFeature> saveFeature(HttpServletRequest request,
+                                             @RequestBody ProviderFeature body) {
+        if (body.getProviderId() == null) {
+            throw new ServiceException(ResultCode.BAD_REQUEST, "缺少 providerId");
+        }
+        authUtil.requireProviderOrAdmin(request, body.getProviderId());
+        return Result.ok(providerProfileService.saveFeature(body.getProviderId(), body));
+    }
+
+    @DeleteMapping("/feature/{featureId}")
+    @Operation(summary = "刪除特色資料")
+    public Result<Void> deleteFeature(HttpServletRequest request,
+                                      @PathVariable Long featureId,
+                                      @RequestParam Long providerId) {
+        authUtil.requireProviderOrAdmin(request, providerId);
+        providerProfileService.deleteFeature(providerId, featureId);
+        return Result.ok();
     }
 
     @GetMapping("/works/{providerId}")
     @Operation(summary = "作品集列表")
-    public Result<List<ProviderWorks>> getWorks(HttpServletRequest request,
-                                                @PathVariable Long providerId) {
+    public Result<List<ProviderWorksViewDto>> getWorks(HttpServletRequest request,
+                                                       @PathVariable Long providerId) {
         authUtil.requireProviderOrAdmin(request, providerId);
-        return Result.ok(providerWorksMapper.selectList(
-                new LambdaQueryWrapper<ProviderWorks>()
-                        .eq(ProviderWorks::getProviderId, providerId)
-                        .orderByAsc(ProviderWorks::getSortOrder)));
+        return Result.ok(providerProfileService.listWorksWithUrls(providerId));
+    }
+
+    @PostMapping("/works")
+    @Operation(summary = "新增作品集")
+    public Result<ProviderWorksViewDto> addWork(HttpServletRequest request,
+                                                @Valid @RequestBody AddProviderWorkRequest body) {
+        authUtil.requireProviderOrAdmin(request, body.getProviderId());
+        return Result.ok(providerProfileService.addWork(body.getProviderId(), body));
+    }
+
+    @DeleteMapping("/works/{workId}")
+    @Operation(summary = "刪除作品集")
+    public Result<Void> deleteWork(HttpServletRequest request,
+                                   @PathVariable Long workId,
+                                   @RequestParam Long providerId) {
+        authUtil.requireProviderOrAdmin(request, providerId);
+        providerProfileService.deleteWork(providerId, workId);
+        return Result.ok();
     }
 
     @GetMapping("/rating/{providerId}")
@@ -291,6 +369,6 @@ public class ProviderAccountController {
             }
             return providerId;
         }
-        return authUtil.getUserId(request);
+        return providerIdResolver.resolve(request);
     }
 }
