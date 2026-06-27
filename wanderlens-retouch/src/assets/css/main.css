@@ -1,0 +1,54 @@
+:root {
+  --wl-primary: #F37A69;
+  --wl-primary-dark: #D85A49;
+  --wl-primary-light: #FFF0EE;
+  --wl-secondary: #52B6CC;
+  --wl-success: #13CE66;
+  --wl-warning: #FF9F40;
+  --wl-danger: #FF4D4F;
+  --wl-sidebar-bg: #1E1E2D;
+  --wl-sidebar-hover: #2A2A3D;
+  --wl-sidebar-active: #F27968;
+  --wl-sidebar-active-bg: #2A2A3D;
+  --wl-bg: #F5F6FA;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Roboto', 'Noto Sans TC', sans-serif; background: var(--wl-bg); color: #333; -webkit-font-smoothing: antialiased; }
+
+.el-button--primary {
+  --el-button-bg-color: var(--wl-primary);
+  --el-button-border-color: var(--wl-primary);
+  --el-button-hover-bg-color: var(--wl-primary-dark);
+  --el-button-hover-border-color: var(--wl-primary-dark);
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.25s;
+}
+.el-button--primary:hover { box-shadow: 0 4px 12px rgba(243,122,105,0.35); transform: translateY(-1px); }
+
+.el-card { border-radius: 12px; border: none; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.el-table { border-radius: 12px; overflow: hidden; }
+.el-table th.el-table__cell { background: #FAFAFA; font-weight: 600; color: #555; }
+.el-tabs__item.is-active { color: var(--wl-primary); font-weight: 700; }
+.el-tabs__active-bar { background-color: var(--wl-primary); }
+.el-pagination.is-background .el-pager li.is-active { background-color: var(--wl-primary); }
+
+.sidebar { background: var(--wl-sidebar-bg); transition: width 0.3s; }
+.sidebar .el-menu { background: transparent; border-right: none; }
+.sidebar .el-menu-item { color: #A0A0B0; border-radius: 8px; margin: 2px 8px; transition: all 0.2s; }
+.sidebar .el-menu-item:hover { background: var(--wl-sidebar-hover); color: #E0E0F0; }
+.sidebar .el-menu-item.is-active {
+  background: linear-gradient(135deg, rgba(243,122,105,0.2), rgba(243,122,105,0.1));
+  color: var(--wl-sidebar-active);
+  font-weight: 700;
+  border-left: 3px solid var(--wl-sidebar-active);
+}
+
+.fade-transform-enter-active, .fade-transform-leave-active { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+.fade-transform-enter-from { opacity: 0; transform: translateY(10px); }
+.fade-transform-leave-to { opacity: 0; transform: translateY(-10px); }
+
+.el-dialog { border-radius: 16px; overflow: hidden; }
+.el-dialog__header { background: linear-gradient(135deg, #F37A69, #E85D4A); color: white; padding: 16px 24px; margin: 0; }
+.el-dialog__title { color: white; font-weight: 700; }
+.el-dialog__headerbtn .el-dialog__close { color: white; }

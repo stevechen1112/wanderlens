@@ -1,0 +1,173 @@
+{
+  "nav": {
+    "home": "Home",
+    "albums": "Albums",
+    "booking": "Book",
+    "conversations": "Messages",
+    "profile": "Profile"
+  },
+  "auth": {
+    "title": "WanderLens",
+    "subtitle": "On-demand local photography",
+    "empno": "Account",
+    "password": "Password",
+    "login": "Sign in",
+    "loginError": "Invalid credentials",
+    "networkError": "Network error, please try again",
+    "required": "Please enter account and password"
+  },
+  "album": {
+    "myAlbums": "My Albums",
+    "empty": "No shoots yet",
+    "emptyHint": "Photos appear here after your session",
+    "retouchSelect": "Select for retouch",
+    "retouchCancel": "Cancel selection",
+    "retouchSubmit": "Submit retouch ({count} photos)",
+    "share": "Share",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites"
+  },
+  "booking": {
+    "title": "Book a shoot",
+    "payNow": "Confirm & pay",
+    "orderCreated": "Order created, redirecting to payment...",
+    "payNotice": "After payment, your photographer will contact you within 24 hours",
+    "steps": {
+      "type": "Type",
+      "config": "Setup",
+      "datetime": "When & where",
+      "services": "Services",
+      "summary": "Summary",
+      "checkout": "Checkout"
+    },
+    "locationType": {
+      "outdoor": "Outdoor",
+      "studio": "Studio",
+      "both": "Either"
+    },
+    "shootDate": "Shoot date",
+    "timeStart": "Start time",
+    "timeEnd": "End time",
+    "shootLocation": "Location",
+    "adults": "Adults",
+    "children": "Children",
+    "customerName": "Name",
+    "customerPhone": "Phone",
+    "email": "Email (optional)",
+    "remark": "Notes (optional)",
+    "alertIncomplete": "Please complete all required fields",
+    "alertSearchFailed": "Matching search failed, please retry",
+    "alertContactRequired": "Please enter name and phone",
+    "alertConfigRequired": "Please select a shoot setup",
+    "alertCreateFailed": "Failed to create order",
+    "alertNoPaymentForm": "Order created but checkout unavailable. Pay from My Orders.",
+    "alertOrderCreatedTitle": "Order created",
+    "alertOrderCreatedBody": "Complete payment from My Orders."
+  },
+  "location": {
+    "placeholder": "Pick city or popular spot",
+    "modalTitle": "Shoot location",
+    "searchPlaceholder": "Search places (Google)",
+    "popular": "Popular spots",
+    "cities": "Cities",
+    "custom": "Custom address",
+    "customPlaceholder": "e.g. Taipei Xinyi District",
+    "cityHint": "Match city: {city}",
+    "googleResults": "Search results",
+    "searching": "Searching..."
+  },
+  "order": {
+    "title": "My orders",
+    "detail": "Order detail",
+    "pay": "Pay now",
+    "empty": "No orders yet",
+    "emptyHint": "Orders appear here after booking",
+    "status": "Status",
+    "amount": "Amount"
+  },
+  "notification": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "emptyHint": "Order updates and matches appear here",
+    "unread": "{count} unread",
+    "justNow": "Just now",
+    "minutesAgo": "{n} min ago",
+    "hoursAgo": "{n} hr ago",
+    "daysAgo": "{n} d ago"
+  },
+  "conversation": {
+    "title": "Messages",
+    "empty": "No conversations",
+    "emptyHint": "Your photographer will message you after booking",
+    "inputPlaceholder": "Type a message...",
+    "customerService": "WanderLens Support",
+    "adminChannel": "Platform notices",
+    "orderRoom": "Order",
+    "contactSupport": "Contact support",
+    "noPreview": "No messages yet",
+    "roomEmpty": "No messages yet — say hello",
+    "readonly": "This chat is closed",
+    "sendFailed": "Failed to send message",
+    "statusOpen": "● Active",
+    "statusClosed": "○ Closed"
+  },
+  "profile": {
+    "orders": "My orders",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "logout": "Sign out",
+    "logoutConfirm": "Sign out now?",
+    "logoutTitle": "Sign out"
+  },
+  "settings": {
+    "account": "Account",
+    "name": "Name",
+    "accountId": "Account ID",
+    "role": "Role",
+    "preferences": "Preferences",
+    "language": "Language",
+    "langZh": "繁體中文",
+    "langEn": "English",
+    "langSwitchedZh": "Switched to Traditional Chinese",
+    "langSwitchedEn": "Switched to English",
+    "notifications": "Notifications",
+    "push": "Push notifications",
+    "pushDenied": "Enable push notifications in system settings",
+    "email": "Email notifications",
+    "line": "LINE notifications",
+    "other": "Other",
+    "privacy": "Privacy policy",
+    "faq": "FAQ",
+    "about": "About WanderLens"
+  },
+  "payment": {
+    "title": "Checkout",
+    "extraTitle": "Extra time payment",
+    "redirecting": "Redirecting to ECPay...",
+    "noForm": "Payment form unavailable",
+    "completed": "I've completed payment",
+    "backToOrders": "Back to my orders",
+    "webCompleteHint": "If you paid in the new tab, tap below to view order status",
+    "webSubmitFailed": "Could not open checkout. Retry from My Orders",
+    "verifying": "Confirming payment with the server...",
+    "notConfirmed": "Payment confirmation not received yet. If you've paid, please wait and retry, or check My Orders"
+  },
+  "datetime": {
+    "pickDate": "Pick date",
+    "pickTime": "Pick time",
+    "done": "Done"
+  },
+  "common": {
+    "loading": "Loading...",
+    "empty": "Nothing here yet",
+    "error": "Failed to load, please retry",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "prev": "Back",
+    "hint": "Notice",
+    "errorTitle": "Error"
+  }
+}

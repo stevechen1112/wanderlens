@@ -1,0 +1,59 @@
+      <div ref="heroSentinel" class="hero-sentinel" aria-hidden="true" />
+    </section>
+
+    <!-- 作品牆 -->
+    <section class="portfolio-section">
+      <div class="wl-container-wide">
+        <div class="section-intro">
+          <div>
+            <span class="wl-badge wl-badge-primary mb-2">精選作品</span>
+            <h2 class="section-title-sm">探索各類型攝影風格</h2>
+          </div>
+          <NuxtLink to="/photographer-list" class="see-all">瀏覽全部作品 →</NuxtLink>
+        </div>
+        <div class="portfolio-mosaic">
+          <button
+            v-for="(tile, idx) in portfolioTiles"
+            :key="idx"
+            class="mosaic-tile"
+            :class="'mosaic-' + tile.span"
+            @click="goCategory(tile.categoryId)"
+          >
+            <img :src="tile.url" :alt="tile.label" loading="lazy" />
+            <div class="mosaic-overlay" />
+            <span v-if="tile.label" class="mosaic-label">{{ tile.label }}</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 全部拍攝類型 -->
+    <section class="category-section">
+      <div class="wl-container-wide">
+        <div class="section-intro">
+          <div>
+            <span class="wl-badge wl-badge-primary mb-2">拍攝服務</span>
+            <h2 class="section-title-sm">全部拍攝類型 <span class="type-count">{{ categories.length }}</span></h2>
+          </div>
+          <NuxtLink to="/booking" class="see-all">立即預約 →</NuxtLink>
+        </div>
+        <div v-if="categories.length" class="category-grid">
+          <button
+            v-for="(cat, idx) in categories"
+            :key="cat.id"
+            class="category-card wl-animate-in"
+            :class="'wl-stagger-' + Math.min((idx % 6) + 1, 6)"
+            @click="selectCategory(cat)"
+          >
+            <div class="cat-image">
+              <img :src="cat.photo" :alt="cat.name" loading="lazy" />
+              <div class="cat-image-overlay" />
+              <span class="cat-label">{{ cat.name }}</span>
+            </div>
+          </button>
+        </div>
+        <div v-else class="category-skeleton">
+          <div v-for="n in 13" :key="n" class="wl-skeleton cat-skeleton" />
+        </div>
+      </div>
+    </section>

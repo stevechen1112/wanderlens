@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+pw/node_modules/
+
+# Playwright / E2E 產物
+playwright-report/
+test-results/
+screenshots/
+
+# 本機 log
+*.log
+
+# 環境變數（勿 commit 機密）
+.env
+.env.*
+!.env.example
+!wanderlens-infra/env/.env.*.example
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+
+# 子專案常見 build 產物（根目錄若出現）
+.nuxt/
+.output/
+dist/

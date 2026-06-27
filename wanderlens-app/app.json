@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "WanderLens",
+    "slug": "wanderlens",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#F37A69"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "ios": {
+      "bundleIdentifier": "app.wanderlens",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "WanderLens 需要您的位置以媒合附近的攝影師並顯示拍攝地點。",
+        "NSCameraUsageDescription": "WanderLens 需要相機權限以拍攝與上傳照片。",
+        "NSPhotoLibraryUsageDescription": "WanderLens 需要相簿權限以選取與儲存照片。"
+      }
+    },
+    "android": {
+      "package": "app.wanderlens",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "POST_NOTIFICATIONS"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "REPLACE_WITH_ANDROID_GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
+    "scheme": "wanderlens",
+    "plugins": [
+      ["expo-notifications", { "color": "#F37A69" }]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

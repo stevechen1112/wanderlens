@@ -1,0 +1,29 @@
+# Maven
+target/
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Log
+logs/
+*.log
+
+# 環境變數
+.env
+.env.*
+
+# 金鑰
+keys/
+*.p12
+*.jks

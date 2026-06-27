@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 虛擬環境
+venv/
+.venv/
+env/
+
+# 環境變數
+.env
+.env.*
+
+# IDE
+.idea
+.vscode
+.DS_Store
+
+# Celery
+celerybeat-schedule

@@ -1,0 +1,35 @@
+name: CI - wanderlens-provider
+
+on:
+  pull_request:
+    paths:
+      - 'wanderlens-provider/**'
+  push:
+    branches: [main]
+    paths:
+      - 'wanderlens-provider/**'
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: wanderlens-provider/package-lock.json
+
+      - name: Install dependencies
+        working-directory: wanderlens-provider
+        run: npm ci
+
+      - name: Lint
+        working-directory: wanderlens-provider
+        run: npm run lint
+
+      - name: Build
+        working-directory: wanderlens-provider
+        run: npm run build

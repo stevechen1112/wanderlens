@@ -1,0 +1,125 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  profiles:
+    active: dev
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Taipei
+    default-property-inclusion: non_null
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.wanderlens.api.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+# SpringDoc OpenAPI 3
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+# JWT
+jwt:
+  secret: ${API_JWT_SECRET:?API_JWT_SECRET is required}
+  expiration: ${API_JWT_EXPIRATION:28800}  # 8 小時（秒）
+
+# WanderLens 自訂配置
+wanderlens:
+  # 物件儲存
+  storage:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    local-path: ${STORAGE_LOCAL_PATH:uploads}
+    public-url-prefix: ${STORAGE_PUBLIC_URL:/api/files/serve}
+    access-key: ${MINIO_ACCESS_KEY:wanderlens}
+    secret-key: ${MINIO_SECRET_KEY:wanderlens_minio_2026}
+    bucket-raw: wanderlens-raw
+    bucket-jpeg: wanderlens-jpeg
+    bucket-ai: wanderlens-ai-output
+    bucket-retouch: wanderlens-retouch
+    bucket-files: wanderlens-files
+    bucket-conversation: wanderlens-conversation
+
+  # 媒體服務
+  media:
+    base-url: ${MEDIA_BASE_URL:http://localhost:3004}
+    service-api-key: ${MEDIA_SERVICE_API_KEY:wanderlens-media-service-key-2026}
+
+  # 定價
+  pricing:
+    default-unit-price: ${DEFAULT_UNIT_PRICE:800}
+    default-transportation-fee: ${DEFAULT_TRANSPORTATION_FEE:0}
+
+  # 綠界支付
+  ecpay:
+    merchant-id: ${ECPAY_MERCHANT_ID:}
+    hash-key: ${ECPAY_HASH_KEY:}
+    hash-iv: ${ECPAY_HASH_IV:}
+    mode: ${ECPAY_MODE:Test}
+    return-url: ${ECPAY_RETURN_URL:http://localhost/api/payment/ecpay/callback}
+
+  # Staging 專用（正式環境必須關閉）
+  staging:
+    payment-simulate-enabled: ${STAGING_PAYMENT_SIMULATE:false}
+
+  # LINE Messaging API（取代即將停用的 LINE Notify）
+  line:
+    channel-access-token: ${LINE_CHANNEL_ACCESS_TOKEN:}
+    messaging-api-url: https://api.line.me/v2/bot
+    webhook-url: ${LINE_WEBHOOK_URL:https://api.wanderlens.app/api/line/webhook}
+
+  # Google
+  google:
+    maps-api-key: ${GOOGLE_MAPS_API_KEY:}
+    places-api-key: ${GOOGLE_PLACES_API_KEY:}
+
+  # SMS
+  sms:
+    provider: ${SMS_PROVIDER:twilio}  # twilio (dev) / mitake (prod)
+    twilio-account-sid: ${TWILIO_ACCOUNT_SID:}
+    twilio-auth-token: ${TWILIO_AUTH_TOKEN:}
+    twilio-phone: ${TWILIO_PHONE_NUMBER:}
+    mitake-url: https://smsapi.mitake.com.tw
+    mitake-username: ${MITAKE_USERNAME:}
+    mitake-password: ${MITAKE_PASSWORD:}
+
+  # Email
+  mail:
+    dev-mode: ${MAIL_DEV_MODE:true}
+    bcc: dev@wanderlens.app
+
+  # WhatsApp Business（Phase 5）
+  whatsapp:
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    access-token: ${WHATSAPP_ACCESS_TOKEN:}
+
+  # 前端 URL
+  frontend:
+    web: ${FRONTEND_WEB_URL:http://localhost:3001}
+    provider: ${FRONTEND_PROVIDER_URL:http://localhost:3002}
+    admin: ${FRONTEND_ADMIN_URL:http://localhost:3003}
+    app: ${FRONTEND_APP_URL:http://localhost:8081}

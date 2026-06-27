@@ -1,0 +1,17 @@
+# Nuxt
+.nuxt
+.output
+dist
+node_modules
+
+# Env
+.env
+.env.*
+
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
+Thumbs.db

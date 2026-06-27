@@ -1,0 +1,35 @@
+name: CI - wanderlens-web
+
+on:
+  pull_request:
+    paths:
+      - 'wanderlens-web/**'
+  push:
+    branches: [main]
+    paths:
+      - 'wanderlens-web/**'
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: wanderlens-web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: wanderlens-web
+        run: npm ci
+
+      - name: Lint
+        working-directory: wanderlens-web
+        run: npm run lint
+
+      - name: Build
+        working-directory: wanderlens-web
+        run: npm run build

@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "WanderLens Provider",
+    "slug": "wanderlens-provider",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#F37A69"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "ios": {
+      "bundleIdentifier": "app.wanderlens.provider",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "WanderLens Provider 需要您的位置以接收附近的即時拍攝需求。",
+        "NSCameraUsageDescription": "WanderLens Provider 需要相機權限以拍攝與上傳作品。",
+        "NSPhotoLibraryUsageDescription": "WanderLens Provider 需要相簿權限以選取與上傳照片。",
+        "UIBackgroundModes": ["remote-notification"]
+      }
+    },
+    "android": {
+      "package": "app.wanderlens.provider",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "scheme": "wanderlens-provider",
+    "plugins": [
+      ["expo-notifications", { "color": "#F37A69" }],
+      ["expo-location", { "locationWhenInUsePermission": "WanderLens Provider 需要您的位置以接收附近的即時拍攝需求。" }]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

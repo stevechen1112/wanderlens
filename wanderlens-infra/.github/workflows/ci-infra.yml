@@ -1,0 +1,28 @@
+name: CI - wanderlens-infra
+
+on:
+  pull_request:
+    paths:
+      - 'wanderlens-infra/**'
+  push:
+    branches: [main]
+    paths:
+      - 'wanderlens-infra/**'
+
+jobs:
+  validate-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        working-directory: wanderlens-infra
+        run: docker compose config -q
+
+      - name: Validate nginx config
+        working-directory: wanderlens-infra
+        run: |
+          docker run --rm \
+            -v "$(pwd)/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
+            -v "$(pwd)/docker/nginx/conf.d:/etc/nginx/conf.d:ro" \
+            nginx:alpine nginx -t

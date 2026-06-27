@@ -1,0 +1,12 @@
+# 環境變數
+.env.dev
+.env.prod
+.env.test
+
+# Docker 資料
+*.pid
+nohup.out
+
+# OS
+.DS_Store
+Thumbs.db

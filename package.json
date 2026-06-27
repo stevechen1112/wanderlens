@@ -1,0 +1,20 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "playwright": "^1.61.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  },
+  "scripts": {
+    "test:e2e": "playwright test e2e/core-flow.spec.ts",
+    "test:e2e:all": "playwright test e2e/ --project=chromium",
+    "test:e2e:match": "playwright test e2e/match-integration.spec.ts e2e/recall-api.spec.ts",
+    "test:e2e:app": "playwright test e2e/app-flow.spec.ts --project=app-web",
+    "test:e2e:album": "playwright test e2e/album-flow.spec.ts",
+    "test:e2e:staging": "playwright test e2e/staging-flow.spec.ts",
+    "test:e2e:fulfillment": "playwright test e2e/fulfillment-flow.spec.ts",
+    "test:e2e:payment": "playwright test e2e/payment-staging.spec.ts",
+    "test:e2e:ui": "playwright test --ui"
+  }
+}

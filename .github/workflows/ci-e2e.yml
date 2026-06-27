@@ -1,0 +1,33 @@
+name: CI E2E
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run E2E (API health + public pages if WEB_BASE_URL set)
+        env:
+          WEB_BASE_URL: ${{ vars.WEB_BASE_URL || 'http://localhost:3001' }}
+          API_BASE_URL: ${{ vars.API_BASE_URL || 'http://localhost:8080/api' }}
+        run: npm run test:e2e
+        continue-on-error: true

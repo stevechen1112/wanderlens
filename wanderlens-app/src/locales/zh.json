@@ -1,0 +1,173 @@
+{
+  "nav": {
+    "home": "首頁",
+    "albums": "相簿",
+    "booking": "預約",
+    "conversations": "訊息",
+    "profile": "個人"
+  },
+  "auth": {
+    "title": "WanderLens",
+    "subtitle": "在地隨選攝影平台",
+    "empno": "帳號",
+    "password": "密碼",
+    "login": "登入",
+    "loginError": "登入失敗，請確認帳號密碼",
+    "networkError": "網路錯誤，請稍後再試",
+    "required": "請輸入帳號和密碼"
+  },
+  "album": {
+    "myAlbums": "我的相簿",
+    "empty": "還沒有拍攝記錄",
+    "emptyHint": "完成預約拍攝後，照片將出現在這裡",
+    "retouchSelect": "精修選片",
+    "retouchCancel": "取消選片",
+    "retouchSubmit": "送出精修申請（{count} 張）",
+    "share": "分享",
+    "favorite": "加入收藏",
+    "unfavorite": "取消收藏"
+  },
+  "booking": {
+    "title": "預約拍攝",
+    "payNow": "確認並付款",
+    "orderCreated": "訂單已建立，正在前往付款...",
+    "payNotice": "付款完成後，攝影師將於 24 小時內與您聯繫",
+    "steps": {
+      "type": "類型",
+      "config": "配置",
+      "datetime": "時間地點",
+      "services": "選擇服務",
+      "summary": "總覽",
+      "checkout": "結帳"
+    },
+    "locationType": {
+      "outdoor": "戶外",
+      "studio": "棚拍",
+      "both": "皆可"
+    },
+    "shootDate": "拍攝日期",
+    "timeStart": "開始時間",
+    "timeEnd": "結束時間",
+    "shootLocation": "拍攝地點",
+    "adults": "大人人數",
+    "children": "小孩人數",
+    "customerName": "姓名",
+    "customerPhone": "電話",
+    "email": "Email（選填）",
+    "remark": "備註（選填）",
+    "alertIncomplete": "請填寫完整資訊",
+    "alertSearchFailed": "媒合搜尋失敗，請稍後再試",
+    "alertContactRequired": "請填寫客戶姓名和電話",
+    "alertConfigRequired": "請選擇拍攝配置",
+    "alertCreateFailed": "建立訂單失敗",
+    "alertNoPaymentForm": "訂單已建立，但無法取得付款表單，請至「我的訂單」完成付款",
+    "alertOrderCreatedTitle": "訂單已建立",
+    "alertOrderCreatedBody": "請至「我的訂單」完成付款。"
+  },
+  "location": {
+    "placeholder": "選擇縣市或熱門地點",
+    "modalTitle": "拍攝地點",
+    "searchPlaceholder": "搜尋地點（Google Places）",
+    "popular": "熱門地點",
+    "cities": "縣市",
+    "custom": "自訂地點",
+    "customPlaceholder": "例：台北市信義區松壽路",
+    "cityHint": "媒合縣市：{city}",
+    "googleResults": "搜尋結果",
+    "searching": "搜尋中..."
+  },
+  "order": {
+    "title": "我的訂單",
+    "detail": "訂單詳情",
+    "pay": "前往付款",
+    "empty": "尚無訂單",
+    "emptyHint": "完成預約後，訂單將顯示在這裡",
+    "status": "狀態",
+    "amount": "金額"
+  },
+  "notification": {
+    "title": "通知",
+    "empty": "尚無通知",
+    "emptyHint": "訂單更新與媒合結果將顯示在這裡",
+    "unread": "{count} 未讀",
+    "justNow": "剛剛",
+    "minutesAgo": "{n} 分鐘前",
+    "hoursAgo": "{n} 小時前",
+    "daysAgo": "{n} 天前"
+  },
+  "conversation": {
+    "title": "訊息",
+    "empty": "尚無對話",
+    "emptyHint": "預約拍攝後，攝影師將透過訊息聯繫您",
+    "inputPlaceholder": "輸入訊息...",
+    "customerService": "WanderLens 客服",
+    "adminChannel": "平台通知",
+    "orderRoom": "訂單",
+    "contactSupport": "聯繫客服",
+    "noPreview": "尚無訊息",
+    "roomEmpty": "尚無訊息，開始對話吧",
+    "readonly": "此對話已結束，無法發送新訊息",
+    "sendFailed": "訊息發送失敗",
+    "statusOpen": "● 進行中",
+    "statusClosed": "○ 已結束"
+  },
+  "profile": {
+    "orders": "我的訂單",
+    "notifications": "通知",
+    "settings": "設定",
+    "logout": "登出",
+    "logoutConfirm": "確認要登出嗎？",
+    "logoutTitle": "登出"
+  },
+  "settings": {
+    "account": "帳號資訊",
+    "name": "姓名",
+    "accountId": "帳號",
+    "role": "角色",
+    "preferences": "偏好設定",
+    "language": "語言 / Language",
+    "langZh": "繁體中文",
+    "langEn": "English",
+    "langSwitchedZh": "已切換為繁體中文",
+    "langSwitchedEn": "Switched to English",
+    "notifications": "通知設定",
+    "push": "推播通知",
+    "pushDenied": "請在系統設定中允許推播通知",
+    "email": "Email 通知",
+    "line": "LINE 通知",
+    "other": "其他",
+    "privacy": "隱私權政策",
+    "faq": "常見問題",
+    "about": "關於 WanderLens"
+  },
+  "payment": {
+    "title": "線上付款",
+    "extraTitle": "加時付款",
+    "redirecting": "正在前往綠界付款...",
+    "noForm": "無付款表單資料",
+    "completed": "我已完成付款",
+    "backToOrders": "返回我的訂單",
+    "webCompleteHint": "若已在新分頁完成付款，請點下方按鈕查看訂單狀態",
+    "webSubmitFailed": "無法開啟付款頁，請至「我的訂單」重試",
+    "verifying": "正在向伺服器確認付款結果...",
+    "notConfirmed": "尚未收到付款成功確認，若您已完成付款請稍候再試，或至「我的訂單」查看"
+  },
+  "datetime": {
+    "pickDate": "選擇日期",
+    "pickTime": "選擇時間",
+    "done": "完成"
+  },
+  "common": {
+    "loading": "載入中...",
+    "empty": "目前沒有資料",
+    "error": "載入失敗，請稍後再試",
+    "retry": "重試",
+    "cancel": "取消",
+    "confirm": "確認",
+    "back": "返回",
+    "next": "下一步",
+    "prev": "上一步",
+    "hint": "提示",
+    "errorTitle": "錯誤"
+  }
+}
