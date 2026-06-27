@@ -18,7 +18,19 @@ rand_long() { openssl rand -base64 48 | tr -d '/+=' | head -c 48; }
 echo "==> [1/8] System packages"
 apt-get update
 apt-get upgrade -y
-apt-get install -y git curl ca-certificates docker.io docker-compose-plugin certbot ufw openssl
+apt-get install -y git curl ca-certificates certbot ufw openssl
+
+if ! command -v docker >/dev/null 2>&1; then
+  curl -fsSL https://get.docker.com | sh
+fi
+# 確保 compose v2 插件可用
+if ! docker compose version >/dev/null 2>&1; then
+  apt-get install -y docker-compose-plugin || apt-get install -y docker-compose-v2 || true
+fi
+if ! docker compose version >/dev/null 2>&1; then
+  echo "ERROR: docker compose not available" >&2
+  exit 1
+fi
 
 if ! command -v node >/dev/null 2>&1 || [[ "$(node -v 2>/dev/null || echo v0)" < "v22" ]]; then
   curl -fsSL https://deb.nodesource.com/setup_22.x | bash -

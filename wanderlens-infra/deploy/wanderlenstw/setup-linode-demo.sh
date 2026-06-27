@@ -6,7 +6,7 @@ echo "==> apt update & install"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get upgrade -y
-apt-get install -y git curl ca-certificates docker.io docker-compose-plugin certbot ufw
+apt-get install -y git curl ca-certificates docker.io certbot ufw
 
 echo "==> enable docker"
 systemctl enable --now docker
