@@ -30,7 +30,7 @@ services:
       - "443:443"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./deploy/wanderlenstw/nginx/wanderlenstw.conf:/etc/nginx/conf.d/wanderlenstw.conf:ro
+      - ./deploy/wanderlenstw/nginx:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./deploy/wanderlenstw/static/app-web:/usr/share/nginx/app-web:ro
       - ./deploy/wanderlenstw/static/papp-web:/usr/share/nginx/papp-web:ro

@@ -91,6 +91,9 @@ $COMPOSE build
 echo "==> [6/8] Start backend services (without nginx)"
 $COMPOSE up -d mysql redis minio api media web provider admin retouch
 
+echo "==> [6b/8] Apply DB migrations"
+bash "$DEPLOY_DIR/wanderlens-infra/scripts/apply-db-migrations.sh" "$DEPLOY_DIR/wanderlens-infra"
+
 echo "Waiting for MySQL/API..."
 for i in $(seq 1 60); do
   if curl -sf http://127.0.0.1:8080/api/search/service-types >/dev/null 2>&1; then
