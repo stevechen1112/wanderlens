@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.VFlowUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.VFlowUser">
+        <result property="flowId" column="flow_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="empno" column="empno" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="lineToken" column="line_token" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        flow_id,user_id,
+        empno,username, line_token
+    </sql>
+
+    <select id="selectByFlowId" resultMap="BaseResultMap">
+        select *
+        from v_flow_user
+        where flow_id = #{flowId}
+    </select>
+
+
+
+
+</mapper>

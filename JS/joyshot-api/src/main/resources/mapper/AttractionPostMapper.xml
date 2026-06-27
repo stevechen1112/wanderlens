@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.AttractionPostMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.AttractionPost">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="language" column="language" jdbcType="VARCHAR"/>
+            <result property="area" column="area" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="imageUuid" column="image_uuid" jdbcType="VARCHAR"/>
+            <result property="postUrl" column="post_url" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+            <result property="cityName" column="city_name" jdbcType="VARCHAR"/>
+            <result property="cityNameEn" column="city_name_en" jdbcType="VARCHAR"/>
+            <result property="cityNameJp" column="city_name_jp" jdbcType="VARCHAR"/>
+            <result property="cityNameKr" column="city_name_kr" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,language,area,name,
+        image_uuid,post_url,created_at,
+        modified_at
+    </sql>
+
+    <select id="selectByPage" resultType="com.joyshot.app.entity.AttractionPost">
+        select p.*, a.name city_name, a.name_en city_name_en, a.name_jp city_name_jp, a.name_kr city_name_kr
+        from attraction_post p, area a
+        <where>
+            <if test="1==1">and p.area = a.id</if>
+            <if test="lang != null">and p.language = #{lang}</if>
+            <if test="areaId != 0">and a.id = #{areaId}</if>
+        </where>
+    </select>
+
+    <select id="selectGroupByType" resultType="com.joyshot.app.entity.GroupByDTO">
+        select count(*) count, area.name col, area.id id
+        from attraction_post p, area
+        where p.area = area.id
+        group by p.area
+    </select>
+
+</mapper>

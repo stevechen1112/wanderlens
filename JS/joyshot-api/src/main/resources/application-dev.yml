@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.0.182:3306/joyshot_db?serverTimezone=GMT%2b8
+    username: joyshot
+
+line:
+  callback-url: http://localhost:9555/api/line/callback
+  client-id: CHANGE_ME_LINE_CLIENT_ID
+  client-secret: CHANGE_ME_LINE_CLIENT_SECRET
+  message-root-url: https://localhost:9555
+  image-url: http://localhost:8080/
+
+google:
+  oauth:
+    callback:
+      uri: http://localhost:9555/api/googledrive/oauth
+  credentials:
+    folder:
+      path: file:/home/jrealm/joyshot-api/credentials
+  parent:
+    folderId: CHANGE_ME_GOOGLE_DRIVE_FOLDER_ID
+  secret:
+    key:
+      path: classpath:keys/secret_dev.json
+
+order:
+  paid: "【JoyShot隨行拍攝-開發】"
+
+ecpay:
+  return-url: https://example.ngrok-free.app/api/order/paid
+  order-result-url: https://example.ngrok-free.app/api/order-paid/thank-you
+  client-redirect-url: http://localhost:9666/thankyou/
+
+email:
+  pay-url: http://localhost:9666/pay/
+  bcc: dev@example.com
+  dev-mode: Y
+  js-front: http://localhost:9666
+  js-photographer: http://localhost:9777
+
+file:
+  upload-location: /home/jrealm/joyshot-uploads/

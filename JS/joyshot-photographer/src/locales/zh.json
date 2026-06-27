@@ -1,0 +1,185 @@
+{
+  "action":{
+    "create_success": "資料新增成功",
+    "create_error": "資料新增失敗: {err}",
+    "save_success": "資料更新成功",
+    "save_error": "資料更新失敗: {err}",
+    "delete_success": "資料刪除成功",
+    "delete_error": "資料刪除失敗: {err}",
+    "upload_error": "檔案上傳失敗: {err}",
+    "get_error": "資料取得失敗: {err}",
+    "name": "操作",
+    "password_not_match": "新密碼不一致",
+    "force_logout": "密碼已更新，將會被登出"
+  },
+  "message": {
+    "success": "成功",
+    "error": "錯誤",
+    "account": "帳號(手機號碼)",
+    "password": "密碼",
+    "required_field": "此欄位必填",
+    "uploading": "上傳中...",
+    "data_filter": "資料篩選",
+    "keyword": "輸入關鍵字",
+    "no_data": "目前無資料",
+    "alert": "提醒",
+    "logout_now": "立即登出?",
+    "delete_confirm": "確定刪除此筆資料嗎?",
+    "not_valid_image": "只限上傳 jpg/png 檔案",
+    "file_size_exceed_2M": "檔案大小超過2M",
+    "language": "語言",
+    "language_en": "English",
+    "language_zh": "中文"
+  },
+  "buttons": {
+    "login": "登入",
+    "save": "儲存",
+    "confirm": "確認",
+    "search": "搜尋",
+    "clear": "清除條件",
+    "new": "新增",
+    "cancel": "取消",
+    "edit": "編輯",
+    "delete": "刪除"
+  },
+  "dashboard": {
+    "title": "功能"
+  },
+  "login": {
+    "success": "@:buttons.login@:message.success",
+    "failed": "@:buttons.login失敗, @:message.account或@:message.password有誤"
+  },
+  "header": {
+    "profile": "個人訊息",
+    "change_pwd": "密碼變更",
+    "logout": "登出"
+  },
+  "profile":{
+    "line_integration": "接收 Line 訂單通知",
+    "form":{
+      "account": "@:message.account",
+      "username": "姓名",
+      "phone": "電話",
+      "file_limit": "限 jpg、png，檔案大小 2M"
+    }
+  },
+  "route": {
+    "home": "首頁",
+    "meta": {
+      "breadcrumb": {
+        "home": "@:route.home",
+        "data_maintain" : "資料維護",
+        "users": "使用者資料",
+        "customers": "客戶資料",
+        "photographers": "攝影師資料",
+        "orders": "訂單資料",
+        "system": "系統設定",
+        "dictionary": "字典設定",
+        "settings": "系統設定",
+        "campaign": "行銷活動"
+      },
+      "title":{
+        "home": "@:route.home",
+        "dashboard": "主控台",
+        "profile": "@:header.profile",
+        "account_setting": "使用者帳號",
+        "service_category": "@:menu.service_category",
+        "change_password": "@:header.change_pwd",
+        "users": "@:route.meta.title.account_setting",
+        "customers": "客戶資料維護",
+        "roles": "角色資料維護",
+        "menus": "選單資料維護",
+        "areas": "行政區資料維護",
+        "services": "服務項目資料維護",
+        "coupons": "優惠卷資料維護",
+        "photographers": "攝影師資料維護",
+        "orders": "訂單資料維護",
+        "system": "@:route.meta.breadcrumb.system",
+        "dictionary": "字典資料維護",
+        "news": "置頂消息維護",
+        "faqs": "常見問題資料維護",
+        "ig": "Instagram資料維護",
+        "attraction": "景點資料維護",
+        "flows": "通知流程",
+        "terms": "服務條款",
+        "myorder": "我的訂單"
+      }
+    }
+  },
+  "page":{
+    "user_maintain":{
+      "filter":{
+        "by_name":"依姓名",
+        "by_area":"依分區",
+        "keyword":"@:message.keyword"
+      },
+      "column":{
+        "area": "地區"
+      },
+      "form":{
+        "title":"帳號資訊"
+      },
+      "form":{
+        "title":"帳號資訊",
+        "account": "@:message.account",
+        "username": "姓名",
+        "password": "@:message.password",
+        "role": "角色",
+        "area": "@:page.user_maintain.column.area",
+        "select_role": "選擇角色",
+        "select_area": "選擇地區"
+      }
+    },
+    "service_category_maintain":{
+      "form":{
+        "title":"服務項目資訊",
+        "name":"服務名稱",
+        "description": "服務描述",
+        "price": "價格"
+      }
+    },
+    "change_password":{
+      "form":{
+        "old_password":"舊密碼",
+        "new_password":"新密碼",
+        "new_password1":"確認新密碼"
+      }
+    },
+    "dashboard":{
+      "customer_qty":"客戶數",
+      "photographer_qty":"攝影師數",
+      "monthly_order_qty":"本月訂單數",
+      "monthly_sales_amount":"本月銷售額"
+    }
+  },
+  "menu": {
+    "menu_item": "選單設定",
+    "dashboard": "主控台",
+    "data": "資料設定",
+    "accounts": "登入帳號管理",
+    "roles": "角色管理",
+    "areas": "行政區域管理",
+    "customers": "客戶管理",
+    "services": "服務項目管理",
+    "photographers": "攝影師資料",
+    "orders":"訂單資料",
+    "faqs": "常見問題",
+    "settings": "系統設定",
+    "dictionary": "字典設定",
+    "flow": "通知設定",
+    "coupons": "折價卷設定",
+    "campaign" : "行銷活動",
+    "flows": "系統流程設定",
+    "news": "置頂消息",
+    "instagram": "IG貼文",
+    "attraction": "景點文章",
+    "photographer":{
+      "info": "攝影師須知",
+      "info_faq": "常見問題",
+      "info_terms": "服務條款"
+    },
+    "myorder": "我的訂單"
+  }
+
+
+}

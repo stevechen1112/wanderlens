@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.DictMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Dict">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+        <result property="valueEn" column="value_en" jdbcType="VARCHAR"/>
+        <result property="valueJp" column="value_jp" jdbcType="VARCHAR"/>
+        <result property="valueKr" column="value_kr" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="notes" column="notes" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,value,value_en,value_jp,value_kr,
+        type,notes
+    </sql>
+
+    <select id="selectByDictId" resultMap="BaseResultMap">
+        select *
+        from dict
+        where id = #{payType}
+    </select>
+
+</mapper>

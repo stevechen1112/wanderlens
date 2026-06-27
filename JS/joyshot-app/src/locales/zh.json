@@ -1,0 +1,351 @@
+{
+    "action":{
+        "create_success": "資料新增成功",
+        "create_error": "資料新增失敗: {err}",
+        "save_success": "資料更新成功",
+        "save_error": "資料更新失敗: {err}",
+        "delete_success": "資料刪除成功",
+        "delete_error": "資料刪除失敗: {err}",
+        "upload_error": "檔案上傳失敗: {err}",
+        "get_error": "資料取得失敗: {err}",
+        "name": "操作",
+        "password_not_match": "新密碼不一致",
+        "force_logout": "密碼已更新，將會被登出"
+    },
+    "message": {
+        "success": "成功",
+        "error": "錯誤",
+        "account": "帳號",
+        "password": "密碼",
+        "required_field": "此欄位必填",
+        "uploading": "上傳中...",
+        "data_filter": "資料篩選",
+        "keyword": "輸入關鍵字",
+        "no_data": "目前無資料",
+        "alert": "提醒",
+        "logout_now": "立即登出?",
+        "delete_confirm": "確定刪除此筆資料嗎?",
+        "not_valid_image": "只限上傳 jpg/png 檔案",
+        "file_size_exceed_2M": "檔案大小超過2M"
+    },
+    "buttons":{
+        "search": "搜尋",
+        "search_photographer": "選擇日期、時間、地點...",
+        "book_now": "立即預約拍攝",
+        "book_now2": "搜尋攝影師",
+        "booking": "預約"
+    },
+    "menu": {
+        "photographer": "攝影師"
+    },
+    "pages":{
+        "home":{
+            "banner":{
+                "main_title":"",
+                "sub_title": "",
+                "book_now" : "@:buttons.book_now",
+                "mobile_banner_load_failed": "取得Mobile Banner圖片失敗",
+                "banner_load_failed": "取得Banner圖片失敗"
+            }
+        }
+    },
+    "search_bar": {
+        "service": "選擇服務類別",
+        "service_note": "(註：不包含婚宴(含家宴)、婚紗攝影、商業攝影)",
+        "date_picker": "選擇日期",
+        "time_picker": "選擇時間",
+        "time_picker_hour": "時",
+        "time_picker_minute": "分",
+        "shooting_duration": "選擇拍攝時數",
+        "how_many_hour": "幾小時",
+        "pick_location": "選擇地點",
+        "pick_person": "選擇人數",
+        "pick_adults": "大人",
+        "pick_children": "小孩",
+        "has_pets": "是否有寵物",
+        "pets_note": "請填寫寵物類型，或任何其他的備註....",
+        "location_keyword": "請輸入想要的拍攝地點",
+        "limit_time_offer": "【限時優惠】預約1.5小時85折只要$1688"
+    },
+    "home": {
+        "milestone": {
+            "title": "精彩時刻 攝影隨行",
+            "sub_title": "為您留下，不想錯過的重要畫面"
+        },
+        "reserve_step":{
+            "title":"5步驟 快速預約專屬攝影師",
+            "sub_title": ""
+        },
+        "reserve_step_1":{
+            "title":"條件搜尋",
+            "sub_title": "依照需求選擇拍攝類別、日期、地點、時數及人數"
+        },
+        "reserve_step_2":{
+            "title":"挑選攝影師",
+            "sub_title": "搜尋可服務攝影師介紹、作品，自選攝影師"
+        },
+        "reserve_step_3":{
+            "title":"確認預約資訊",
+            "sub_title": "填入基本資料，確認本次預約資訊"
+        },
+        "reserve_step_4":{
+            "title":"完成付款",
+            "sub_title": "目前接受國內、外線上刷卡"
+        },
+        "reserve_step_5":{
+            "title":"預訂完成",
+            "sub_title": "電子郵件收到訂單確認，攝影師與您聯繫"
+        },
+        "photographer":{
+            "title":"各地專業攝影師",
+            "more": "觀看更多攝影師"
+        },
+        "attraction":{
+            "title": "熱門跟拍景點"
+        },
+        "instagram": {
+            "title": "關注我們的Instagram"
+        },
+        "ad_box": {
+            "title": "紀錄住這珍貴的",
+            "sub_title": "美好回憶",
+            "sub_title_2": "開始預訂您的照片拍攝"
+        },
+        "recruit_box": {
+            "title": "攝影師招募"
+        },
+        "footer": {
+            "privacy": "隱私",
+            "terms": "相關條款",
+            "about": "關於JoyShot"
+        }
+    },
+    "photographer":{
+        "book_now": "預約此攝影師",
+        "service_type": "拍攝類別",
+        "portfolio": "{name} 的攝影作品"
+    },
+    "App": {
+        "cookie_law": "我們將使用cookie等資訊來優化您的體驗，按下同意或繼續瀏覽即表示您同意我們使用。欲瞭解詳細內容，請詳閱<a href=\"/privacy-policy\">隱私條款</a> 謝謝。",
+        "cookie_agree": "我同意"
+    },
+    "Components": {
+        "AdBox": {
+            "remember": "紀錄住這珍貴的<span>美好回憶</span>",
+            "booking": "開始預訂您的照片拍攝",
+            "image_load_failed": "取得Mobile Banner圖片失敗"
+        },
+        "Footer": {
+            "privacy_policy": "隱私條款",
+            "company_info": "公司地址：臺北市大同區南京西路62號7樓 聯絡信箱：service@joyshot.app 客服時間：周一~周日 9:00-20:00"
+        },
+        "Header": {
+            "specify_photographer": "指定攝影師",
+            "cancel_specify": "取消指定",
+            "location_hint": "【提醒】輸入目標地點後，請「務必」等待系統自動列出《 Google地標 》後再選擇接近地點",
+            "empty_hint": "若查無景點資料，歡迎使用右下角的Messenger與客服聯繫，讓我們來協助您",
+            "more_than_ten": "超過10人",
+            "enter_address": "輸入地址進行查詢",
+            "no_service_cat": "服務類別未挑選",
+            "no_date": "日期未挑選",
+            "no_time": "時間未挑選完整",
+            "no_hours": "拍攝時數未挑選",
+            "no_location": "拍攝地點未決定",
+            "no_people": "拍攝人數未挑選",
+            "zero_people": "拍攝人數不可為0",
+            "no_pet": "請填寫您攜帶的寵物",
+            "incomplete_location": "拍攝地點資料不完整，請重新輸入並且從查詢出的下拉選單中挑選出一個地點",
+            "notice": "提醒",
+            "selected_info": "您選擇地點在{location}，最低拍攝時數為{hours}小時"
+        },
+        "Header1": {
+            "search_photographer": "搜尋攝影師1",
+            "search_photographer2": "搜尋攝影師2",
+            "search_category": "<b>類別</b><span>選擇類別</span>",
+            "search_location": "<b>地點</b><span>搜尋目的地</span>",
+            "search_date": "<b>日期</b><span>新增日期</span>",
+            "search_time": "<b>時間</b><span>新增時間</span>",
+            "search_people": "<b>人數</b><span>新增人數</span>",
+            "category": "類別",
+            "location": "地點",
+            "choose_location": "選擇地點",
+            "hours": "幾小時",
+            "date": "日期",
+            "choose_date": "選擇日期",
+            "skip": "跳過",
+            "continue": "繼續",
+            "time_and_hours": "時間與時數",
+            "choose_time": "選擇時間",
+            "hr": "時",
+            "min": "分",
+            "choose_film_hours": "選擇拍攝時數",
+            "people_and_pets": "人數與寵物",
+            "choose_people": "選擇人數",
+            "adults": "大人",
+            "adults2": "成人",
+            "child": "小孩",
+            "with_pets": "是否有寵物",
+            "pets_placeholder": "請填寫您攜帶的寵物是： 狗狗、貓一、兔子....",
+            "clear_all": "清除全部",
+            "booking_immediately": "立即預約"
+        },
+        "IG": {
+            "follow": "關注我們的Instagram"
+        },
+        "PhotographerGrid": {
+            "check": "查看此攝影師"
+        },
+        "PhotographerWorksGrid": {
+            "load_works_failed": "作品集取得失敗"
+        },
+        "RatingBox": {
+            "evaluation_count": "共{count}則評價"
+        },
+        "Recruit": {
+            "recruit": "攝影師招募"
+        },
+        "UvpBox": {
+            "title": "認識JOYSHOT",
+            "description": "JOYSHOT全台隨行攝影預訂平台，與超過百位台灣攝影師合作，提供線上預訂隨行攝影服務。適合活動紀錄、旅行跟拍、 風格街拍、商務活動側拍或各種紀念時刻。 線上完成攝影師搜尋、挑選、預訂、付款、照片下載，便利有效率。為相聚留念，為行程加值! 重要時刻，全員入鏡！",
+            "slogan1": "平易近人的拍攝費用，按小時計費",
+            "slogan2": "1小時拍攝可預約，3日前可預訂",
+            "slogan3": "線上自選百位以上在地攝影師",
+            "slogan4": "拍攝後24hr內下載全部無修圖照片",
+            "tag1": "超值",
+            "tag2": "彈性",
+            "tag3": "效率",
+            "tag4": "快速"
+        }
+    },
+    "Views": {
+        "404": {
+            "title": "找不到頁面，請回首頁"
+        },
+        "Checkout": {
+            "wait": "啟動付款，請稍後...",
+            "name": "姓名",
+            "phone": "連絡電話",
+            "contact_time": "方便連絡的時間",
+            "contact_social_media": "社群聯絡",
+            "choose": "請選擇",
+            "account": "帳號",
+            "account_placeholder": "社群軟體帳號",
+            "foreigner": "外籍人士?",
+            "not": "否",
+            "yes": "是",
+            "order_no": "訂單編號",
+            "your_location": "您的所在地區",
+            "contact_method": "聯絡方式",
+            "social_media_account": "社群軟體聯絡帳號",
+            "date": "日期",
+            "time": "時間",
+            "people": "人數",
+            "additional_info": "附加資訊",
+            "additional_info_placeholder": "告訴我們更多關於您的照片拍攝資訊．（例如：結婚周年回到第一次約會地點．我們是一個家庭，一家四口有兩位小孩，一條狗．）",
+            "film_location": "拍攝地點",
+            "order_detail": "預訂明細",
+            "hour": "小時",
+            "discount_code": "折扣碼",
+            "use": "使用",
+            "confirm": "確定",
+            "cancel": "取消",
+            "click_hint": "點擊確定後，會送出預訂單並前往付款頁",
+            "submit_title": "送出預訂單",
+            "submit": "前 往 付 款",
+            "after_payment_title": "完成付款後：",
+            "after_payment1": "※ 付款完成，預約訂單才算完成",
+            "after_payment2": "※ 攝影師會於24h內與您聯繫",
+            "after_payment3": "※ 客服聯絡管道，請加入Line@",
+            "foreigner_payment": "外國客戶，請用PayPal付款",
+            "payment_success_desc": "JoyShot隨行攝影",
+            "ecpay_error": "啟動綠界支付失敗",
+            "order_error": "訂單送出出現錯誤",
+            "name_required": "姓名 未填寫<br/>",
+            "contact_time_required": "方便連絡的時間 未填寫<br/>",
+            "phone_required": "電話 未填寫<br/>",
+            "contact_method_required": "聯絡方式 未選取<br/>",
+            "social_media_account_required": "社群帳號 未填寫<br/>",
+            "email_required": "email 未填寫<br/>",
+            "remind": "提醒",
+            "dicount_code_error": "無效的折扣碼"
+        },
+        "Faq": {
+            "title": "常見問題"
+        },
+        "Match": {
+            "profession": "專業攝影師",
+            "match_count": "{count} 位攝影師 符合條件",
+            "film_time": "拍攝時間",
+            "film_location": "拍攝地點",
+            "booking_now": "立即預約",
+            "period_full": "此攝影師在該時段已額滿或未接單",
+            "recommend_others": "我們將推薦您同時段可拍攝的攝影師",
+            "check_others": "查看其它符合條件的攝影師",
+            "wait": "媒合中，請稍後...",
+            "booking_result": "預約結果"
+        },
+        "MatchedPhotographer": {
+            "comment_count": "{count} 則評論",
+            "photograph_style": "拍攝類別",
+            "selected": "選定此攝影師",
+            "photographer_artworks": "{nickName}的攝影作品",
+            "photographer_load_failed": "攝影師資料取得失敗"
+        },
+        "Photographer": {
+            "comment_count": "{count} 則評論",
+            "booked_count": "此攝影師被預訂 {count} 次",
+            "photographer_experience": "攝影經歷{year}年",
+            "photograph_style": "拍攝類別",
+            "booking_photographer": "預約此攝影師",
+            "photographer_artworks": "{nickName}的攝影作品",
+            "photographer_load_failed": "攝影師資料取得失敗"
+        },
+        "PhotographerList": {
+            "title": "各地專業攝影師",
+            "no_photographer": "此地區目前沒有攝影師"
+        },
+        "PrivacyPolicy": {
+            "title": "隱私政策條款",
+            "content": "<p>非常歡迎您光臨「JoyShot全台隨行拍攝預定平台」，為了讓您能夠安心的使用本網站的各項服務與資訊，特此向您說明本網站的隱私權保護政策，以保障您的權益，請您詳閱下列內容：</p><p>一、隱私權保護政策的適用範圍</p><p>隱私權保護政策內容，包括本網站如何處理在您使用網站服務時收集到的個人識別資料。隱私權保護政策不適用於本網站以外的相關連結網站，也不適用於非本網站所委託或參與管理的人員。</p><p>二、個人資料的蒐集、處理及利用方式</p><ul><li>當您造訪本網站或使用本網站所提供之功能服務時，我們將視該服務功能性質，請您提供必要的個人資料，並在該特定目的範圍內處理及利用您的個人資料；非經您書面同意，本網站不會將個人資料用於其他用途。</li><li>本網站在您使用服務信箱、問卷調查等互動性功能時，會保留您所提供的姓名、電子郵件地址、聯絡方式及使用時間等。</li><li>於一般瀏覽時，伺服器會自行記錄相關行徑，包括您使用連線設備的 IP 位址、使用時間、使用的瀏覽器、瀏覽及點選資料記錄等，做為我們增進網站服務的參考依據，此記錄為內部應用，決不對外公佈。</li><li>為提供精確的服務，我們會將收集的問卷調查內容進行統計與分析，分析結果之統計數據或說明文字呈現，除供內部研究外，我們會視需要公佈統計數據及說明文字，但不涉及特定個人之資料。</li><li>您可以隨時向我們提出請求，以更正或刪除本網站所蒐集您錯誤或不完整的個人資料。</li></ul><p>三、資料之保護</p><ul><li>本網站主機均設有防火牆、防毒系統等相關的各項資訊安全設備及必要的安全防護措施，加以保護網站及您的個人資料採用嚴格的保護措施，只由經過授權的人員才能接觸您的個人資料，相關處理人員皆簽有保密合約，如有違反保密義務者，將會受到相關的法律處分。</li><li>如因業務需要有必要委託其他單位提供服務時，本網站亦會嚴格要求其遵守保密義務，並且採取必要檢查程序以確定其將確實遵守。</li></ul><p>四、網站對外的相關連結</p><p>本網站的網頁提供其他網站的網路連結，您也可經由本網站所提供的連結，點選進入其他網站。但該連結網站不適用本網站的隱私權保護政策，您必須參考該連結網站中的隱私權保護政策。</p><p>五、與第三人共用個人資料之政策</p><p>本網站絕不會提供、交換、出租或出售任何您的個人資料給其他個人、團體、私人企業或公務機關，但有法律依據或合約義務者，不在此限。</p><p>前項但書之情形包括不限於：</p><ul><li>經由您書面同意。</li><li>法律明文規定。</li><li>為免除您生命、身體、自由或財產上之危險。</li><li>與公務機關或學術研究機構合作，基於公共利益為統計或學術研究而有必要，且資料經過提供者處理或蒐集者依其揭露方式無從識別特定之當事人。</li><li>當您在網站的行為，違反服務條款或可能損害或妨礙網站與其他使用者權益或導致任何人遭受損害時，經網站管理單位研析揭露您的個人資料是為了辨識、聯絡或採取法律行動所必要者。</li><li>有利於您的權益。</li><li>本網站委託廠商協助蒐集、處理或利用您的個人資料時，將對委外廠商或個人善盡監督管理之責。</li></ul><p>六、Cookie 之使用</p><p>為了提供您最佳的服務，本網站會在您的電腦中放置並取用我們的 Cookie，若您不願接受 Cookie 的寫入，您可在您使用的瀏覽器功能項中設定隱私權等級為高，即可拒絕 Cookie 的寫入，但可能會導致網站某些功能無法正常執行 。</p><p>七、隱私權保護政策之修正</p><p>本網站隱私權保護政策將因應需求隨時進行修正，修正後的條款將刊登於網站上。</p><p>服務提供商：八策數位股份有限公司(Joyshot Digital Inc.)</p><p>&nbsp;</p>"
+        },
+        "Thankyou": {
+            "pay_success": "付款成功-訂單成立",
+            "contact_you": "攝影師於24h內會與您聯繫",
+            "customer_service": "客服聯絡管道，務必加入LINE@",
+            "join_line": "加入 Line@",
+            "pay_failed": "付款失敗-訂單未成立",
+            "return_code": "交易回傳碼 : {rtnCode}",
+            "check_reason": "聯絡客服人員，查詢交易失敗原因",
+            "order_no": "訂單編號",
+            "name": "姓名",
+            "phone": "連絡電話",
+            "contact_time": "方便連絡的時間",
+            "date": "拍攝日期",
+            "time": "時間",
+            "hours": "時數",
+            "people": "人數",
+            "load_transaction_failed": "取得交易結果失敗"
+        }
+    },
+    "store": {
+        "jsapp": {
+            "pets_notes": "攜帶的寵物：{petsNotes}",
+            "no_pets": "無寵物",
+            "adult_num": "{adultNum}位大人",
+            "over_adult_num": "超過10位大人",
+            "child_num": "{childNum}位小孩",
+            "over_child_num": "超過10位小孩"
+        }
+    },
+    "css": {
+        "content": {
+            "coupon_discount": "Coupon折扣",
+            "transportation_fee": "交通費",
+            "shooting_fee": "拍攝費",
+            "photographer": "攝影師",
+            "duration": "時數",
+            "total": "總金額",
+            "catagory": "類別"
+        }
+    }
+}

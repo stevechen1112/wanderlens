@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.LineMessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.LineMessage">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="lineMessage" column="line_message" jdbcType="VARCHAR"/>
+            <result property="imageUuid" column="image_uuid" jdbcType="VARCHAR"/>
+            <result property="targetUser" column="target_user" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,line_message,image_uuid,target_user,
+        created_at,modified_at
+    </sql>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.AppFlowMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.AppFlow">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="flowType" column="flow_type" jdbcType="VARCHAR"/>
+        <result property="flowName" column="flow_name" jdbcType="VARCHAR"/>
+        <result property="flowCat" column="flow_cat" jdbcType="VARCHAR"/>
+        <result property="seq" column="seq" jdbcType="INTEGER"/>
+        <collection property="notifyUser"
+                    select="com.joyshot.app.mapper.VFlowUserMapper.selectByFlowId"
+                    column="id">
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,flow_type,flow_name,
+        flow_cat,seq
+    </sql>
+
+    <select id="selectPageWithKeyword" resultMap="BaseResultMap">
+        select * from app_flow
+        <where>
+            <if test="cat != null and cat != ''">
+                and flow_cat = #{cat}
+            </if>
+        </where>
+        order by seq, flow_name
+    </select>
+
+
+</mapper>

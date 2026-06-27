@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.PhotographerScheduleMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.PhotographerSchedule">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="phId" column="ph_id" jdbcType="INTEGER"/>
+            <result property="scheduleDate" column="schedule_date" jdbcType="VARCHAR"/>
+            <result property="slotStart" column="slot_start" jdbcType="INTEGER"/>
+            <result property="slotEnd" column="slot_end" jdbcType="INTEGER"/>
+            <result property="slotStartLabel" column="slot_start_label" jdbcType="VARCHAR"/>
+            <result property="slotEndLabel" column="slot_end_label" jdbcType="VARCHAR"/>
+            <result property="minValue" column="min_value" jdbcType="INTEGER"/>
+            <result property="maxValue" column="max_value" jdbcType="INTEGER"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+            <result property="active" column="active" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="resultMap1" type="com.joyshot.app.entity.PhotographerSchedule">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="scheduleDate" column="schedule_date" jdbcType="VARCHAR"/>
+        <result property="slotStartLabel" column="slot_start_label" jdbcType="VARCHAR"/>
+        <result property="slotEndLabel" column="slot_end_label" jdbcType="VARCHAR"/>
+        <result property="active" column="active" jdbcType="VARCHAR"/>
+        <association property="photographer">
+            <id column="pid" property="id"></id>
+            <result column="ph_uuid" property="phUuid"></result>
+            <result column="name" property="name"></result>
+            <result column="nick_name" property="nickName"></result>
+            <result column="go_live" property="goLive"></result>
+        </association>
+    </resultMap>
+
+
+
+    <resultMap id="scheduleMap" type="com.joyshot.app.entity.ScheduleDTO">
+        <result property="scheduleDate" column="schedule_date" jdbcType="VARCHAR"/>
+        <result property="allSeats" column="all_seats" jdbcType="VARCHAR"/>
+        <result property="reservedSeats" column="reserved_seats" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,ph_id,schedule_date,min_value,max_value,
+        slot_start,slot_end,slot_start_label,slot_end_label,
+        created_at,modified_at,active
+    </sql>
+
+
+    <update id="updateSchedule" parameterType="com.joyshot.app.controller.dto.ScheduleForm">
+        update photographer_schedule
+        set slot_start = #{hourStart}, slot_end = #{hourEnd},
+            slot_start_label = #{hourStartLabel}, slot_end_label = #{hourEndLabel},
+            min_value = #{minValue}, max_value = #{maxValue}
+        where ph_id = #{phId}
+        and schedule_date = #{scheduleDascheduleDatete}
+    </update>
+
+    <delete id="batchDelete">
+        delete from photographer_schedule
+        where ph_id = #{phId}
+        and schedule_date in (
+        <foreach collection="scheduleList" item="schedule" separator=",">
+            #{schedule.scheduleDate}
+        </foreach>
+        )
+    </delete>
+
+    <select id="getScheduleGroupByCity" resultMap="scheduleMap">
+        SELECT s.schedule_date , count(s.id) all_seats,
+               (
+                   SELECT count(ss.id)
+                   from photographer pp, photographer_schedule  ss
+                   where pp.id = ss.ph_id
+                     and pp.city = #{city} and pp.go_live = 'Y'
+                     and ss.schedule_date like concat('%', #{yyyyMM} ,'%')
+                     and ss.schedule_date = s.schedule_date
+                     and ss.active = 'N'
+                   group by ss.schedule_date
+               ) reserved_seats
+        from photographer p, photographer_schedule  s
+        where p.id = s.ph_id
+          and p.city = #{city} and p.go_live = 'Y'
+          and s.schedule_date  like concat('%', #{yyyyMM} ,'%')
+        group by s.schedule_date
+        ORDER BY s.schedule_date
+    </select>
+
+    <select id="getPhotographerByDate" resultMap="resultMap1">
+        select p.id pid, ph_uuid, p.name, p.nick_name, p.phone, p.go_live,
+               s.id, s.schedule_date, s.slot_start_label, s.slot_end_label, s.active
+        from photographer p, photographer_schedule s
+        where p.id = s.ph_id and p.go_live = 'Y'
+          and p.city = #{city}
+          and s.schedule_date = #{scheduleDate}
+        ORDER by s.active desc
+    </select>
+
+    <select id="findPhotographerSchedule" resultMap="resultMap1">
+        select p.id pid, ph_uuid, p.name, p.nick_name, p.phone, p.go_live,
+               s.id, s.schedule_date, s.slot_start_label, s.slot_end_label, s.active
+        from photographer p, photographer_schedule s
+        where p.id = s.ph_id
+          and p.id = #{phId}
+          and str_to_date( s.schedule_date, "%Y/%m/%d") &gt;= str_to_date( #{today}, '%Y/%m/%d')
+          and str_to_date( s.schedule_date, "%Y/%m/%d") &lt;= str_to_date( #{endDate}, '%Y/%m/%d')
+        ORDER by s.schedule_date
+    </select>
+
+    <insert id="batchInsert">
+        insert into photographer_schedule
+            (ph_id, schedule_date, slot_start, slot_end, min_value, max_value, slot_start_label, slot_end_label)
+        values
+        <foreach collection ="scheduleList" item="schedule" separator =",">
+            (#{schedule.phId}, #{schedule.scheduleDate}, #{schedule.slotStart},
+             #{schedule.slotEnd}, #{schedule.minValue}, #{schedule.maxValue},
+             #{schedule.slotStartLabel}, #{schedule.slotEndLabel})
+        </foreach >
+
+    </insert>
+
+</mapper>

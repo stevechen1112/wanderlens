@@ -1,0 +1,62 @@
+server:
+  port: 7272
+
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  mail:
+    protocol: smtp
+    host: smtp.hostinger.com
+    port: 465
+    username: service@joyshot.app
+    password: CHANGE_ME_SMTP_PASSWORD
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 10000
+          writetimeout: 5000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: lh_
+
+line:
+  oauth-token-url: https://notify-bot.line.me/oauth/token
+  notify-url: https://notify-api.line.me/api/notify
+
+google:
+  map-api-key: CHANGE_ME_GOOGLE_MAPS_API_KEY
+  map-api-lang: zh-TW
+
+logging:
+  level:
+    root: INFO
+
+file:
+  upload-location: /var/www/joyshot-uploads/
+
+bypass: houtest9999
+
+sms:
+  url: https://smsapi.mitake.com.tw/api/mtk/SmSend?
+  username:
+  password:
+
+twillio:
+  account-sid:
+  auth-token:
+  phone-from:
+
+

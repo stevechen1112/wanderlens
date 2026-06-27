@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.ServiceCategoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.ServiceCategory">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="createdBy" column="created_by" jdbcType="INTEGER"/>
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <association property="lang">
+            <result column="name" property="name"></result>
+            <result column="description" property="description"></result>
+            <result column="lang" property="lang"></result>
+        </association>
+        <association property="file">
+            <result column="url" property="url"></result>
+            <result column="uuid" property="uuid"></result>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,created_by,file_id
+    </sql>
+
+    <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT s.id, s.file_id, sl.name, sl.description, sl.lang, f.url, f.uuid
+        from service_category s, service_category_lang sl, file_repo f
+        where s.id = sl.service_category_id
+          and f.id = s.file_id
+          and sl.lang = #{locale}
+    </select>
+
+</mapper>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.PhotographerMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Photographer">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="nickNameEn" column="nick_name_en" jdbcType="VARCHAR"/>
+        <result property="nickNameJp" column="nick_name_jp" jdbcType="VARCHAR"/>
+        <result property="nickNameKr" column="nick_name_kr" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="cityEn" column="city_en" jdbcType="VARCHAR"/>
+        <result property="cityJp" column="city_jp" jdbcType="VARCHAR"/>
+        <result property="cityKr" column="city_kr" jdbcType="VARCHAR"/>
+        <result property="cityId" column="city_id" jdbcType="INTEGER"/>
+        <result property="districtName" column="district_name" jdbcType="VARCHAR"/>
+        <result property="districtId" column="district_id" jdbcType="INTEGER"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="addrLng" column="addr_lng" jdbcType="FLOAT"/>
+        <result property="addrLat" column="addr_lat" jdbcType="FLOAT"/>
+        <result property="rating" column="rating" jdbcType="FLOAT"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="bannerImg" column="banner_img" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+        <result property="introEn" column="intro_en" jdbcType="VARCHAR"/>
+        <result property="introJp" column="intro_jp" jdbcType="VARCHAR"/>
+        <result property="introKr" column="intro_kr" jdbcType="VARCHAR"/>
+        <result property="serviceItem" column="service_item" jdbcType="VARCHAR"/>
+        <result property="goLive" column="go_live" jdbcType="VARCHAR"/>
+        <result property="career" column="career" jdbcType="VARCHAR"/>
+        <result property="experience" column="experience" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap1" type="com.joyshot.app.entity.Photographer">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="nickNameEn" column="nick_name_en" jdbcType="VARCHAR"/>
+        <result property="nickNameJp" column="nick_name_jp" jdbcType="VARCHAR"/>
+        <result property="nickNameKr" column="nick_name_kr" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="cityEn" column="city_en" jdbcType="VARCHAR"/>
+        <result property="cityJp" column="city_jp" jdbcType="VARCHAR"/>
+        <result property="cityKr" column="city_kr" jdbcType="VARCHAR"/>
+        <result property="cityId" column="city_id" jdbcType="INTEGER"/>
+        <result property="districtName" column="district_name" jdbcType="VARCHAR"/>
+        <result property="districtId" column="district_id" jdbcType="INTEGER"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="addrLng" column="addr_lng" jdbcType="FLOAT"/>
+        <result property="addrLat" column="addr_lat" jdbcType="FLOAT"/>
+        <result property="rating" column="rating" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="bannerImg" column="banner_img" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+        <result property="introEn" column="intro_en" jdbcType="VARCHAR"/>
+        <result property="introJp" column="intro_jp" jdbcType="VARCHAR"/>
+        <result property="introKr" column="intro_kr" jdbcType="VARCHAR"/>
+        <result property="serviceItem" column="service_item" jdbcType="VARCHAR"/>
+        <result property="goLive" column="go_live" jdbcType="VARCHAR"/>
+        <result property="career" column="career" jdbcType="VARCHAR"/>
+        <result property="experience" column="experience" jdbcType="VARCHAR"/>
+        <collection property="ratings"
+                    select="com.joyshot.app.mapper.PhotographerRatingMapper.selectRatingByPid"
+                    column="{phId=id}">
+        </collection>
+        <collection property="feature"
+                    select="com.joyshot.app.mapper.PhotographerFeatureMapper.selectFeatureByPid"
+                    column="{phId=id}">
+        </collection>
+        <collection property="works"
+                    select="com.joyshot.app.mapper.PhotographerWorksMapper.selectWorksByPid"
+                    column="{phId=id}">
+        </collection>
+        <collection property="bookings"
+                    select="com.joyshot.app.mapper.OrderMapper.selectOrderByPhUuid"
+                    column="{phUuid=ph_uuid}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="BaseResultMapBasic" type="com.joyshot.app.entity.Photographer">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,ph_uuid,name,nick_name,nick_name_en,nick_name_jp,nick_name_kr,phone,
+        email,city,address,addr_lng,
+        addr_lat,rating, avatar,banner_img,
+        intro,intro_en,intro_jp,intro_kr,created_at,modified_at,
+        is_deleted,service_item,city_id,district_name,district_id,go_live
+    </sql>
+
+    <select id="search" resultType="com.joyshot.app.entity.Photographer"
+            parameterType="com.joyshot.app.entity.PhotographerSearchForm">
+        SELECT phr.id, phr.nick_name, phr.nick_name_en, phr.nick_name_jp, phr.nick_name_kr, phr.name, phr.phone, phr.email, phr.addr_lng, phr.addr_lat,
+               phr.rating, phr.avatar, phr.banner_img,service_item,
+               phr.city, phr.city_id, phr.district_name,phr.district_id,
+               s.schedule_date, s.min_value, s.max_value,phr.ph_uuid,phr.go_live,phr.career,phr.experience,
+               a.name_en as city_en, a.name_jp as city_jp, a.name_kr as city_kr
+        from photographer phr, photographer_schedule s, photographer_area area, area a
+        where phr.id = s.ph_id
+          and phr.id = area.ph_id
+          and phr.city_id = a.id
+          and phr.service_item like concat('%',#{query_service},'%')
+          and s.min_value &lt;= #{minValue}
+          and s.max_value &gt;= #{maxValue}
+          and s.schedule_date = #{query_date}
+          and s.active = 'Y'
+          and area.zip_code = #{query_zipcode}
+          and phr.go_live = 'Y'
+          and phr.addr_lng != 0
+            <if test="query_assign_ph_uuid != ''">
+                and phr.ph_uuid = #{query_assign_ph_uuid}
+            </if>
+        ORDER BY RAND()
+    </select>
+
+    <select id="selectByArea1" resultMap="BaseResultMap">
+        select  phr.id, phr.nick_name, phr.nick_name_en, phr.nick_name_jp, phr.nick_name_kr, phr.name,
+                        phr.rating, phr.banner_img, phr.avatar,
+                        phr.city, phr.city_id, phr.ph_uuid, phr.go_live,
+                        area.name_en as city_en, area.name_jp as city_jp, area.name_kr as city_kr
+        from photographer phr, area
+        where phr.city_id = area.id and phr.go_live = 'Y'
+        <if test="areaId != 0">
+            and phr.city_id = #{areaId}
+        </if>
+        order by phr.id desc
+    </select>
+
+    <select id="getPhotographerInfoById" resultMap="BaseResultMap1">
+        select p.*, a.name_en as city_en, a.name_jp as city_jp, a.name_kr as city_kr
+        from photographer p, area a
+        where p.city_id = a.id
+        and p.id = #{pId}
+    </select>
+
+    <resultMap id="BaseResultMapPage" type="com.joyshot.app.entity.Photographer">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="nickNameEn" column="nick_name_en" jdbcType="VARCHAR"/>
+        <result property="nickNameJp" column="nick_name_jp" jdbcType="VARCHAR"/>
+        <result property="nickNameKr" column="nick_name_kr" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="goLive" column="go_live" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectByPage" resultMap="BaseResultMapPage">
+        select id,name,nick_name,nick_name_en,nick_name_jp,nick_name_kr,phone,city,ph_uuid,go_live
+        from photographer p
+        <where>
+            <if test="queryField != '' and queryField == 'name'">
+                and (p.name like concat('%', #{keyword}, '%') or p.nick_name like concat('%', #{keyword}, '%') or p.nick_name_en like concat('%', #{keyword}, '%') or p.nick_name_jp like concat('%', #{keyword}, '%') or p.nick_name_kr like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="queryField != '' and queryField == 'phone'">
+                and p.phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'city'">
+                and p.city = #{keyword}
+            </if>
+        </where>
+        order by p.id desc
+    </select>
+
+    <select id="selectGroupByCity" resultType="com.joyshot.app.entity.GroupByDTO">
+        select count(*) count, city col from photographer group by city, city_id  order by city_id
+    </select>
+
+    <select id="getPhotographerInfoByUuid" resultMap="BaseResultMap1">
+        select p.*, a.name_en as city_en, a.name_jp as city_jp, a.name_kr as city_kr
+        from photographer p, area a
+        where p.city_id = a.id
+        and p.ph_uuid = #{uuid}
+    </select>
+
+    <select id="getPhotographerBasicByUuid" resultMap="BaseResultMapBasic">
+        select p.id
+        from photographer p
+        where p.ph_uuid = #{uuid}
+    </select>
+
+</mapper>

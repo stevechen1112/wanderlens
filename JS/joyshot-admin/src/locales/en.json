@@ -1,0 +1,191 @@
+{
+  "action":{
+    "create_success": "Data Create Successfully.",
+    "create_error": "Data Create Error. {err}",
+    "save_success": "Data Update Successfully.",
+    "save_error": "Data Update Error. {err}",
+    "delete_success": "Data Delete Successfully.",
+    "delete_error": "Data Delete Error: {err}",
+    "upload_error": "Data Upload Error: {err}",
+    "get_error": "Get Data Error: {err}",
+    "name": "Action",
+    "password_not_match": "New password not match",
+    "force_logout": "Password changed. Need to logout immediately"
+  },
+  "message": {
+    "success": "Success",
+    "error": "Error",
+    "account": "account",
+    "password": "password",
+    "required_field": "required field",
+    "uploading": "Uploading...",
+    "data_filter": "Data Filter",
+    "keyword": "enter keyword",
+    "no_data": "No Data",
+    "alert": "Alert",
+    "logout_now": "Logout Now?",
+    "delete_confirm": "Delete this row?",
+    "not_valid_image": "Allow jpg/png Only",
+    "file_size_exceed_2M": "File Size Exceed 2M",
+    "language": "Language",
+    "language_en": "English",
+    "language_zh": "中文"
+  },
+  "buttons": {
+    "login": "Login",
+    "save": "Save",
+    "confirm": "Confirm",
+    "search": "Search",
+    "clear": "Clear",
+    "new": "New",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "dashboard": {
+    "title": "Functions"
+  },
+  "login": {
+    "success": "@:buttons.login@:message.success",
+    "failed": "Login Failed, please verify your @:message.account and @:message.account"
+  },
+  "header": {
+    "profile": "Profile",
+    "change_pwd": "Change Password",
+    "logout": "Logout"
+  },
+  "profile":{
+    "line_integration": "Line Notify Integeration",
+    "form":{
+      "account": "@:message.account",
+      "username": "name",
+      "phone": "phone",
+      "file_limit": "jpg、png only, limit 2M"
+    }
+  },
+  "route": {
+    "home": "Home",
+    "meta": {
+      "breadcrumb": {
+        "home": "@:route.home",
+        "data_maintain" : "Data Maintain",
+        "users": "User Maintain",
+        "customers": "Customers",
+        "photographers": "Photograpers",
+        "orders": "Orders",
+        "system": "System Setting",
+        "dictionary": "Dictionary",
+        "settings": "Settings",
+        "campaign": "Campaign",
+        "affiliate": "Affiliate"
+      },
+      "title":{
+        "home": "@:route.home",
+        "dashboard": "Dashboard",
+        "profile": "@:header.profile",
+        "account_setting": "Accounts",
+        "service_category": "@:menu.service_category",
+        "change_password": "@:header.change_pwd",
+        "users": "@:route.meta.title.account_setting",
+        "roles": "Roles Maintain",
+        "menus": "Menus Maintain",
+        "areas": "Areas Maintain",
+        "services": "Service Category Maintain",
+        "coupons": "Coupons Maintain",
+        "customers": "Customers Maintain",
+        "photographer": "Photographers Maintain",
+        "photographer_dashboard": "Dashboard",
+        "photographer_broadcast": "LineNotify",
+        "orders": "Orders Maintain",
+        "system": "@:route.meta.breadcrumb.system",
+        "dictionary": "Dictionary Maintain",
+        "news": "Sticky News Maintain",
+        "faqs": "FAQ Maintain",
+        "ig": "Instagram Post",
+        "banner": "Homepage Banner",
+        "attraction": "Attraction Post",
+        "flows": "Notification",
+        "affiliate": "Affiliate",
+        "affiliate_detail": "Affiliate Detail",
+        "affiliate_report": "Affiliate Report"
+      }
+    }
+  },
+  "page":{
+    "user_maintain":{
+      "filter":{
+        "by_name":"By User Name",
+        "by_area":"By Area",
+        "keyword":"@:message.keyword"
+      },
+      "column":{
+        "area": "Area"
+      },
+      "form":{
+        "title":"Account Information",
+        "account": "Account",
+        "username": "Name",
+        "password": "@:message.password",
+        "role": "Role",
+        "area": "@:page.user_maintain.column.area",
+        "select_role": "Select Role",
+        "select_area": "Select Area"
+      }
+    },
+    "service_category_maintain":{
+      "form":{
+        "title":"Service Information",
+        "name":"Service Name",
+        "description": "Description",
+        "price": "Price"
+      }
+    },
+    "change_password":{
+      "form":{
+        "old_password":"Old Password",
+        "new_password":"New Password",
+        "new_password1":"Confirm New Password"
+      }
+    },
+    "dashboard":{
+      "customer_qty":"Customers",
+      "photographer_qty":"Photograpers",
+      "monthly_order_qty":"Orders this monthy",
+      "monthly_sales_amount":"Sales this month"
+    }
+  },
+  "menu": {
+    "menu_item": "Menu",
+    "dashboard": "Dashboard",
+    "data": "Data Settings",
+    "account": "Account",
+    "roles": "Role",
+    "areas": "Area",
+    "customers": "Customers",
+    "services": "Service",
+    "photographers": "Photograpers",
+    "photographer_maintain": "Photograpers",
+    "photographer_broadcast": "Line Notify",
+    "photographer_dashboard": "Time Management",
+    "orders":"Orders",
+    "faqs": "FAQ",
+    "settings": "Settings",
+    "dictionary": "Dictionary",
+    "flow": "Notification",
+    "coupons": "Coupons",
+    "campaign" : "Campaign",
+    "flows": "Workflow",
+    "news": "Sticky News",
+    "instagram": "IG Post",
+    "banner": "Homepage Banner",
+    "attraction": "Attration Post",
+    "photographer":{
+      "info": "Photographer Notes",
+      "info_faq": "FAQ",
+      "info_terms": "Terms",
+      "dashboard":"Photographer Dashboard"
+    }
+  }
+  
+   
+}

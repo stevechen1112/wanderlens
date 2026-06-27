@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/joyshot_db?serverTimezone=GMT%2b8
+    username: <dbusername>
+    password: <dbpassword>
+
+line:
+  callback-url: http://localhost:9555/api/line/callback
+  client-id: <clien-id>
+  client-secret: <client-secret>
+  message-root-url: https://localhost:9555
+  image-url: http://localhost:8080/
+
+google:
+  oauth:
+    callback:
+      uri: http://localhost:9555/api/googledrive/oauth
+  credentials:
+    folder:
+      path: file:/var/www/credentials
+  parent:
+    folderId: <folder-id>
+  secret:
+    key:
+      path: classpath:keys/secret_dev.json
+
+order:
+  paid: "【JoyShot隨行拍攝-開發】"
+
+ecpay:
+  return-url: https://3b86-2001-b011-70a0-1b90-4dd9-4d2c-ae18-c04d.ngrok-free.app/api/order/paid #9666
+  order-result-url: https://3b86-2001-b011-70a0-1b90-4dd9-4d2c-ae18-c04d.ngrok-free.app/api/order-paid/thank-you
+  client-redirect-url: http://localhost:9666/thankyou/
+
+email:
+  pay-url: http://localhost:9666/pay/
+  bcc: <bcc email address>
+  dev-mode: Y
+  js-front: http://localhost:9666
+  js-photographer: http://localhost:9777

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.User">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="empno" column="empno" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="deletePermission" column="delete_permission" jdbcType="TINYINT"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+        <result property="lineAuthCode" column="line_auth_code" jdbcType="VARCHAR"/>
+        <result property="lineToken" column="line_token" jdbcType="VARCHAR"/>
+        <result property="area" column="area" jdbcType="VARCHAR"/>
+        <association property="role"
+                     column="role_id"
+                     select="com.joyshot.app.mapper.RoleMapper.selectRoleById">
+        </association>
+    </resultMap>
+
+    <resultMap id="BaseResultMap1" type="com.joyshot.app.entity.User">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <association property="role">
+            <result column="name" property="name"></result>
+            <result column="eng_name" property="engName"></result>
+        </association>
+
+    </resultMap>
+
+    <resultMap id="noPasswordMap" type="com.joyshot.app.entity.User">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="empno" column="empno" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="area" column="area" jdbcType="VARCHAR"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="phId" column="ph_id" jdbcType="INTEGER"/>
+        <result property="lineAuthCode" column="line_auth_code" jdbcType="VARCHAR"/>
+        <result property="lineToken" column="line_token" jdbcType="VARCHAR"/>
+        <association property="role"
+                     column="role_id"
+                     select="com.joyshot.app.mapper.RoleMapper.selectRoleById">
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,empno,password,
+        username,phone,
+        avatar,role_id,is_deleted,
+        created_at,updated_at,line_auth_code, line_token,delete_permission
+    </sql>
+    <insert id="addPhotographerAccount">
+        insert into user (empno, password, username, phone, role_id, area, ph_id)
+        values ( #{phone},  #{password}, #{nickName},  #{phone}, 21, 'TW', #{phId})
+    </insert>
+
+    <insert id="addAffiliateAccount">
+        insert into user (empno, password, username, phone, role_id, area, aff_id)
+        values ( #{phone},  #{password}, #{nickName},  #{phone}, #{roleId}, 'TW', #{uuid})
+    </insert>
+
+    <select id="findPage" resultMap="BaseResultMap">
+        select user.*
+        from user user
+        <where>
+            <if test="queryField != null and queryField == 'username'">
+                and user.username like concat('%',#{keyword},'%')
+            </if>
+            <if test="queryField != null and queryField == 'phone'">
+                and user.phone like concat('%',#{keyword},'%')
+            </if>
+            <if test="queryField != null and queryField == 'area'">
+                and user.area like concat('%',#{keyword},'%')
+            </if>
+            <if test="1==1">
+                and is_deleted = 0
+            </if>
+        </where>
+    </select>
+
+    <select id="login" resultMap="noPasswordMap"
+            parameterType="com.joyshot.app.entity.User">
+        select id, empno, username, phone, avatar, role_id,area,
+               token, line_auth_code, line_token,delete_permission,ph_id
+        from user
+        where empno = #{empno} and password = #{password} and is_deleted = 0
+    </select>
+
+    <select id="selectByUserToken" resultMap="noPasswordMap">
+        select id, empno, username, phone, avatar, role_id, area,
+               token, line_auth_code, line_token,delete_permission,ph_id
+        from user
+        where token= #{token} and is_deleted = 0
+    </select>
+
+    <select id="selectManagerUser" resultType="com.joyshot.app.entity.User">
+        select user.id, user.empno, user.username
+        from user user, role role
+        where user.role_id = role.id
+        and role.eng_name in ('admin','manager')
+    </select>
+
+    <select id="selectUserByEmpno" resultMap="noPasswordMap">
+        select user.id, user.empno, user.username,
+               user.line_auth_code, user.line_token,
+               user.delete_permission, user.area,
+               role.id role_id, role.name
+        from user user, role role
+        where user.role_id = role.id
+        and user.empno = #{empno}
+    </select>
+
+    <select id="selectUserById" resultType="com.joyshot.app.entity.User">
+        select username, empno, id, line_token, line_auth_code, delete_permission, area
+        from user where id = #{id};
+    </select>
+
+    <select id="selectSalesUser" resultType="com.joyshot.app.entity.User">
+        select user.id, user.empno, user.username, user.area
+        from user user, role role
+        where user.role_id = role.id
+          and role.eng_name = 'sales'
+    </select>
+
+
+    <select id="selectUserWithRole" resultMap="BaseResultMap1">
+        select user.id, user.username, role.`name`, role.eng_name
+        from user user, role role
+        where user.role_id = role.id
+          and user.id = #{id}
+    </select>
+
+    <select id="findPhotographer" resultType="com.joyshot.app.entity.User">
+        select u.id, u.username, u.line_token, u.ph_id, p.email
+        from user u, photographer p
+        where u.ph_id = p.id
+          and p.go_live = 'Y'
+    </select>
+
+
+    <select id="findManager" resultType="com.joyshot.app.entity.User">
+        select u.id, u.username, u.line_token
+        from user u, role r
+        where u.role_id = r.id and r.name = 'manager'
+    </select>
+
+
+</mapper>

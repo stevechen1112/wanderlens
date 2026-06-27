@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.ServiceCatMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.ServiceCat">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="nameEn" column="name_en" jdbcType="VARCHAR"/>
+            <result property="nameJp" column="name_jp" jdbcType="VARCHAR"/>
+            <result property="nameKr" column="name_kr" jdbcType="VARCHAR"/>
+            <result property="fileUuid" column="file_uuid" jdbcType="VARCHAR"/>
+            <result property="iconFileUuid" column="icon_file_uuid" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="INTEGER"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+
+        <association property="featureFile">
+            <result column="feature_file_url" property="url"></result>
+        </association>
+        <association property="iconFile">
+            <result column="icon_file_url" property="url"></result>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,nameEn,nameJp,nameKr,file_uuid,icon_file_uuid,price,
+        created_at,modified_at
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select sc.*,
+               (select url from file_repo where uuid = sc.file_uuid) feature_file_url,
+               (select url from file_repo where uuid = sc.icon_file_uuid) icon_file_url
+        from service_cat sc
+    </select>
+
+    <select id="selectServiceByServiceItem" resultMap="BaseResultMap">
+        select *
+        from service_cat
+        where id in (
+            <foreach collection="items" item="item" separator=",">
+                #{item}
+            </foreach>
+        );
+    </select>
+
+</mapper>

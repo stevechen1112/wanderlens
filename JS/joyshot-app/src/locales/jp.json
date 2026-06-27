@@ -1,0 +1,351 @@
+{
+    "action": {
+        "create_success": "データ追加に成功しました",
+        "create_error": "データ追加に失敗しました: {err}",
+        "save_success": "データ更新に成功しました",
+        "save_error": "データ更新に失敗しました: {err}",
+        "delete_success": "データ削除に成功しました",
+        "delete_error": "データ削除に失敗しました: {err}",
+        "upload_error": "ファイルのアップロードに失敗しました: {err}",
+        "get_error": "データの取得に失敗しました: {err}",
+        "name": "動作",
+        "password_not_match": "パスワードが一致しません",
+        "force_logout": "パスワードが更新され、ログアウトされます"
+    },
+    "message": {
+        "success": "成功",
+        "error": "エラー",
+        "account": "アカウント",
+        "password": "パスワード",
+        "required_field": "この欄は必須です",
+        "uploading": "アップロード中",
+        "data_filter": "絞り込み",
+        "keyword": "キーワードを入力",
+        "no_data": "ご指定の条件に該当するデータがありません",
+        "alert": "警告",
+        "logout_now": "今すぐログアウトしますか？",
+        "delete_confirm": "このデータを削除しますか？",
+        "not_valid_image": "登録可能な画像ファイルの形式がjpg\/pngのみ",
+        "file_size_exceed_2M": "ファイル容量が2MBを超えています"
+    },
+    "buttons": {
+        "search": "検索",
+        "search_photographer": "日付、時間、場所を選択",
+        "book_now": "今すぐ予約",
+        "book_now2": "カメラマンを探す",
+        "booking": "ご予約"
+    },
+    "menu": {
+        "photographer": "カメラマン"
+    },
+    "pages": {
+        "home": {
+            "banner": {
+                "main_title": "",
+                "sub_title": "",
+                "book_now": "@:buttons.book_now です",
+                "mobile_banner_load_failed": "モバイルバナーの画像取得に失敗しました",
+                "banner_load_failed": "バナー画像の取得に失敗しました"
+            }
+        }
+    },
+    "search_bar": {
+        "service": "サービスジャンルを選択",
+        "service_note": "（注:披露宴（結婚パーティを含む）、ウェディング撮影、ビジネス撮影は含まない）",
+        "date_picker": "日付を選択",
+        "time_picker": "時間を選択",
+        "time_picker_hour": "時",
+        "time_picker_minute": "分",
+        "shooting_duration": "撮影時間単位を選択",
+        "how_many_hour": "何時間",
+        "pick_location": "場所を選択",
+        "pick_person": "人数を選択",
+        "pick_adults": "大人",
+        "pick_children": "子供",
+        "has_pets": "ペットがいますか？",
+        "pets_note": "ペットの種類またはその他の備考を記入してください",
+        "location_keyword": "希望する撮影場所を入力してください",
+        "limit_time_offer": "【限定割引】1.5時間のご予約、15%OFFで$1688"
+    },
+    "home": {
+        "milestone": {
+            "title": "ハイビジョン映像 撮影付き",
+            "sub_title": "見逃したくないその瞬間を永遠に"
+        },
+        "reserve_step": {
+            "title": "簡単5ステップ すぐ専属カメラマンを予約",
+            "sub_title": ""
+        },
+        "reserve_step_1": {
+            "title": "条件絞り込み",
+            "sub_title": "ニーズに合わせて撮影ジャンル、日時、場所、時間単位、人数を選択"
+        },
+        "reserve_step_2": {
+            "title": "カメラマンを選ぶ",
+            "sub_title": "サービス可能なカメラマンの作品紹介、カメラマンを選択"
+        },
+        "reserve_step_3": {
+            "title": "予約を確認する",
+            "sub_title": "予約者情報を入力して、今回の予約を確認する"
+        },
+        "reserve_step_4": {
+            "title": "支払い完了しました",
+            "sub_title": "国内・海外のカード決済ができます"
+        },
+        "reserve_step_5": {
+            "title": "予約完了",
+            "sub_title": "予約の確認メールが届きましたら、カメラマンよりご連絡します"
+        },
+        "photographer": {
+            "title": "各地域のプロカメラマン",
+            "more": "より多くのカメラマンを見る"
+        },
+        "attraction": {
+            "title": "ホットスポット"
+        },
+        "instagram": {
+            "title": "インスタグラムをフォローする"
+        },
+        "ad_box": {
+            "title": "今しかない最高の瞬間を永遠に",
+            "sub_title": "美しい思い出",
+            "sub_title_2": "撮影を予約"
+        },
+        "recruit_box": {
+            "title": "カメラマン募集"
+        },
+        "footer": {
+            "privacy": "プライバシーポリシー",
+            "terms": "利用規約",
+            "about": "JoyShotについて"
+        }
+    },
+    "photographer": {
+        "book_now": "このカメラマンを予約する",
+        "service_type": "撮影ジャンル",
+        "portfolio": "{name} の撮影作品"
+    },
+    "App": {
+        "cookie_law": "当ウェブサイトでは、お客様により良いサービスを提供するため、クッキーを利用しています。\nクッキーの使用に同意いただける場合は「同意」ボタンをクリック、もしくはサイト利用を継続することにより、クッキーの使用に同意するものとします。\n詳しいは<a href=\"\/privacy-policy\">プライバシーポリシー<\/a>を参照してください。",
+        "cookie_agree": "同意します"
+    },
+    "Components": {
+        "AdBox": {
+            "remember": "今しかない最高の瞬間<span>を永遠に<\/span>",
+            "booking": "撮影を予約",
+            "image_load_failed": "モバイルバナーの画像取得に失敗しました"
+        },
+        "Footer": {
+            "privacy_policy": "プライバシーポリシー",
+            "company_info": "所在地:台北市大同区南京西路62号7階\nメールアドレス:service@joyshot.app\nカスタマーサービスの営業時間:月~日曜日9:00-20:00"
+        },
+        "Header": {
+            "specify_photographer": "カメラマンを指名する",
+            "cancel_specify": "指名をキャンセルする",
+            "location_hint": "【リマインド】目的地を入力した後に「必ず」”Google Mapの検索候補”が表示されてから検索候補より目的地点を選択してください。",
+            "empty_hint": "スポットに関する情報が見つからない場合は、右下のMessengerからカスタマーサービスまでお問い合わせください。",
+            "more_than_ten": "10人を超える",
+            "enter_address": "住所を入力して検索する",
+            "no_service_cat": "カテゴリが選択されていません",
+            "no_date": "日付が選択されていません",
+            "no_time": "時間が選択されていません",
+            "no_hours": "撮影時間が選択されていません",
+            "no_location": "場所が選択されていません",
+            "no_people": "人数が選択されていません",
+            "zero_people": "人数を0人にすることはできません",
+            "no_pet": "お連れのペットをご記入ください",
+            "incomplete_location": "位置情報が正しくありません。もう一度ドロップダウンメニューから場所を選択し直してください",
+            "notice": "リマインダー",
+            "selected_info": "場所{location}を選択しました。 最小撮影時間は{hours}時間です。"
+        },
+        "Header1": {
+            "search_photographer": "カメラマン1を探す",
+            "search_photographer2": "カメラマン2を探す",
+            "search_category": "<b>ジャンル<\/b><span>ジャンルを選択<\/span>",
+            "search_location": "<b>場所<\/b><span>目的地を探す<\/span>",
+            "search_date": "<b>日付<\/b><span>日付を追加<\/span>",
+            "search_time": "<b>時間<\/b><span>時間を追加<\/span>",
+            "search_people": "<b>人数<\/b><span>人数を追加<\/span>",
+            "category": "ジャンル",
+            "location": "場所",
+            "choose_location": "場所を選択",
+            "hours": "何時間",
+            "date": "日付",
+            "choose_date": "日付を選択",
+            "skip": "スキップ",
+            "continue": "つづき",
+            "time_and_hours": "時間と時間単位",
+            "choose_time": "時間を選択",
+            "hr": "時",
+            "min": "分",
+            "choose_film_hours": "撮影時間単位を選択",
+            "people_and_pets": "人数とペット",
+            "choose_people": "人数を選択",
+            "adults": "大人",
+            "adults2": "大人",
+            "child": "子供",
+            "with_pets": "ペットがいますか？",
+            "pets_placeholder": "ペットの種類をご記入ください。犬、猫、ウサギなど。",
+            "clear_all": "すべてクリア",
+            "booking_immediately": "今すぐ予約する"
+        },
+        "IG": {
+            "follow": "インスタグラムをフォローする"
+        },
+        "PhotographerGrid": {
+            "check": "このカメラマンを見る"
+        },
+        "PhotographerWorksGrid": {
+            "load_works_failed": "作品集の取得に失敗しました"
+        },
+        "RatingBox": {
+            "evaluation_count": "計{count}件口コミ"
+        },
+        "Recruit": {
+            "recruit": "カメラマン募集"
+        },
+        "UvpBox": {
+            "title": "JOYSHOTについて",
+            "description": "JOYSHOTは厳選された百人以上の台湾のプロカメラマンによるイベントの記録、旅行の思い出フォト、ビジネス撮影や様々なシーンの出張撮影サービスを提供しています。\nカメラマンを探すから、予約、お支払い、データ受け取りまで全てオンラインででき、便利で効率的です。\nみんなの大切な一瞬を逃さずカメラに収めましょう！",
+            "slogan1": "お手頃の時間単位の料金プラン",
+            "slogan2": "1時間撮影コース予約可能、3日前まで予約可能",
+            "slogan3": "オンラインで百人以上の台湾のプロカメラマンを選べます",
+            "slogan4": "撮影後24時間以内に無編集データを全てダウンロード可能",
+            "tag1": "お得",
+            "tag2": "柔軟に",
+            "tag3": "効率",
+            "tag4": "迅速"
+        }
+    },
+    "Views": {
+        "404": {
+            "title": "ページが見つかりません。トップページに戻ってください"
+        },
+        "Checkout": {
+            "wait": "支払いを開始します。しばらくお待ちください。",
+            "name": "氏名",
+            "phone": "電話番号",
+            "contact_time": "連絡可能時間帯",
+            "contact_social_media": "SNS",
+            "choose": "選択してください",
+            "account": "アカウント",
+            "account_placeholder": "SNSアカウント",
+            "foreigner": "外国籍のお客様ですか？",
+            "not": "いいえ",
+            "yes": "はい",
+            "order_no": "予約番号",
+            "your_location": "お住まいの地域",
+            "contact_method": "連絡先",
+            "social_media_account": "SNSアカウント",
+            "date": "日付",
+            "time": "時間",
+            "people": "人数",
+            "additional_info": "追加情報",
+            "additional_info_placeholder": "写真撮影について詳しく教えてください(例えば、結婚記念日に初めてのデート場所に行く、4人家族で子供が2人と犬が1匹いる)",
+            "film_location": "撮影場所",
+            "order_detail": "予約の詳細",
+            "hour": "時間",
+            "discount_code": "割引コード",
+            "use": "使う",
+            "confirm": "確認",
+            "cancel": "取り消す",
+            "click_hint": "「確認」をクリックすると、決済ページに移動します",
+            "submit_title": "予約を送信",
+            "submit": "支払いへ進む",
+            "after_payment_title": "支払い完了後:",
+            "after_payment1": "※お支払い完了後、ご予約が成立します。",
+            "after_payment2": "※ 24時間以内にカメラマンから連絡します。",
+            "after_payment3": "※ カスタマーサービスに連絡するため、Lineアプリの友だち追加をお願いします",
+            "foreigner_payment": "海外のお客様はPayPal決済をご選択ください",
+            "payment_success_desc": "JoyShot出張撮影",
+            "ecpay_error": "ecpay決済に失敗しました。",
+            "order_error": "予約送信にエラーが発生しました",
+            "name_required": "氏名 未記入<br\/>",
+            "contact_time_required": "連絡可能時間帯 未記入<br\/>",
+            "phone_required": "電話番号 未記入<br\/>",
+            "contact_method_required": "連絡先 未記入<br\/>",
+            "social_media_account_required": "SNSアカウント 未記入<br\/>",
+            "email_required": "email 未記入<br\/>",
+            "remind": "リマインド",
+            "dicount_code_error": "無効な割引コード"
+        },
+        "Faq": {
+            "title": "よくある質問"
+        },
+        "Match": {
+            "profession": "プロカメラマン",
+            "match_count": "{count} 名のカメラマンが該当します",
+            "film_time": "撮影時間",
+            "film_location": "撮影場所",
+            "booking_now": "今すぐ予約",
+            "period_full": "このカメラマンはご指定の時間帯にすでに満員もしくは受付中止となってます",
+            "recommend_others": "ご指定の時間帯に撮影可能なカメラマンをご紹介します。",
+            "check_others": "他のカメラマンを見る",
+            "wait": "マッチング中、しばらくお待ちください。",
+            "booking_result": "予約結果"
+        },
+        "MatchedPhotographer": {
+            "comment_count": "{count} 件の口コミ",
+            "photograph_style": "撮影ジャンル",
+            "selected": "このカメラマンのを予約する",
+            "photographer_artworks": "{nickName} の撮影作品",
+            "photographer_load_failed": "カメラマンのデータ取得に失敗しました"
+        },
+        "Photographer": {
+            "comment_count": "{count} 件の口コミ",
+            "booked_count": "このカメラマンは{count}回予約されています",
+            "photographer_experience": "撮影経歴{year}年",
+            "photograph_style": "撮影ジャンル",
+            "booking_photographer": "このカメラマンのを予約する",
+            "photographer_artworks": "{nickName} の撮影作品",
+            "photographer_load_failed": "カメラマンのデータ取得に失敗しました"
+        },
+        "PhotographerList": {
+            "title": "地域別専門カメラマン",
+            "no_photographer": "このエリアには現在カメラマンがいません"
+        },
+        "PrivacyPolicy": {
+            "title": "プライバシーポリシー",
+            "content": "<p>台湾の総合写真予約プラットフォームJoyShotへようこそ。本サイトの情報やサービスを安心してご利用いただくため、ここにプライバシーポリシー (以下、「本ポリシー」といいます。) を定め、お客様の情報を保護いたします。以下の内容をよくお読みください：\n<\/p><p>一、適用範囲<\/p><p>本ポリシーは、お客様が本サイトをご利用になる際の個人識別情報の取り扱いについて規定するものです。本サイトからリンクされている外部サイトや、当社が直接管理または委託していない個人には適用されません。\n<\/p><p>二、個人情報の収集、処理および利用<\/p><ul><li>本サイトにアクセス又は利用する場合、必要な個人情報を提供頂く、その特定の目的の範囲内で個人情報を処理及び利用します。書面による同意がない限り、本サイトは個人情報を他の目的には利用致しません。<\/li><li>本サイトでは、カスタマサポートメールサービス、アンケートなどご利用の際に、お客様のお名前、メールアドレス、連絡先、ご利用時間などを記録します。<\/li><li>本サイトを閲覧する際に当社のサーバーは、IPアドレス、ブラウジング時間、ブラウザの種類、ブラウジング\/クリックデータなど、内部参照のために自動的に記録します。この情報は厳重に管理され、外部に開示されることはありません。<\/li><li> 当社は、サービスの精度を向上させるために、収集した調査内容の統計分析を行います。分析から得られた統計データや説明文は必要に応じて開示することがありますが、特定の個人情報が含まれることはありません。<\/li><li>お客様からお預かりした個人情報の開示・訂正・削除をご希望の場合は、ご本人様よりお申し出ください。\n<\/li><\/ul><p>三、資料の保護<\/p><ul><li>本サイトのサーバーには、関連する情報セキュリティ設備が設置されており、ウェブサイトとお客様の個人データの両方を保護するために、ファイアウォールやウイルス対策システムなどの必要なセキュリティ対策が講じられています。お客様の個人情報へのアクセスは、権限を与えられた担当者のみに許可されており、担当者は守秘義務契約を結んでいます。守秘義務に違反した場合、法的措置がとられます。<\/li><li>業務上の必要により、第三者の機関に委託する必要がある場合は、守秘義務の遵守を厳格に要求し、遵守を確保するために必要な検査手続きを実施します。\n<\/li><\/ul><p>四、 外部リンク：<\/p><p>本サイトは外部サイトのリンクを提供しています。本サイトからリンクされている外部サイトは当社のプライバシーポリシーには適用されません。リンク先のウェブサイトにてプライバシーポリシーご確認ください。\n<\/p><p>五、第三者との個人データの共有：<\/p><p>当社は、お客様の個人情報について、お客様ご本人の同意を得ずに第三者に提供することは原則として行いません。提供先を特定したうえで、お客様の同意を得た場合に限り、提供します。ただし、以下の場合はこの限りではありません。\n<\/p><ul><li>お客様の書面による同意がある場合\n<\/li><li>法令に基づく場合\n<\/li><li>お客様ご本人の生命、身体、財産その他の権利利益を害するおそれがある場合\n<\/li><li>提供されたデータが匿名で処理または収集される場合、公益目的の統計または学術研究目的で国の機関または学術研究機関に協力する場合\n <\/li><li>お客様の行為が当社サービスの利用規約や方針・告知等に違反している場合および他のお客様、第三者又は当社グループの権利、財産を保護するために必要と認められる場合\n<\/li><li>お客様の利益を保護する場合\n<\/li><li>ポリシーに定める利用目的の達成に必要な範囲内において、個人情報を取り扱う従業者や委託先に委託する場合、必要かつ適切な監督を行います。\n<\/li><\/ul><p>六、クッキーの使用：<\/p><p>お客様により良いサービスを提供するため、クッキーを利用しています。クッキーによって取得される情報を提供することを望まない場合、ユーザーはWebブラウザのクッキー取得機能を無効化することによってクッキー情報の提供を拒否することができます。ただし、この場合、ウェブサイトの一部の機能が正しく動作しなくなる可能性があります。\n<\/p><p>七、プライバシー保護ポリシーの改正<\/p><p>本サイトのプライバシー保護ポリシーは、必要に応じて随時改正され、改正された約款はウェブサイトに掲載されます。\n<\/p><p>サービス事業者：Joyshot Digital Inc.<\/p><p> <\/p>"
+        },
+        "Thankyou": {
+            "pay_success": "決済成功-予約完了",
+            "contact_you": "24時間以内にカメラマンから連絡します",
+            "customer_service": "カスタマーサービスに連絡するため、Lineアプリの友だち追加をお願いします",
+            "join_line": "Lineアプリの友だち追加",
+            "pay_failed": "決済失敗-予約が成立しませんでした",
+            "return_code": "取引コード: {rtnCode}",
+            "check_reason": "取引エラーに関するカスタマーサービスへのお問い合わせ",
+            "order_no": "予約番号",
+            "name": "氏名",
+            "phone": "電話番号",
+            "contact_time": "連絡可能時間帯",
+            "date": "撮影日",
+            "time": "時間",
+            "hours": "時間単位",
+            "people": "人数",
+            "load_transaction_failed": "取引結果の取得に失敗しました"
+        }
+    },
+    "store": {
+        "jsapp": {
+            "pets_notes": "ペットの種類：{petsNotes}",
+            "no_pets": "ペットがいない",
+            "adult_num": "{adultNum} 大人",
+            "over_adult_num": "10大人を超える",
+            "child_num": "{childNum} 子供",
+            "over_child_num": "10子供を超える"
+        }
+    },
+    "css": {
+        "content": {
+            "coupon_discount": "クーポン割引",
+            "transportation_fee": "交通費",
+            "shooting_fee": "撮影料",
+            "photographer": "カメラマン",
+            "duration": "撮影時間",
+            "total": "合計",
+            "catagory": "撮影ジャンル"
+        }
+    }
+}

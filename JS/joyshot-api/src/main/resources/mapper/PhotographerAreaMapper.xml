@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.PhotographerAreaMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.PhotographerArea">
+            <result property="phId" column="ph_id" jdbcType="INTEGER"/>
+            <result property="areaParentId" column="area_parent_id" jdbcType="INTEGER"/>
+            <result property="areaId" column="area_id" jdbcType="INTEGER"/>
+            <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ph_id,area_parent_id,area_id,zip_code
+    </sql>
+
+</mapper>

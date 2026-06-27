@@ -1,0 +1,351 @@
+{
+    "action": {
+        "create_success": "자료 추가에 성공하였습니다",
+        "create_error": "자료 추가에 실패하였습니다",
+        "save_success": "자료 업데이트에 성공하였습니다",
+        "save_error": "자료 업데이트에 실패하였습니다",
+        "delete_success": "자료 삭제 성공하였습니다",
+        "delete_error": "자료 삭제 실패였습니다",
+        "upload_error": "파일 업로드 실패하였습니다",
+        "get_error": "자료 획득에 실패하였습니다",
+        "name": "이동",
+        "password_not_match": "새 비밀번호가 일치하지 않습니다",
+        "force_logout": "비밀번호가 업데이트되어 로그아웃될 것입니다"
+    },
+    "message": {
+        "success": "성공하였습니다",
+        "error": "에러가 발생하였습니다",
+        "account": "ID",
+        "password": "비밀번호",
+        "required_field": "해당 칸 입력 필요합니다",
+        "uploading": "로딩중입니다",
+        "data_filter": "필터",
+        "keyword": "검색어 입력바랍니다",
+        "no_data": "현재 요청 하시는 자료가 없습니다",
+        "alert": "알림",
+        "logout_now": "즉시 로그아웃을 하시겠습니까?",
+        "delete_confirm": "이 자료를 삭제하시겠습니까?",
+        "not_valid_image": "jpg\/png 파일만 업로드바랍니다",
+        "file_size_exceed_2M": "파일 크기가 2M을 초과하였습니다"
+    },
+    "buttons": {
+        "search": "검색",
+        "search_photographer": "날짜, 시간, 장소 선택",
+        "book_now": "즉시 촬영 예약",
+        "book_now2": "사진작가 섭외",
+        "booking": "예약"
+    },
+    "menu": {
+        "photographer": "사진작가"
+    },
+    "pages": {
+        "home": {
+            "banner": {
+                "main_title": "메일 배너",
+                "sub_title": "서브 배너",
+                "book_now": "지금 예약합니다",
+                "mobile_banner_load_failed": "모바일 배너 그림 가져오기에 실패하였습니다",
+                "banner_load_failed": "배너 그림 가져오기 실패하였습니다"
+            }
+        }
+    },
+    "search_bar": {
+        "service": "서비스 선택",
+        "service_note": "(참고: 피로연(가족연 포함), 웨딩촬영, 상업촬영 미포함)",
+        "date_picker": "날짜 선택",
+        "time_picker": "시간 선택",
+        "time_picker_hour": "시",
+        "time_picker_minute": "분",
+        "shooting_duration": "촬영시간 선택",
+        "how_many_hour": "시간",
+        "pick_location": "장소 선택",
+        "pick_person": "인원 선택",
+        "pick_adults": "성인",
+        "pick_children": "어린이",
+        "has_pets": "반려동물 유무",
+        "pets_note": "반려동물 종류 또는 기타 사항 기입해주세요",
+        "location_keyword": "원하는 촬영 장소를 입력해주세요",
+        "limit_time_offer": "【타임세일】1.5시간 예약 시 15% 할인 $1688"
+    },
+    "home": {
+        "milestone": {
+            "title": "스냅 촬영을 위해 사진작가 동행",
+            "sub_title": "놓치고 싶지 않은 중요한 장면을 남겨드리겠습니다"
+        },
+        "reserve_step": {
+            "title": "5 - Step 전속 사진작가 빠른 예약",
+            "sub_title": ""
+        },
+        "reserve_step_1": {
+            "title": "조건 검색",
+            "sub_title": "요청에 따라 촬영 카테고리, 날짜, 장소, 시간 및 인원수 선택"
+        },
+        "reserve_step_2": {
+            "title": "사진 작가 선택",
+            "sub_title": "예약 가능한 사진작가 소개, 작품, 선택한 사진작가 검색"
+        },
+        "reserve_step_3": {
+            "title": "예약 정보 확인",
+            "sub_title": "기본자료 입력, 예약 정보 확인"
+        },
+        "reserve_step_4": {
+            "title": "결제 완료",
+            "sub_title": "국내 및 해외 신용 카드 사용 가능"
+        },
+        "reserve_step_5": {
+            "title": "예약완료",
+            "sub_title": "예약 메일 확인, 사진작가님에게 연락 올 것입니다"
+        },
+        "photographer": {
+            "title": "지점별 전문 사진작가",
+            "more": "더 많은 사진작가 보기"
+        },
+        "attraction": {
+            "title": "인기 있는 스냅 촬영 장소"
+        },
+        "instagram": {
+            "title": "저희 인스타그램 팔로우 해주세요"
+        },
+        "ad_box": {
+            "title": "소중하고 아름다운 추억을 기록하겠습니다.",
+            "sub_title": "아름다운 추억",
+            "sub_title_2": "사진 촬영 예약 시작"
+        },
+        "recruit_box": {
+            "title": "사진작가 모집"
+        },
+        "footer": {
+            "privacy": "개인정보",
+            "terms": "관련조항",
+            "about": "About JoyShot"
+        }
+    },
+    "photographer": {
+        "book_now": "해당 사진작가 예약하기",
+        "service_type": "촬영 카테고리",
+        "portfolio": "{name} 의 촬영 작품"
+    },
+    "App": {
+        "cookie_law": "당사는 쿠키 등 정보를 사용해서 콘텐츠 조정을 통해 사이트를 개선 할 수 있습니다. 허용 또는 계속 버튼을 클릭하면 당사의 사용에 동의하시게됩니다. 자세한 내용은 <ahref=\"\/privacy-policy\"> 프라이버시 약관 <\/a>를 자세히 읽어주시면 감사하겠습니다",
+        "cookie_agree": "동의합니다."
+    },
+    "Components": {
+        "AdBox": {
+            "remember": "이 소중한 <span>의 아름다운 추억을 담다<\/span>",
+            "booking": "사진 촬영 예약 시작",
+            "image_load_failed": "모바일 배너 그림 가져오기 실패"
+        },
+        "Footer": {
+            "privacy_policy": "프라이버시 조항",
+            "company_info": "회사 주소: 타이베이시 다퉁구 남경서로 62번지 7층 연락처: service@joyshot.app 고객서비스 시간 : 월~일요일 9:00-20:00"
+        },
+        "Header": {
+            "specify_photographer": "사진작가 지정",
+            "cancel_specify": "지정취소",
+            "location_hint": "[알림] 목표 장소를 입력한 후, 「반드시」시스템이 자동적으로 「Google 랜드마크」를 리스트 할 때까지 기다렸다가,가까운 지점을 선택해 주세요.",
+            "empty_hint": "만약 원하시는 관광지 자료를 찾을 수 없다면, 오른쪽 하단의 메신저로 고객센터와 연락하시면, 저희가 도와드리겠습니다",
+            "more_than_ten": "10명 초과",
+            "enter_address": "주소를 입력하여 조회",
+            "no_service_cat": "카테고리가 선택되지 않았습니다",
+            "no_date": "날짜가 선택되지 않았습니다",
+            "no_time": "시간이 선택되지 않았습니다",
+            "no_hours": "촬영 기간이 선택되지 않았습니다",
+            "no_location": "위치가 선택되지 않았습니다",
+            "no_people": "인원수가 선택하지 않았습니다",
+            "zero_people": "인원은 0명일 수 없습니다",
+            "no_pet": "당신이 데려올 반려동물을 기입해 주세요",
+            "incomplete_location": "위치정보가 불완전합니다. 드롭다운메뉴에서 위치를 재입력하고 선택해주세요.",
+            "notice": "알림",
+            "selected_info": "{location}을(를) 위치로 선택했습니다. 최소 촬영 시간은 {hours}시간입니다."
+        },
+        "Header1": {
+            "search_photographer": "포토그래퍼 1",
+            "search_photographer2": "포토그래퍼 2",
+            "search_category": "<b>카테고리<\/b><span> 카테고리선택<\/span>",
+            "search_location": "<b>장소<\/b><span>목적지 검색<\/span>",
+            "search_date": "<b>날짜<\/b><span>신규 날짜<\/span>",
+            "search_time": "<b>기간<\/b><span>신규 시간<\/span>",
+            "search_people": "<b>인원수<\/b><span>신규 인원수<\/span>",
+            "category": "분류",
+            "location": "장소",
+            "choose_location": "지점 선택",
+            "hours": "시간",
+            "date": "날짜",
+            "choose_date": "날짜 선택",
+            "skip": "건너뛰다",
+            "continue": "계속",
+            "time_and_hours": "시간",
+            "choose_time": "시간 선택",
+            "hr": "시",
+            "min": "분",
+            "choose_film_hours": "촬영시간 선택",
+            "people_and_pets": "사람과 반려동물",
+            "choose_people": "인원수 선택",
+            "adults": "성인",
+            "adults2": "성인",
+            "child": "어린이",
+            "with_pets": "반려동물 유무",
+            "pets_placeholder": "어떤 반려동물인지 입력해주세요 : 강아지, 고양이, 토끼 등을 강아지, 고양이, 토끼 등",
+            "clear_all": "모두 지우기",
+            "booking_immediately": "바로 예약"
+        },
+        "IG": {
+            "follow": "저희 인스타그램 팔로우 해주세요"
+        },
+        "PhotographerGrid": {
+            "check": "이 사진작가 보기"
+        },
+        "PhotographerWorksGrid": {
+            "load_works_failed": "포트폴리오 불러오기 실패"
+        },
+        "RatingBox": {
+            "evaluation_count": "총 {count}건의 리뷰"
+        },
+        "Recruit": {
+            "recruit": "사진작가 모집"
+        },
+        "UvpBox": {
+            "title": "About JOYSHOT",
+            "description": "JOYSHOT의 전체 동반 사진 예약 플랫폼은 100명 이상의 대만 사진작가와협력하여 온라인 동반 사진 예약 서비스를 제공합니다.활동 기록, 여행 사진, 스타일 스트리트 사진, 비즈니스 활동 측면 사진 또는 다양한 기념 시간에 적합합니다. 온라인으로 사진작가 검색, 선택, 예약, 결제 및 사진 다운로드를완료하면 편리하고 효율적입니다. 기념 하기 위해, 가는 여정의 가치를 위해! 중요한 지금 이 순간을 카메라로 담아드리겠습니다.",
+            "slogan1": "합리적인 촬영 비용, 시간당 비용 계산",
+            "slogan2": "1시간 촬영 예약 가능, 3일 전 예약 가능",
+            "slogan3": "온라인으로 100명 이상의 현지 사진사 선택",
+            "slogan4": "촬영 후 24시간 이내에 무보정 사진 모두 다운로드",
+            "tag1": "가성비",
+            "tag2": "탄력적",
+            "tag3": "효율적",
+            "tag4": "스피드"
+        }
+    },
+    "Views": {
+        "404": {
+            "title": "페이지를 찾을 수 없습니다. 다시 시작하십시오"
+        },
+        "Checkout": {
+            "wait": "결제 시작하겠습니다, 잠시 기다려 주세요.",
+            "name": "이름",
+            "phone": "연락처",
+            "contact_time": "연락 가능 시간",
+            "contact_social_media": "SNS",
+            "choose": "선택해 주세요",
+            "account": "ID",
+            "account_placeholder": "SNS ID",
+            "foreigner": "외국인입니까?",
+            "not": "아니요",
+            "yes": "네",
+            "order_no": "주문번호",
+            "your_location": "거주중인 지역",
+            "contact_method": "연락처",
+            "social_media_account": "SNS 연락처 계정",
+            "date": "날짜",
+            "time": "시간",
+            "people": "인원수",
+            "additional_info": "부가 정보",
+            "additional_info_placeholder": "당신의 사진 촬영에 대해 더 많은 것을 알려주십시오. (예: 결혼기념일에 첫데이트 장소로 돌아갑니다. 우리는 가족이고, 네 식구이며 아이 둘, 개 한 마리입니다.)",
+            "film_location": "촬영 장소",
+            "order_detail": "예약 내역",
+            "hour": "시간",
+            "discount_code": "할인코드",
+            "use": "사용",
+            "confirm": "확정",
+            "cancel": "취소",
+            "click_hint": "확인을 클릭하면, 선주문이 발송되고 결제 페이지로 이동합니다",
+            "submit_title": "예약 발송",
+            "submit": "결제 페이지로 이동",
+            "after_payment_title": "결제완료 후 :",
+            "after_payment1": "※ 결제완료 후 예약주문완료",
+            "after_payment2": "※ 사진작가가 24시간 내에 연락할 것입니다",
+            "after_payment3": "※ 고객센터 연락서비스, Line@를 추가하세요",
+            "foreigner_payment": "외국인 고객님, 페이팔로 결제해 주세요",
+            "payment_success_desc": "JoyShot 동행 촬영",
+            "ecpay_error": "Ecpay 결제 페이지 불러오기 실패",
+            "order_error": "주문서 발송 오류",
+            "name_required": "이름 미작성 <br\/>",
+            "contact_time_required": "연락 가능 시간 미기입 <br\/>",
+            "phone_required": "전화 미기입 <br\/>",
+            "contact_method_required": "연락처 미선택<br\/>",
+            "social_media_account_required": "SNS 계정 미기입 <br\/>",
+            "email_required": "email 미기입 <br\/>",
+            "remind": "알림",
+            "dicount_code_error": "유효하지 않은 할인 코드입니다."
+        },
+        "Faq": {
+            "title": "자주 묻는 질문"
+        },
+        "Match": {
+            "profession": "전문 사진 작가",
+            "match_count": "{count}명의 사진 작가가 조건을 매칭되었습니다.",
+            "film_time": "촬영 시간",
+            "film_location": "촬영 장소",
+            "booking_now": "바로 예약",
+            "period_full": "선택하신 사진 작가님은 해당 시간대에 정원이 찼거나 주문을 받지 않았습니다",
+            "recommend_others": "당신의 동시간대 촬영 가능한 사진작가를 추천드리겠습니다.",
+            "check_others": "다른 조건에 맞는 사진작가 보기",
+            "wait": "매칭 중이니 잠시 기다려 주십시오.",
+            "booking_result": "예약 결과"
+        },
+        "MatchedPhotographer": {
+            "comment_count": "{count}개의 리뷰",
+            "photograph_style": "촬영 카테고리",
+            "selected": "해당 사진 작가 선택",
+            "photographer_artworks": "{nickName} 의 사진 작품",
+            "photographer_load_failed": "사진작가 자료 가져오기 실패"
+        },
+        "Photographer": {
+            "comment_count": "{count}개의 리뷰",
+            "booked_count": "해당 사진 작가 님은 {count}번 예약되었습니다",
+            "photographer_experience": "촬영 경력 {year}년",
+            "photograph_style": "촬영 카테고리",
+            "booking_photographer": "해당 사진 작가 예약하기",
+            "photographer_artworks": "{nickName} 의 사진 작품",
+            "photographer_load_failed": "사진 작가 자료 가져오기 실패"
+        },
+        "PhotographerList": {
+            "title": "지역별 전문 사진 작가",
+            "no_photographer": "현재 해당 지역에는 사진 작가가 없습니다."
+        },
+        "PrivacyPolicy": {
+            "title": "프라이버시정책조항",
+            "content": "<p>\"JoyShot 전대동행 촬영 예정 플랫폼\"에 오신 것을 매우 환영합니다. 귀하가 안심하고 본 사이트의 각종 서비스와 정보를 이용할 수 있도록 본 사이트의 프라이버시 보호 정책을 설명하여 귀하의 권익을 보호하고자 합니다. 아래 내용을 자세히 읽어보시기 바랍니다:<\/p><p>1, 프라이버시 보호 정책의 적용 범위 <\/p><p>>개인 정보 보호 정책 내용은 귀하가 웹 서비스를 이용할 때 수집한 개인 식별 자료를 본 사이트에서 처리하는 방법을 포함합니다. 프라이버시 보호 정책은 본 사이트 이외의 관련 링크 사이트에는 적용되지 않으며, 본 사이트가 아니거나 관리에 참여하는 사람에게는 적용되지 않습니다.<\/p><p>2,개인정보의 수집,처리 및 이용방식은 <\/p><ul><li> 당신이본 사이트를 방문하거나 본 사이트에서 제공하는 기능서비스를 이용할 때,우리는 이 서비스의 기능적 성격에 따라, 개인자료는 반드시 제공 요청드리며, 특정목적 범위내에서 당신의 개인자료를 처리 및 이용할 것이며, 당신의서면동의가 아니면,본 사이트는 개인자료를 다른 용도로 사용하지 않을 것입니다.<\/li><li> 본 사이트는 고객님께서 서비스함, 설문조사 등의 대화형 기능을 이용하실 때 고객님께서 제공하신 이름, 이메일 주소, 연락처 및 이용시간 등을 그대로 유지합니다.<\/li><li>는 일반적으로 열람할 때 서버가 자체적으로 자동 기록하는데, 여기에는 당신이 사용하는 접속 설비의 IP 주소, 사용시간, 사용하는 브라우저, 열람 및 클릭한 기록 등이 포함되어 있으며, 우리의 웹사이트 서비스 증진을 위한 참고 근거가 됩니다. 이 기록은 내부 자료이므로 절대 외부에 공개하지 않겠습니다.<\/li><li> 정확한 서비스를 제공하기위해 수집된 설문내용에 대한 통계 및 분석을 수행하며, 분석결과의 통계 데이터 또는 문자로 설명하고,  내부연구 외에 필요에 따라 통계자료 및 설명문자를 발표하지만 특정 개인에 대한 자료는 포함하지 않습니다.<\/li><li>당신은 언제든지 우리 사이트에 수집된 귀하의 오류 또는 불완전한 개인 정보를수정하거나 삭제하기 위해 우리에게 요청할 수 있습니다.<\/li><\/ul><p>3, 자료의 보호<\/p><ul><li> 본 사이트 호스트에는 방화벽, 안티바이러스 시스템등 관련 각종 정보보안 설비 및 필요한 보안조치가 설치되어 있으며, 웹사이트 및 귀하의 개인 데이터는 엄격한 보호조치를 취하여 권한을 부여받은 인원만이 귀하의 개인 데이터에 접근할 수 있으며, 해당 처리 인원은 모두 비밀유지계약을 체결하고 비밀유지 의무를 위반한 자는 관련 법적 처분을 받게됩니다.<\/li><li> 사업상 필요에 의해 다른 업체에 서비스를 위탁할 필요가 있는 경우, 본 사이트에서도 기밀 유지 의무를 준수하도록 엄격히 요구하고 있으며, 준수 여부를 결정하기 위해 필요한 검사 절차를 취하고 있습니다.<\/li><\/ul><p>4, 웹사이트의 외부 관련 링크 <\/p><p> 본 웹사이트의 웹 페이지는다른 웹사이트의 네트워크 링크를 제공합니다. 귀하는 또한 본 웹사이트에서 제공하는 링크를 통해 다른 웹사이트에 들어갈 수 있습니다.단, 이 링크사이트는 본 사이트의 프라이버시 보호 정책이 적용되지 않으므로, 당신은반드시 이 링크 사이트의 프라이버시 보호 정책을 참고해야 합니다.<\/p><p>5, 제3자와 개인 정보를 공유하는 정책 <\/p><p> 본 사이트는 절대로 귀하의 개인 정보를 다른 개인, 단체, 개인 기업 또는 공무 기관에 제공, 교환, 임대 또는 판매하지 않습니다. 그러나 법적 근거 또는 계약 의무가 있는 사람은 여기에 해당되지 않습니다.<\/p><p> 전항 단서의 상황은 귀하의 서면 동의를 통해 <\/p><ul><li>에 국한되지 않는 것을 포함합니다.<\/li><li> 법률은명시적으로 규정하고 있습니다.<\/li><li>는 당신의 생명, 신체, 자유 또는 재산상의 위험을 면하기 위한 것입니다.<\/li><li>는 공공기관 또는 학술연구기관과 협력하여 공공의 이익을 바탕으로 통계 또는 학술연구를 위해 필요하며, 제공자가 처리하거나 자료를 수집하는 자는 그 폭로방식에 따라 특정 당사자를 식별할 수 없습니다.<\/li><li> 귀하의 웹사이트 행위가 서비스 약관을위반하거나 웹사이트와 다른 사용자의 권익을 손상시키거나 방해하거나 피해를 줄 수 있는 경우, 웹사이트 관리 부서의 분석을 통해 귀하의 개인 정보가 식별, 연락 또는 법적 조치를 취하기 위해 필요한 경우입니다.<\/li><li>는당신의 권익에 도움이 됩니다.<\/li><li> 본 사이트는 제조업체가 귀하의 개인정보를 수집, 처리 또는 활용하는 것을 지원하도록 위탁할 때 위탁된 제조업체 또는 개인에 대한 감독 및 관리의 책임을 다합니다.<\/li><\/ul><p>6, 쿠키의 사용<\/p><p> 최상의 서비스를 제공하기 위해 본 사이트는 컴퓨터에 쿠키를 배치하여 사용하고 있으며, 쿠키의 작성을 원하지 않을 경우 사용하시는브라우저 기능 항목에서 프라이버시 레벨을 높게 설정하면 쿠키 작성을 거부할 수 있지만, 사이트의 일부 기능이 정상적으로 실행되지 않을 수 있습니다.<\/p><p>7, 프라이버시 보호 정책의 수정 <\/p><p> 본 사이트의 프라이버시 보호 정책은 필요에 따라 수시로 수정될 것이며, 수정된 약관은 사이트에게재될 예정입니다.<\/p><p>서비스제공업체 : Joyshot Digital Inc.)<\/p><\/p>"
+        },
+        "Thankyou": {
+            "pay_success": "결제완료-예약 성공",
+            "contact_you": "사진 작가님은 24시간 내에 연락할 것이다",
+            "customer_service": "고객센터 연락하실경우, 꼭 LINE@ 추가하시기 바랍니다",
+            "join_line": "Line@ 추가",
+            "pay_failed": "결제 실패 - 주문 성공되지 않음",
+            "return_code": "거래인증번호: {rtnCode}",
+            "check_reason": "고객 센터에게 연락하여, 거래 실패 원인을 조회하세요",
+            "order_no": "주문번호",
+            "name": "이름",
+            "phone": "연락처",
+            "contact_time": "연락 가능 시간",
+            "date": "촬영 날짜",
+            "time": "시간",
+            "hours": "시수",
+            "people": "인원수",
+            "load_transaction_failed": "거래 결과 실패"
+        }
+    },
+    "store": {
+        "jsapp": {
+            "pets_notes": "반려동물 종류",
+            "no_pets": "반려동물 없다",
+            "adult_num": "{adultNum} 성인",
+            "over_adult_num": "10성인 초과",
+            "child_num": "{childNum} 어린이",
+            "over_child_num": "10어린이 초과"
+        }
+    },
+    "css": {
+        "content": {
+            "coupon_discount": "쿠폰 할인",
+            "transportation_fee": "교통비",
+            "shooting_fee": "촬영비",
+            "photographer": "사진작가",
+            "duration": "촬영시간",
+            "total": "총액",
+            "catagory": "촬영 카테고리"
+        }
+    }
+}

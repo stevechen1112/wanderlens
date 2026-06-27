@@ -25,3 +25,8 @@ Thumbs.db
 .nuxt/
 .output/
 dist/
+
+# JS 遺產參考：勿 commit 真實金鑰（僅保留 .example）
+JS/joyshot-api/src/main/resources/keys/secret_*.json
+!JS/joyshot-api/src/main/resources/keys/secret_*.json.example
+JS/joyshot-api/credentials/

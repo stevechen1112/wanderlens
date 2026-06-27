@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Order">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+            <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+            <result property="custId" column="cust_id" jdbcType="INTEGER"/>
+            <result property="serviceCat" column="service_cat" jdbcType="VARCHAR"/>
+            <result property="serviceCatEn" column="service_cat_en" jdbcType="VARCHAR"/>
+            <result property="serviceCatJp" column="service_cat_jp" jdbcType="VARCHAR"/>
+            <result property="serviceCatKr" column="service_cat_kr" jdbcType="VARCHAR"/>
+            <result property="serviceFee" column="service_fee" jdbcType="INTEGER"/>
+            <result property="unitPrice" column="unit_price" jdbcType="INTEGER"/>
+            <result property="transportationFee" column="transportation_fee" jdbcType="INTEGER"/>
+            <result property="transportationFeeOnCustomer" column="transportation_fee_on_customer" jdbcType="INTEGER"/>
+            <result property="transportationFeeCustomerActualPay" column="transportation_fee_customer_actual_pay" jdbcType="INTEGER"/>
+            <result property="couponCode" column="coupon_code" jdbcType="VARCHAR"/>
+            <result property="couponDiscount" column="coupon_discount" jdbcType="INTEGER"/>
+            <result property="totalFee" column="total_fee" jdbcType="INTEGER"/>
+            <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+            <result property="customerPhone" column="customer_phone" jdbcType="VARCHAR"/>
+            <result property="contactTime" column="contact_time" jdbcType="VARCHAR"/>
+            <result property="shootingDate" column="shooting_date" jdbcType="VARCHAR"/>
+            <result property="shootingTime" column="shooting_time" jdbcType="VARCHAR"/>
+            <result property="shootingDuration" column="shooting_duration" jdbcType="FLOAT"/>
+            <result property="shootingLocation" column="shooting_location" jdbcType="VARCHAR"/>
+            <result property="adultNum" column="adult_num" jdbcType="INTEGER"/>
+            <result property="childNum" column="child_num" jdbcType="INTEGER"/>
+            <result property="hasPets" column="has_pets" jdbcType="INTEGER"/>
+            <result property="petsNotes" column="pets_notes" jdbcType="VARCHAR"/>
+            <result property="affiliateBy" column="affiliate_by" jdbcType="INTEGER"/>
+            <result property="distance" column="distance" jdbcType="DOUBLE"/>
+            <result property="photographerProfit" column="photographer_profit" jdbcType="INTEGER"/>
+            <result property="ratioOnCustomer" column="ratio_on_customer" jdbcType="FLOAT"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="customerCity" column="customer_city" jdbcType="VARCHAR"/>
+            <result property="social" column="social" jdbcType="VARCHAR"/>
+            <result property="socialAccount" column="social_account" jdbcType="VARCHAR"/>
+            <result property="extraInfo" column="extra_info" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="rtnCode" column="rtn_code" jdbcType="VARCHAR"/>
+            <result property="paymentMethod" column="payment_method" jdbcType="VARCHAR"/>
+            <result property="paymentOrderNo" column="payment_order_no" jdbcType="VARCHAR"/>
+            <result property="manualOrder" column="manual_order" jdbcType="VARCHAR"/>
+            <result property="driverLink" column="driver_link" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="picNum" column="pic_num" jdbcType="INTEGER"/>
+            <result property="backupDone" column="backup_done" jdbcType="VARCHAR"/>
+            <association property="photographer">
+                <id column="ph_id" property="id"></id>
+                <result column="name" property="name"></result>
+                <result column="nick_name" property="nickName"></result>
+                <result column="go_live" property="goLive"></result>
+                <result column="email2" property="email"></result>
+            </association>
+    </resultMap>
+
+    <resultMap id="BaseResultMap1" type="com.joyshot.app.entity.Order">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+        <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+        <result property="custId" column="cust_id" jdbcType="INTEGER"/>
+        <result property="serviceCat" column="service_cat" jdbcType="VARCHAR"/>
+        <result property="serviceCatEn" column="service_cat_en" jdbcType="VARCHAR"/>
+        <result property="serviceCatJp" column="service_cat_jp" jdbcType="VARCHAR"/>
+        <result property="serviceCatKr" column="service_cat_kr" jdbcType="VARCHAR"/>
+        <result property="serviceFee" column="service_fee" jdbcType="INTEGER"/>
+        <result property="unitPrice" column="unit_price" jdbcType="INTEGER"/>
+        <result property="transportationFee" column="transportation_fee" jdbcType="INTEGER"/>
+        <result property="transportationFeeOnCustomer" column="transportation_fee_on_customer" jdbcType="INTEGER"/>
+        <result property="transportationFeeCustomerActualPay" column="transportation_fee_customer_actual_pay" jdbcType="INTEGER"/>
+        <result property="couponCode" column="coupon_code" jdbcType="VARCHAR"/>
+        <result property="couponDiscount" column="coupon_discount" jdbcType="INTEGER"/>
+        <result property="totalFee" column="total_fee" jdbcType="INTEGER"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerPhone" column="customer_phone" jdbcType="VARCHAR"/>
+        <result property="contactTime" column="contact_time" jdbcType="VARCHAR"/>
+        <result property="shootingDate" column="shooting_date" jdbcType="VARCHAR"/>
+        <result property="shootingTime" column="shooting_time" jdbcType="VARCHAR"/>
+        <result property="shootingDuration" column="shooting_duration" jdbcType="FLOAT"/>
+        <result property="shootingLocation" column="shooting_location" jdbcType="VARCHAR"/>
+        <result property="adultNum" column="adult_num" jdbcType="INTEGER"/>
+        <result property="childNum" column="child_num" jdbcType="INTEGER"/>
+        <result property="hasPets" column="has_pets" jdbcType="INTEGER"/>
+        <result property="petsNotes" column="pets_notes" jdbcType="VARCHAR"/>
+        <result property="affiliateBy" column="affiliate_by" jdbcType="INTEGER"/>
+        <result property="distance" column="distance" jdbcType="DOUBLE"/>
+        <result property="photographerProfit" column="photographer_profit" jdbcType="INTEGER"/>
+        <result property="ratioOnCustomer" column="ratio_on_customer" jdbcType="FLOAT"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="customerCity" column="customer_city" jdbcType="VARCHAR"/>
+        <result property="social" column="social" jdbcType="VARCHAR"/>
+        <result property="socialAccount" column="social_account" jdbcType="VARCHAR"/>
+        <result property="extraInfo" column="extra_info" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="rtnCode" column="rtn_code" jdbcType="VARCHAR"/>
+        <result property="paymentMethod" column="payment_method" jdbcType="VARCHAR"/>
+        <result property="paymentOrderNo" column="payment_order_no" jdbcType="VARCHAR"/>
+        <result property="manualOrder" column="manual_order" jdbcType="VARCHAR"/>
+        <result property="driverLink" column="driver_link" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="picNum" column="pic_num" jdbcType="INTEGER"/>
+        <result property="backupDone" column="backup_done" jdbcType="VARCHAR"/>
+        <association property="photographer">
+            <id column="ph_id" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="nick_name" property="nickName"></result>
+            <result column="go_live" property="goLive"></result>
+            <result column="email2" property="email"></result>
+        </association>
+        <association property="photographerBank">
+            <id column="bank_id" property="id"></id>
+            <result column="bank_code" property="bankCode"></result>
+            <result column="bank" property="bank"></result>
+            <result column="bank_branch" property="bankBranch"></result>
+            <result column="bank_account_name" property="name"></result>
+            <result column="bank_account" property="account"></result>
+        </association>
+    </resultMap>
+
+    <resultMap id="orderWithAffiliate" type="com.joyshot.app.entity.Order">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phUuid" column="ph_uuid" jdbcType="VARCHAR"/>
+        <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+        <result property="custId" column="cust_id" jdbcType="INTEGER"/>
+        <result property="serviceCat" column="service_cat" jdbcType="VARCHAR"/>
+        <result property="serviceCatEn" column="service_cat_en" jdbcType="VARCHAR"/>
+        <result property="serviceCatJp" column="service_cat_jp" jdbcType="VARCHAR"/>
+        <result property="serviceCatKr" column="service_cat_kr" jdbcType="VARCHAR"/>
+        <result property="serviceFee" column="service_fee" jdbcType="INTEGER"/>
+        <result property="unitPrice" column="unit_price" jdbcType="INTEGER"/>
+        <result property="transportationFee" column="transportation_fee" jdbcType="INTEGER"/>
+        <result property="transportationFeeOnCustomer" column="transportation_fee_on_customer" jdbcType="INTEGER"/>
+        <result property="transportationFeeCustomerActualPay" column="transportation_fee_customer_actual_pay" jdbcType="INTEGER"/>
+        <result property="couponCode" column="coupon_code" jdbcType="VARCHAR"/>
+        <result property="couponDiscount" column="coupon_discount" jdbcType="INTEGER"/>
+        <result property="totalFee" column="total_fee" jdbcType="INTEGER"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerPhone" column="customer_phone" jdbcType="VARCHAR"/>
+        <result property="contactTime" column="contact_time" jdbcType="VARCHAR"/>
+        <result property="shootingDate" column="shooting_date" jdbcType="VARCHAR"/>
+        <result property="shootingTime" column="shooting_time" jdbcType="VARCHAR"/>
+        <result property="shootingDuration" column="shooting_duration" jdbcType="FLOAT"/>
+        <result property="shootingLocation" column="shooting_location" jdbcType="VARCHAR"/>
+        <result property="adultNum" column="adult_num" jdbcType="INTEGER"/>
+        <result property="childNum" column="child_num" jdbcType="INTEGER"/>
+        <result property="hasPets" column="has_pets" jdbcType="INTEGER"/>
+        <result property="petsNotes" column="pets_notes" jdbcType="VARCHAR"/>
+        <result property="affiliateBy" column="affiliate_by" jdbcType="INTEGER"/>
+        <result property="distance" column="distance" jdbcType="DOUBLE"/>
+        <result property="photographerProfit" column="photographer_profit" jdbcType="INTEGER"/>
+        <result property="ratioOnCustomer" column="ratio_on_customer" jdbcType="FLOAT"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="customerCity" column="customer_city" jdbcType="VARCHAR"/>
+        <result property="social" column="social" jdbcType="VARCHAR"/>
+        <result property="socialAccount" column="social_account" jdbcType="VARCHAR"/>
+        <result property="extraInfo" column="extra_info" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="rtnCode" column="rtn_code" jdbcType="VARCHAR"/>
+        <result property="paymentMethod" column="payment_method" jdbcType="VARCHAR"/>
+        <result property="paymentOrderNo" column="payment_order_no" jdbcType="VARCHAR"/>
+        <result property="manualOrder" column="manual_order" jdbcType="VARCHAR"/>
+        <result property="driverLink" column="driver_link" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="picNum" column="pic_num" jdbcType="INTEGER"/>
+        <result property="backupDone" column="backup_done" jdbcType="VARCHAR"/>
+        <association property="couponOwner">
+            <id column="affid" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="nick_name" property="nickName"></result>
+            <result column="phone" property="phone"></result>
+        </association>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+
+    </sql>
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                    and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                    and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'photograhperName'">
+                and (p.name like concat('%', #{keyword}, '%') or p.nick_name like concat('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="findShootingDateTime24HourLater" resultMap="BaseResultMap">
+        select  o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        where o.ph_uuid = p.ph_uuid
+        and status in ('pay_success', 'contact')
+        and str_to_date( concat(shooting_date, ' ', shooting_time ) , "%Y/%m/%d %H:%i") &gt;= str_to_date( #{startDate}, '%Y/%m/%d %H:%i')
+        and str_to_date( concat(shooting_date, ' ', shooting_time ) , "%Y/%m/%d %H:%i") &lt; str_to_date( #{endDate}, '%Y/%m/%d %H:%i')
+    </select>
+
+    <select id="findShootingDateTimeAfter12Hour" resultMap="BaseResultMap">
+        select  o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        where o.ph_uuid = p.ph_uuid
+          and status in ('pay_success', 'contact')
+          and str_to_date( concat(shooting_date, ' ', shooting_time ) , "%Y/%m/%d %H:%i") &gt;= str_to_date( #{startDate}, '%Y/%m/%d %H:%i')
+          and str_to_date( concat(shooting_date, ' ', shooting_time ) , "%Y/%m/%d %H:%i") &lt; str_to_date( #{endDate}, '%Y/%m/%d %H:%i')
+    </select>
+
+    <select id="selectMyOrder" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and p.id = #{photographerId}
+                and (o.status not in ('processing','auto_cancel','pay_failed','cancel') or o.manual_order='Y')
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.shooting_date desc
+    </select>
+
+    <select id="selectUploadedOrder" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status in ('uploaded', 'confirm-uploaded')
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.shooting_date desc
+    </select>
+
+    <select id="selectProcessingOrder" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status = 'processing'
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="selectPaySuccessOrder" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status in ('pay_success','contact')
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="selectClosedOrder" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status = 'close'
+            </if>
+            <if test="queryField != '' and queryField == 'customerName'">
+                and o.customer_name like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'customerPhone'">
+                and o.customer_phone like concat('%', #{keyword}, '%')
+            </if>
+            <if test="queryField != '' and queryField == 'orderNo'">
+                and o.order_no like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.shooting_date desc
+    </select>
+
+    <select id="findOrderNotPaid" resultMap="BaseResultMap">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status = 'processing'
+                and o.manual_order is null
+            </if>
+            and o.created_at  &gt;= str_to_date( #{startDate}, '%Y/%m/%d %H:%i')
+            and o.created_at &lt; str_to_date( #{endDate}, '%Y/%m/%d %H:%i')
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="findNotContactCustomerOrder" resultMap="BaseResultMap">
+        select o.*,
+               p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and (o.status = 'pay_success' or (o.status = 'processing' and o.manual_order = 'Y'))
+            </if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="findOrderWithPhotographer" resultMap="BaseResultMap">
+        select o.*,
+        p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        where o.ph_uuid = p.ph_uuid
+          and o.id = #{orderId}
+    </select>
+
+    <select id="selectOrderHasCoupon" resultMap="orderWithAffiliate">
+        select o.*, aff.id affid, aff.name, aff.nick_name, aff.phone
+        from js_order o, coupon c, affiliate aff
+        <where>
+            <if test="1 == 1">
+                and o.coupon_code = c.coupon_code
+                and aff.id = c.coupon_owner
+            </if>
+            <if test="queryField != '' and queryField == 'name'">
+                and ( aff.name like concat('%', #{keyword}, '%') or aff.nick_name like concat('%', #{keyword}, '%') )
+            </if>
+            <if test="queryField != '' and queryField == 'coupon_code'">
+                and c.coupon_code like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by o.id desc
+    </select>
+
+    <select id="findClosingOrder" resultMap="BaseResultMap1">
+        select o.*,
+               p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2,
+               b.id bank_id, b.bank_code, b.bank, b.bank_branch, b.name bank_account_name, b.account bank_account
+        from js_order o, photographer p, photographer_bank b
+        where o.ph_uuid = p.ph_uuid
+          and p.id = b.ph_id
+          and o.status = 'confirm-uploaded'
+    </select>
+
+    <select id="findOrderInContact" resultMap="BaseResultMap1">
+        select o.*, p.nick_name, p.name, p.id ph_id, p.go_live, p.email email2
+        from js_order o, photographer p
+        <where>
+            <if test="1 == 1">
+                and o.ph_uuid = p.ph_uuid
+                and o.status = 'contact'
+            </if>
+            and DATE_ADD( str_to_date( CONCAT(o.shooting_date, ' ',  o.shooting_time), '%Y/%m/%d %H:%i') ,interval (shooting_duration * 60 + 18*60) minute) &lt; str_to_date( #{endDate}, '%Y/%m/%d %H:%i')
+        </where>
+        order by o.id desc
+    </select>
+
+
+    <select id="selectOrderByPhUuid" resultMap="BaseResultMap">
+       Select * from js_order
+       where ph_uuid = #{phUuid}
+         and status in ('pay_success', 'contact', 'uploaded','confirm-uploaded', 'transferred', 'close')
+    </select>
+</mapper>

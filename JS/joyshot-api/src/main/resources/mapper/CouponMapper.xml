@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.CouponMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Coupon">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="couponName" column="coupon_name" jdbcType="VARCHAR"/>
+            <result property="couponCode" column="coupon_code" jdbcType="VARCHAR"/>
+            <result property="discount" column="discount" jdbcType="INTEGER"/>
+            <result property="dateStart" column="date_start" jdbcType="VARCHAR"/>
+            <result property="dateEnd" column="date_end" jdbcType="VARCHAR"/>
+            <result property="usageCount" column="usage_count" jdbcType="INTEGER"/>
+            <result property="usageCountCurrent" column="usage_count_current" jdbcType="INTEGER"/>
+            <result property="usagePrice" column="usage_price" jdbcType="INTEGER"/>
+            <result property="usageService" column="usage_service" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+            <result property="couponOwner" column="coupon_owner" jdbcType="VARCHAR"/>
+        <association property="affiliateOwner">
+            <id column="aff_id" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="nick_name" property="nickName"></result>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,coupon_name,coupon_code,discount,
+        date_start,date_end,usage_count,
+        usage_count_current,usage_price,usage_service,
+        created_at,modified_at,coupon_owner
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select c.*, aff.id aff_id, aff.name, aff.nick_name
+        from coupon c
+        LEFT JOIN affiliate aff
+        ON c.coupon_owner = aff.id
+    </select>
+</mapper>

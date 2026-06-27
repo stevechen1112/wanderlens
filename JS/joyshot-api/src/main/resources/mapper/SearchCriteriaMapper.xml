@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.SearchCriteriaMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.SearchCriteria">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="queryid" column="queryId" jdbcType="VARCHAR"/>
+            <result property="reserved" column="reserved" jdbcType="VARCHAR"/>
+            <result property="queryService" column="query_service" jdbcType="INTEGER"/>
+            <result property="queryDate" column="query_date" jdbcType="VARCHAR"/>
+            <result property="queryHour" column="query_hour" jdbcType="INTEGER"/>
+            <result property="queryMinute" column="query_minute" jdbcType="INTEGER"/>
+            <result property="queryDuration" column="query_duration" jdbcType="FLOAT"/>
+            <result property="adults" column="adults" jdbcType="INTEGER"/>
+            <result property="children" column="children" jdbcType="INTEGER"/>
+            <result property="checkpets" column="checkPets" jdbcType="INTEGER"/>
+            <result property="petsnote" column="petsNote" jdbcType="VARCHAR"/>
+            <result property="queryPlaceId" column="query_place_id" jdbcType="VARCHAR"/>
+            <result property="queryPlaceName" column="query_place_name" jdbcType="VARCHAR"/>
+            <result property="queryLocation" column="query_location" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="cityArea" column="city_area" jdbcType="VARCHAR"/>
+            <result property="lat" column="lat" jdbcType="FLOAT"/>
+            <result property="lng" column="lng" jdbcType="FLOAT"/>
+            <result property="queryAssignPhotographer" column="query_assign_photographer" jdbcType="VARCHAR"/>
+            <result property="queryAssignPhUuid" column="query_assign_ph_uuid" jdbcType="VARCHAR"/>
+            <result property="searchBy" column="search_by" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,queryId,reserved,
+        query_service,query_date,query_hour,
+        query_minute,query_duration,adults,
+        children,checkPets,petsNote,
+        query_place_id,query_place_name,query_location,
+        city,city_area,lat,
+        lng,query_assign_photographer,query_assign_ph_uuid,
+        search_by,created_at,modified_at
+    </sql>
+</mapper>

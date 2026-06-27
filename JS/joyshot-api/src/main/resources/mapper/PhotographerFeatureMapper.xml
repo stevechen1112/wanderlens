@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.PhotographerFeatureMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.PhotographerFeature">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="language" column="language" jdbcType="VARCHAR"/>
+            <result property="phId" column="ph_id" jdbcType="INTEGER"/>
+            <result property="featureTitle" column="feature_title" jdbcType="VARCHAR"/>
+            <result property="featureContent" column="feature_content" jdbcType="VARCHAR"/>
+            <result property="enable" column="enable" jdbcType="INTEGER"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,language,ph_id,feature_title,
+        feature_content,enable,sort,
+        created_at,modified_at
+    </sql>
+
+    <select id="selectFeatureByPid" resultMap="BaseResultMap">
+        select * from photographer_feature where ph_id = #{phId} order by feature_title desc
+    </select>
+
+</mapper>

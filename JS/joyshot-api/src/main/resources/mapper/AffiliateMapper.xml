@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.AffiliateMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Affiliate">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="bankCode" column="bank_code" jdbcType="VARCHAR"/>
+            <result property="bankName" column="bank_name" jdbcType="VARCHAR"/>
+            <result property="bankBranch" column="bank_branch" jdbcType="VARCHAR"/>
+            <result property="bankAccountName" column="bank_account_name" jdbcType="VARCHAR"/>
+            <result property="bankAccountNo" column="bank_account_no" jdbcType="VARCHAR"/>
+            <result property="bankNotes" column="bank_notes" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMapPage" type="com.joyshot.app.entity.Affiliate">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,uuid,
+        nick_name,name,phone,
+        email,
+        bank_code,
+        bank_name,bank_branch,bank_account_name,
+        bank_account_no,bank_notes,created_at,modified_at
+    </sql>
+
+    <select id="selectByPage" resultMap="BaseResultMapPage">
+        select *
+        from affiliate
+        <where>
+            <if test="queryField != '' and queryField == 'name'">
+                and (name like concat('%', #{keyword}, '%') or nick_name like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="queryField != '' and queryField == 'phone'">
+                and phone like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+
+
+
+
+</mapper>

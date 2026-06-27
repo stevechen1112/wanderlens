@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://localhost:33066/joyshot_db?serverTimezone=GMT%2b8
+    username: root
+    password: CHANGE_ME_DB_PASSWORD
+
+line:
+  callback-url: https://joyshotadmin.stagingsite.vip/api/line/callback
+  client-id: CHANGE_ME_LINE_CLIENT_ID
+  client-secret: CHANGE_ME_LINE_CLIENT_SECRET
+  message-root-url: https://joyshotadmin.stagingsite.vip
+  image-url: http://image.stagingsite.vip/
+
+google:
+  oauth:
+    callback:
+      uri: https://joyshotadmin.stagingsite.vip/api/googledrive/oauth
+  credentials:
+    folder:
+      path: file:/var/www/credentials
+  parent:
+    folderId: CHANGE_ME_GOOGLE_DRIVE_FOLDER_ID
+  secret:
+    key:
+      path: classpath:keys/secret_test.json
+
+order:
+  paid: "【JoyShot隨行拍攝-staging】"
+
+ecpay:
+  return-url: https://joyshot.stagingsite.vip/api/order/paid
+  order-result-url: https://joyshot.stagingsite.vip/api/order-paid/thank-you
+  client-redirect-url: https://joyshot.stagingsite.vip/thankyou/
+
+email:
+  pay-url: https://joyshot.stagingsite.vip/pay/
+  bcc: noreply@joyshot.app
+  dev-mode: Y
+  js-front: https://joyshot.stagingsite.vip
+  js-photographer: https://jsmaster.stagingsite.app/

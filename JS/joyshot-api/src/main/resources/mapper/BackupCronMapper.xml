@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.BackupCronMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.BackupCron">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+            <result property="picNum" column="pic_num" jdbcType="INTEGER"/>
+            <result property="backupDone" column="backup_done" jdbcType="VARCHAR"/>
+            <result property="backupRunning" column="backup_running" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,order_no,pic_num,
+        backup_done,backup_running,created_at,
+        modified_at
+    </sql>
+</mapper>

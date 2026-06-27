@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.PhotographerWorksMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.PhotographerWorks">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="phId" column="ph_id" jdbcType="INTEGER"/>
+            <result property="fileUuid" column="file_uuid" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="modifiedAt" column="modified_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,ph_id,file_uuid,
+        created_at,modified_at
+    </sql>
+    <select id="selectWorksByPid" resultMap="BaseResultMap">
+        select * from photographer_works where ph_id = #{phId}
+    </select>
+</mapper>

@@ -1,0 +1,351 @@
+{
+    "action": {
+        "create_success": "Data added successfully",
+        "create_error": "Data added failed: {err}",
+        "save_success": "Data updated successfully",
+        "save_error": "Data updated failed: {err}",
+        "delete_success": "Data deleted successfully",
+        "delete_error": "Data deleted failed: {err}",
+        "upload_error": "Upload error: {err}",
+        "get_error": "Failed to retrieve data: {err}",
+        "name": "Operate",
+        "password_not_match": "Password not matched",
+        "force_logout": "The password has updated, you'll be logged out"
+    },
+    "message": {
+        "success": "Success",
+        "error": "Error",
+        "account": "Account",
+        "password": "Password",
+        "required_field": "Required field",
+        "uploading": "Uploading",
+        "data_filter": "Data filter",
+        "keyword": "Please enter keywords",
+        "no_data": "No data",
+        "alert": "Alert",
+        "logout_now": "Log out now?",
+        "delete_confirm": "Delete this data?",
+        "not_valid_image": "JPG\/PNG format only",
+        "file_size_exceed_2M": "File exceeds 2MB"
+    },
+    "buttons": {
+        "search": "Search",
+        "search_photographer": "Select date, time, location",
+        "book_now": "Book now",
+        "book_now2": "Search for the photographer",
+        "booking": "Book"
+    },
+    "menu": {
+        "photographer": "Photographer"
+    },
+    "pages": {
+        "home": {
+            "banner": {
+                "main_title": "",
+                "sub_title": "",
+                "book_now": "@:buttons.book_now",
+                "mobile_banner_load_failed": "Failed to retrieve mobile banner",
+                "banner_load_failed": "Failed to retrieve banner"
+            }
+        }
+    },
+    "search_bar": {
+        "service": "Select a category",
+        "service_note": "(Note: Excluding wedding banquet (family banquet), wedding dress photography, commercial photography",
+        "date_picker": "Select a date",
+        "time_picker": "Select a time",
+        "time_picker_hour": "Hour",
+        "time_picker_minute": "Minute",
+        "shooting_duration": "Select shooting hours",
+        "how_many_hour": "How many hours",
+        "pick_location": "Select a location",
+        "pick_person": "Select the numbers of people",
+        "pick_adults": "Adult",
+        "pick_children": "Child",
+        "has_pets": "With pet or not",
+        "pets_note": "Please mention the type of your pet or any other notes",
+        "location_keyword": "Please mention the photography location you wish",
+        "limit_time_offer": "“Flash Sale” book 1.5 hours for 15% off"
+    },
+    "home": {
+        "milestone": {
+            "title": "Capture amazing moments on the go",
+            "sub_title": "Capture the memorable moments for you"
+        },
+        "reserve_step": {
+            "title": "5 Steps  Quickly book your exclusive photographer",
+            "sub_title": ""
+        },
+        "reserve_step_1": {
+            "title": "Criteria search",
+            "sub_title": "Select photography category, date, location, hours, and numbers of people according to your needs"
+        },
+        "reserve_step_2": {
+            "title": "Select a photographer",
+            "sub_title": "Search for the avaliable photographer's portfolio"
+        },
+        "reserve_step_3": {
+            "title": "Confirm your booking",
+            "sub_title": "Fill in and confirm the booking information"
+        },
+        "reserve_step_4": {
+            "title": "Payment successful",
+            "sub_title": "Domestic and international credit card acceptable"
+        },
+        "reserve_step_5": {
+            "title": "Booking completed",
+            "sub_title": "The photographer will contact you after you receive the order confirmation email"
+        },
+        "photographer": {
+            "title": "Professional photographers from various locataion",
+            "more": "View more photographers"
+        },
+        "attraction": {
+            "title": "Hot shooting spot"
+        },
+        "instagram": {
+            "title": "Follow us on instagram"
+        },
+        "ad_box": {
+            "title": "Capture the precious",
+            "sub_title": "beautiful memories",
+            "sub_title_2": "Start to book your photo shoot"
+        },
+        "recruit_box": {
+            "title": "Photographers recruiting"
+        },
+        "footer": {
+            "privacy": "Privacy",
+            "terms": "Terms and conditions",
+            "about": "About JOYSHOT"
+        }
+    },
+    "photographer": {
+        "book_now": "Book the photographer",
+        "service_type": "Photography category",
+        "portfolio": "{name}‘s protfolio"
+    },
+    "App": {
+        "cookie_law": "We use Cookies and similar technologies to provide you the best possible user experience.  By clicking \"Accept\" or by proceeding on the websites, you consent to the placing of all Cookies. For more information, please check our <a href=\"\/privacy-policy\">privacy policy<\/a>Thank you.",
+        "cookie_agree": "I agree"
+    },
+    "Components": {
+        "AdBox": {
+            "remember": "Capture the precious <span>and beautiful memories<\/span>",
+            "booking": "Start to book your photo shoot",
+            "image_load_failed": "Failed to retrieve mobile banner"
+        },
+        "Footer": {
+            "privacy_policy": "Privacy policy",
+            "company_info": "Address: 7F, No., 62, Nangjing West Rd., Datung Dist., Taipei City\nEmail: service@joyshot.app\nCustomer service hours: Mon~Sun 09:00~12:00"
+        },
+        "Header": {
+            "specify_photographer": "Designate a photographer",
+            "cancel_specify": "Cancel the designation",
+            "location_hint": "【Reminder】After entering the location, please \"ensure\" to wait for the system to show \"Google Landmarks\" before selecting a nearby location.",
+            "empty_hint": "If you cannot find information about the attraction, feel free to contact customer service through the Messenger at the bottom-right. Let us assist you.",
+            "more_than_ten": "More than 10 people",
+            "enter_address": "Enter address",
+            "no_service_cat": "Category not selected",
+            "no_date": "Date not selected",
+            "no_time": "Time not selected",
+            "no_hours": "Shooting duration not selected",
+            "no_location": "Location not selected",
+            "no_people": "Numbers of people not selected",
+            "zero_people": "Numbers of people cannot be 0",
+            "no_pet": "Please fill in the pet you are bringing",
+            "incomplete_location": "The location information is incomplete. Please re-enter and select a location from the dropdown menu",
+            "notice": "Reminder",
+            "selected_info": "You have selected {location} as the location. The minimum shooting time is {hours} hours."
+        },
+        "Header1": {
+            "search_photographer": "Search photographer 1",
+            "search_photographer2": "Search photographer 2",
+            "search_category": "<b>Category<\/b><span>Select Category<\/span>",
+            "search_location": "<b>Location<\/b><span>Search location<\/span>",
+            "search_date": "<b>Date<\/b><span>Add Date<\/span>",
+            "search_time": "<b>Time<\/b><span>Add Time<\/span>",
+            "search_people": "<b>Numbers of People<\/b><span>Add Numbers of People<\/span>",
+            "category": "Category",
+            "location": "Location",
+            "choose_location": "Select a location",
+            "hours": "Hours",
+            "date": "Date",
+            "choose_date": "Select a date",
+            "skip": "Skip",
+            "continue": "Next",
+            "time_and_hours": "Time and hours",
+            "choose_time": "Select a time",
+            "hr": "Hour",
+            "min": "Minute",
+            "choose_film_hours": "Select shooting hours",
+            "people_and_pets": "Numbers of people and pet",
+            "choose_people": "Numbers of people",
+            "adults": "Adult",
+            "adults2": "Adult",
+            "child": "Child",
+            "with_pets": "With pet or not",
+            "pets_placeholder": "Please mention your pet : dog, cat, rabbit…",
+            "clear_all": "Delete all",
+            "booking_immediately": "Book now"
+        },
+        "IG": {
+            "follow": "Follow us on instagram"
+        },
+        "PhotographerGrid": {
+            "check": "View the photographer"
+        },
+        "PhotographerWorksGrid": {
+            "load_works_failed": "Failed to retrieve protfolio"
+        },
+        "RatingBox": {
+            "evaluation_count": "{count} Reviews"
+        },
+        "Recruit": {
+            "recruit": "Photographers recruiting"
+        },
+        "UvpBox": {
+            "title": "About JOYSHOT",
+            "description": "JoyShot is a platform for on the go photography bookings across Taiwan, collaborating with over a hundred Taiwanese photographers to offer online booking services for on the go photography. Suitable for event documentation, travel captures, stylish street photography, business event, or any memorable moments. Convenient and efficient for photographer searching, selection, booking, payment, and photo download online. Capturing memories that makes your journey more valueable! Everyone keeps in the frame at the precious moments!",
+            "slogan1": "Affordable and reasonable shooting fee, hourly charge",
+            "slogan2": "Acceptable for minimum 1 hour shooting, available booking 3 days in advance",
+            "slogan3": "Online select up to hundred local photgraphers",
+            "slogan4": "Download all unedited photos within 24 hours",
+            "tag1": "Great value",
+            "tag2": "Flexible",
+            "tag3": "Efficient",
+            "tag4": "Quick"
+        }
+    },
+    "Views": {
+        "404": {
+            "title": "Cannot find the page, please return to the homepage"
+        },
+        "Checkout": {
+            "wait": "Proceed to the payment, please wait….",
+            "name": "Name",
+            "phone": "Phone number",
+            "contact_time": "Time to reach out",
+            "contact_social_media": "Social media",
+            "choose": "Please select",
+            "account": "Account",
+            "account_placeholder": "Social media account ID",
+            "foreigner": "International customer?",
+            "not": "No",
+            "yes": "Yes",
+            "order_no": "Order number",
+            "your_location": "Your location",
+            "contact_method": "Way to reach out",
+            "social_media_account": "Social media account ID",
+            "date": "Date",
+            "time": "Time",
+            "people": "Numbers of people",
+            "additional_info": "Additional information",
+            "additional_info_placeholder": "Tell us more about your photography preferences. (For example: back to the first dating spot for celebrating the anniversary. \/ We are a family of four with two kids and a dog.)",
+            "film_location": "Photography location",
+            "order_detail": "Order detail",
+            "hour": "Hour",
+            "discount_code": "Discount code",
+            "use": "Use",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "click_hint": "After clicking 'Confirm' ,your booking will be submitted then proceed to the payment page.",
+            "submit_title": "Submit the order",
+            "submit": "Proceed to the payment",
+            "after_payment_title": "After payment",
+            "after_payment1": "After the payment is made, your order will be completed.",
+            "after_payment2": "The photographer will contact you within 24 hours.",
+            "after_payment3": "Please join Line@ for customer service.",
+            "foreigner_payment": "For international customers, please make payment via PayPal.",
+            "payment_success_desc": "JoyShot on the go photography",
+            "ecpay_error": "Failed to make payment via ecpay",
+            "order_error": "There's an error submitting the order.",
+            "name_required": "Name required",
+            "contact_time_required": "Time to reach out required",
+            "phone_required": "Phone number required",
+            "contact_method_required": "Way to reach out required",
+            "social_media_account_required": "Social media required",
+            "email_required": "Email required",
+            "remind": "Reminder",
+            "dicount_code_error": "Invalid discount code"
+        },
+        "Faq": {
+            "title": "FAQ"
+        },
+        "Match": {
+            "profession": "Professional photographer",
+            "match_count": "{count} photographers meet the requirement",
+            "film_time": "Shooting time",
+            "film_location": "Photography location",
+            "booking_now": "Book now",
+            "period_full": "The photographer is booked at the selected time",
+            "recommend_others": "We will recommend other available photographers for the selected time.",
+            "check_others": "View other photographers",
+            "wait": "Matching, please wait…",
+            "booking_result": "Booking result"
+        },
+        "MatchedPhotographer": {
+            "comment_count": "{count} reviews",
+            "photograph_style": "Photography category",
+            "selected": "Select the photographer",
+            "photographer_artworks": "{nickName}'s protfolio",
+            "photographer_load_failed": "Failed to retrieve photographer's protfolio"
+        },
+        "Photographer": {
+            "comment_count": "{count} reviews",
+            "booked_count": "The photographer is booked for{count} times.",
+            "photographer_experience": "Photographer experience of {year} years",
+            "photograph_style": "Photography category",
+            "booking_photographer": "Book the photographer",
+            "photographer_artworks": "{nickName}'s protfolio",
+            "photographer_load_failed": "Failed to retrieve photographer's protfolio"
+        },
+        "PhotographerList": {
+            "title": "Professional photographer",
+            "no_photographer": "There's no photographers around this area."
+        },
+        "PrivacyPolicy": {
+            "title": "Privacy policy",
+            "content": "<p>Welcome to JoyShot, the full-service photography booking platform in Taiwan. In order to ensure that you may use the information and services of the Website free of privacy concern, we hereby outline the privacy policy to safeguard your rights. Please read the following content carefully: <\/p><p>1. Scope of Privacy Policy:<\/p><p>This privacy policy governs how we handle the personal identification information when you use our website services. It does not apply to external websites linked from our site or to individuals not directly managed or commissioned by us.<\/p><p>2. Collection, Processing, and Use of Personal Data:<\/p><ul><li>When you visit or utilize our website services, we may request necessary personal information based on the nature of the service. We will process and use your personal data within the scope of the specific purpose, and will not utilize it for other purposes without your written consent.<\/li><li> We retain information provided by you, such as name, email address, contact details, and usage times, when you engage in interactive features like service mailboxes or surveys. <\/li><li>During general browsing, our servers automatically record relevant behaviors for internal reference, including IP addresses, browsing times, browser types, and browsing\/click data. This information is kept strictly confidential and not disclosed externally. <\/li><li>We conduct statistical analysis on collected survey content to improve service accuracy. Any statistical data or explanatory texts derived from the analysis may be disclosed as needed, but will not involve specific individual data. <\/li><li>You may request corrections or deletions of any incorrect or incomplete personal data collected by our website at any time.<\/li><\/ul><p>3. Data Protection:<\/p><ul><li>Our website servers are equipped with relevant information security equipment and necessary security measures such as firewalls and antivirus systems to protect both the website and your personal data. Only authorized personnel are allowed access to your personal information, and they are bound by confidentiality agreements. Any breach of confidentiality obligations will result in legal consequences. <\/li><li>When it is necessary to entrust other units to provide services due to business needs, we strictly require them to comply with confidentiality obligations and conduct necessary inspection procedures to ensure compliance.<\/ul><p>4. External Links:<\/p><p>Our website provides links to other websites. By clicking on these links, you may access other websites whose privacy policies do not apply to ours. You must refer to the privacy policies of the respective linked websites.<\/p><p>5. Sharing of Personal Data with Third Parties:<\/p><p>We will never provide, exchange, rent, or sell any of your personal data to other individuals, groups, private companies, or government agencies unless there is a legal basis or contractual obligation to do so. <\/p><p>Exceptions include, but are not limited to:<\/p><ul><li>With your written consent.<\/li><li>As required by law.<\/li><li>To prevent risks to your life, body, freedom, or property.<\/li><li>Cooperation with government agencies or academic research institutions for statistical or academic research purposes in the public interest, where the data provided is processed or collected anonymously.<\/li><li>When your actions on the website violate the terms of service, or may harm or impede the rights of the website and other users, and disclosure of your personal data by the website management unit is necessary for identification, contact, or legal action.<\/li><li>To protect your interests.<\/li><li>When our website entrusts vendors to assist in collecting, processing, or using your personal data, we will supervise and manage them responsibly.<\/li><\/ul><p>6. Use of Cookies:<\/p><p>To provide you with the best service, our website will place and access cookies on your computer. If you do not wish to accept cookies, you can set your browser's privacy level to high to reject cookie writing. However, this may result in some website functions not performing properly.<\/p><p>7.Revision of Privacy Policy:<\/p><p>This website's privacy policy will be revised as needed and the revised terms will be published on the website.<\/p><p>Service Provider: Joyshot Digital Inc.<\/p><p>&nbsp;<\/p>"
+        },
+        "Thankyou": {
+            "pay_success": "Payment successful - order confirmed",
+            "contact_you": "The photographer will contact you within 24 hours.",
+            "customer_service": "Make sure to join Line@ for customer service.",
+            "join_line": "Join Line @",
+            "pay_failed": "Payment failed - order incompleted",
+            "return_code": "Transaction code: {rtnCode}",
+            "check_reason": "Contact customer service for transaction error",
+            "order_no": "Order number",
+            "name": "Name",
+            "phone": "Phone number",
+            "contact_time": "Contact time",
+            "date": "Shooting date",
+            "time": "Time",
+            "hours": "Hours",
+            "people": "Numbers of people",
+            "load_transaction_failed": "Failed to obtain the transaction result"
+        }
+    },
+    "store": {
+        "jsapp": {
+            "pets_notes": "Pet(s): {petsNotes}",
+            "no_pets": "No pet(s)",
+            "adult_num": "{adultNum} adult(s)",
+            "over_adult_num": "More than 10 adults",
+            "child_num": "{childNum} child(ren)",
+            "over_child_num": "More than 10 children"
+        }
+    },
+    "css": {
+        "content": {
+            "coupon_discount": "Coupon discount",
+            "transportation_fee": "Transportation fee",
+            "shooting_fee": "Shooting fee",
+            "photographer": "Photographer",
+            "duration": "Duration",
+            "total": "Total",
+            "catagory": "Category"
+        }
+    }
+}

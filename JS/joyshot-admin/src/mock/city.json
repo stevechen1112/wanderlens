@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 2,
+      "title": "基隆市",
+      "areas": [
+        {
+          "id": 2000,
+          "title": "仁愛區"
+        }
+      ]
+    }
+  ]
+}

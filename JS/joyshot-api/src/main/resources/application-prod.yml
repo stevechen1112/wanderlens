@@ -1,0 +1,34 @@
+line:
+  callback-url: https://joyshot.app/api/line/callback
+  client-id: CHANGE_ME_LINE_CLIENT_ID
+  client-secret: CHANGE_ME_LINE_CLIENT_SECRET
+  message-root-url: https://admin.joyshot.app
+  image-url: http://image.joyshot.app/
+
+google:
+  oauth:
+    callback:
+      uri: https://admin.joyshot.app/api/googledrive/oauth
+  credentials:
+    folder:
+      path: file:/var/www/credentials
+  parent:
+    folderId: CHANGE_ME_GOOGLE_DRIVE_FOLDER_ID
+  secret:
+    key:
+      path: classpath:keys/secret_prod.json
+
+order:
+  paid: "【JoyShot隨行拍攝】"
+
+ecpay:
+  return-url: https://joyshot.app/api/order/paid
+  order-result-url: https://joyshot.app/api/order-paid/thank-you
+  client-redirect-url: https://joyshot.app/thankyou/
+
+email:
+  pay-url: https://joyshot.app/pay/
+  bcc: noreply@joyshot.app
+  dev-mode: N
+  js-front: https://joyshot.app
+  js-photographer: https://jsmaster.joyshot.app/

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyshot.app.mapper.BannerMapper">
+
+    <resultMap id="BaseResultMap" type="com.joyshot.app.entity.Banner">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="language" column="language" jdbcType="VARCHAR"/>
+        <result property="imageUuid" column="image_uuid" jdbcType="VARCHAR"/>
+        <result property="imageUsage" column="image_usage" jdbcType="VARCHAR"/>
+        <result property="notes" column="notes" jdbcType="VARCHAR"/>
+        <result property="active" column="active" jdbcType="VARCHAR"/>
+        <association property="imageFile">
+            <result column="url" property="url"></result>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,language,image_uuid,image_usage,notes,active
+    </sql>
+
+    <select id="findByType" resultMap="BaseResultMap">
+        select b.*, f.url
+          from banner b, file_repo f
+         where b.image_uuid = f.uuid
+           and image_usage = #{imageUsage}
+        <if test="lang != null">
+           and language = #{lang}
+        </if>
+           and active = 'Y'
+      order by id
+    </select>
+
+</mapper>
