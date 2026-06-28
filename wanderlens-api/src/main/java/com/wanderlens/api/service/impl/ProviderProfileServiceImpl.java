@@ -127,6 +127,24 @@ public class ProviderProfileServiceImpl implements ProviderProfileService {
                 throw new ServiceException(ResultCode.FORBIDDEN, "無權限編輯此特色");
             }
             providerFeatureMapper.updateById(body);
+            dedupeFeatures(providerId, body.getLanguage(), body.getFeatureType(), body.getId());
+            return body;
+        }
+
+        ProviderFeature sameSlot = providerFeatureMapper.selectOne(
+                new LambdaQueryWrapper<ProviderFeature>()
+                        .eq(ProviderFeature::getProviderId, providerId)
+                        .eq(ProviderFeature::getLanguage, body.getLanguage())
+                        .eq(ProviderFeature::getFeatureType, body.getFeatureType())
+                        .orderByAsc(ProviderFeature::getId)
+                        .last("LIMIT 1"));
+        if (sameSlot != null) {
+            body.setId(sameSlot.getId());
+            if (body.getSort() == null) {
+                body.setSort(sameSlot.getSort());
+            }
+            providerFeatureMapper.updateById(body);
+            dedupeFeatures(providerId, body.getLanguage(), body.getFeatureType(), body.getId());
             return body;
         }
 
@@ -134,7 +152,21 @@ public class ProviderProfileServiceImpl implements ProviderProfileService {
             body.setSort(0);
         }
         providerFeatureMapper.insert(body);
+        dedupeFeatures(providerId, body.getLanguage(), body.getFeatureType(), body.getId());
         return body;
+    }
+
+    /** 同攝影師、語系、類型僅保留一筆（覆寫而非無限新增） */
+    private void dedupeFeatures(Long providerId, String language, String featureType, Long keepId) {
+        List<ProviderFeature> siblings = providerFeatureMapper.selectList(
+                new LambdaQueryWrapper<ProviderFeature>()
+                        .eq(ProviderFeature::getProviderId, providerId)
+                        .eq(ProviderFeature::getLanguage, language)
+                        .eq(ProviderFeature::getFeatureType, featureType)
+                        .ne(ProviderFeature::getId, keepId));
+        for (ProviderFeature sibling : siblings) {
+            providerFeatureMapper.deleteById(sibling.getId());
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
 import * as secureStorage from '@/utils/secureStorage'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore, isClearingAuth } from '@/stores/authStore'
 
 export const API_BASE = process.env.EXPO_PUBLIC_API_BASE || 'http://localhost:8080/api'
 
@@ -36,9 +36,16 @@ client.interceptors.response.use(
     return data
   },
   async (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !isClearingAuth()) {
+      const url = String(error.config?.url || '')
+      if (url.includes('/match/offline')) {
+        return Promise.reject(error)
+      }
       try {
         const authStore = useAuthStore.getState()
+        if (!authStore.isAuthenticated) {
+          return Promise.reject(error)
+        }
         await authStore.clearAuth()
       } catch {
         // store 可能未初始化

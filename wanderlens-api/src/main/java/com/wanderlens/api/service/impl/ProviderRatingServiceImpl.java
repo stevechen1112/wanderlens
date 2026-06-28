@@ -95,6 +95,7 @@ public class ProviderRatingServiceImpl implements ProviderRatingService {
             distribution.merge(String.valueOf(r.getStars()), 1, Integer::sum);
         }
         double avg = ratings.stream().mapToInt(ProviderRating::getStars).average().orElse(0);
+        double roundedAvg = BigDecimal.valueOf(avg).setScale(1, RoundingMode.HALF_UP).doubleValue();
         List<RatingSummaryDto.RatingItemDto> recent = ratings.stream().limit(20).map(r ->
                 RatingSummaryDto.RatingItemDto.builder()
                         .id(r.getId())
@@ -104,7 +105,7 @@ public class ProviderRatingServiceImpl implements ProviderRatingService {
                         .createdAt(r.getCreatedAt() != null ? r.getCreatedAt().toString() : null)
                         .build()).collect(Collectors.toList());
         return RatingSummaryDto.builder()
-                .averageRating(Math.round(avg * 10.0) / 10.0)
+                .averageRating(roundedAvg)
                 .totalCount(ratings.size())
                 .distribution(distribution)
                 .recentRatings(recent)
@@ -131,13 +132,15 @@ public class ProviderRatingServiceImpl implements ProviderRatingService {
     public void recalculateProviderRating(Long providerId) {
         List<ProviderRating> ratings = providerRatingMapper.selectList(
                 new LambdaQueryWrapper<ProviderRating>().eq(ProviderRating::getProviderId, providerId));
-        if (ratings.isEmpty()) return;
-
-        double avg = ratings.stream().mapToInt(ProviderRating::getStars).average().orElse(0);
         Provider provider = providerMapper.selectById(providerId);
-        if (provider != null) {
-            provider.setRating(BigDecimal.valueOf(avg).setScale(1, RoundingMode.HALF_UP));
-            providerMapper.updateById(provider);
+        if (provider == null) {
+            return;
         }
+        BigDecimal rating = ratings.isEmpty()
+                ? BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP)
+                : BigDecimal.valueOf(ratings.stream().mapToInt(ProviderRating::getStars).average().orElse(0))
+                        .setScale(1, RoundingMode.HALF_UP);
+        provider.setRating(rating);
+        providerMapper.updateById(provider);
     }
 }

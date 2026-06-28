@@ -3,6 +3,12 @@ import * as secureStorage from '@/utils/secureStorage'
 import { authApi, type ApiUser } from '@/api'
 import { notifyApi, matchApi } from '@/api'
 
+let clearingAuth = false
+
+export function isClearingAuth() {
+  return clearingAuth
+}
+
 interface AuthState {
   token: string | null
   user: ApiUser | null
@@ -44,19 +50,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   clearAuth: async () => {
-    await matchApi.goOffline().catch(() => {})
-    const token = await secureStorage.getItemAsync('wl_provider_push_token')
-    if (token) await notifyApi.removeDeviceToken(token).catch(() => {})
-    await secureStorage.deleteItemAsync('wl_provider_push_token').catch(() => {})
-    await secureStorage.deleteItemAsync(secureStorage.TOKEN_KEY)
-    await secureStorage.deleteItemAsync(secureStorage.USER_KEY)
-    set({
-      token: null,
-      user: null,
-      providerId: null,
-      isAuthenticated: false,
-      isLoading: false,
-    })
+    if (clearingAuth) return
+    clearingAuth = true
+    try {
+      const sessionToken = await secureStorage.getItemAsync(secureStorage.TOKEN_KEY)
+      if (sessionToken) {
+        await matchApi.goOffline().catch(() => {})
+      }
+      const pushToken = await secureStorage.getItemAsync('wl_provider_push_token')
+      if (pushToken) await notifyApi.removeDeviceToken(pushToken).catch(() => {})
+      await secureStorage.deleteItemAsync('wl_provider_push_token').catch(() => {})
+      await secureStorage.deleteItemAsync(secureStorage.TOKEN_KEY)
+      await secureStorage.deleteItemAsync(secureStorage.USER_KEY)
+      set({
+        token: null,
+        user: null,
+        providerId: null,
+        isAuthenticated: false,
+        isLoading: false,
+      })
+    } finally {
+      clearingAuth = false
+    }
   },
 
   restoreAuth: async () => {

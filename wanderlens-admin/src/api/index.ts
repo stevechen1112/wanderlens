@@ -25,9 +25,19 @@ export default {
   // 攝影師
   getProviders: (params?: any) => request.get('/providers', { params }),
   getProvider: (id: number) => request.get(`/providers/${id}`),
+  updateProvider: (data: any) => request.post('/providers', data),
   setProviderLive: (providerId: number, live: boolean) =>
     request.post('/providers/live', null, { params: { providerId, live } }),
   getProviderSchedule: (providerId: number) => request.get(`/providers/${providerId}/schedule`),
+  getProviderFeatures: (providerId: number) => request.get(`/providers/feature/${providerId}`),
+  setProviderFeature: (data: any) => request.post('/providers/feature', data),
+  deleteProviderFeature: (featureId: number, providerId: number) =>
+    request.delete(`/providers/feature/${featureId}`, { params: { providerId } }),
+  getProviderWorks: (providerId: number) => request.get(`/providers/works/${providerId}`),
+  addProviderWork: (data: { providerId: number; fileUuid: string }) => request.post('/providers/works', data),
+  deleteProviderWork: (workId: number, providerId: number) =>
+    request.delete(`/providers/works/${workId}`, { params: { providerId } }),
+  getAreasTree: () => request.get('/areas/tree'),
 
   // 客戶
   getCustomers: (params?: any) => request.get('/customers', { params }),
