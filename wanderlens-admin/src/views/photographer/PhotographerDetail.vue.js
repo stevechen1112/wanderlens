@@ -15,7 +15,10 @@ const districts = ref([]);
 const areaTree = ref([]);
 const serviceTypeOptions = ref([]);
 const schedule = ref([]);
-const serviceAreas = ref([]);
+const areaTreeNodes = ref([]);
+const selectedAreaIds = ref([]);
+const areaTreeRef = ref(null);
+const savingAreas = ref(false);
 const bank = ref(null);
 const features = ref([]);
 const works = ref([]);
@@ -169,6 +172,31 @@ const removeWork = async (id) => {
         ElMessage.error('刪除失敗');
     }
 };
+const buildAreaTreeLabels = (nodes) => {
+    nodes.forEach((n) => {
+        n.treeName = n.minHour ? `${n.name}（${n.minHour} 小時）` : n.name;
+        if (n.children?.length)
+            buildAreaTreeLabels(n.children);
+    });
+};
+const saveServiceAreas = async () => {
+    savingAreas.value = true;
+    try {
+        const checked = areaTreeRef.value?.getCheckedKeys() || [];
+        await api.setProviderServiceArea(providerId, {
+            rootNodes: areaTreeNodes.value.map((n) => n.id),
+            selectedNodes: checked,
+        });
+        selectedAreaIds.value = checked;
+        ElMessage.success('服務地區已儲存');
+    }
+    catch {
+        ElMessage.error('儲存失敗');
+    }
+    finally {
+        savingAreas.value = false;
+    }
+};
 const loadTab = async (tab) => {
     if (loaded[tab])
         return;
@@ -181,8 +209,11 @@ const loadTab = async (tab) => {
         }
         else if (tab === 'area') {
             tabLoading.area = true;
-            const res = await request.get(`/providers/service-area/${providerId}`, { params: { view: 'flat' } });
-            serviceAreas.value = res.data || [];
+            const res = await api.getProviderServiceArea(providerId);
+            const raw = res.data?.rootNodes || [];
+            buildAreaTreeLabels(raw);
+            areaTreeNodes.value = raw;
+            selectedAreaIds.value = res.data?.selectedNodes || [];
         }
         else if (tab === 'bank') {
             tabLoading.bank = true;
@@ -1426,507 +1457,521 @@ if (__VLS_ctx.provider) {
         lazy: true,
     }, ...__VLS_functionalComponentArgsRest(__VLS_357));
     __VLS_359.slots.default;
-    const __VLS_360 = {}.ElTable;
-    /** @type {[typeof __VLS_components.ElTable, typeof __VLS_components.elTable, typeof __VLS_components.ElTable, typeof __VLS_components.elTable, ]} */ ;
-    // @ts-ignore
-    const __VLS_361 = __VLS_asFunctionalComponent(__VLS_360, new __VLS_360({
-        data: (__VLS_ctx.serviceAreas),
-        border: true,
-        emptyText: "尚無服務地區",
-    }));
-    const __VLS_362 = __VLS_361({
-        data: (__VLS_ctx.serviceAreas),
-        border: true,
-        emptyText: "尚無服務地區",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_361));
+    __VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+        ...{ class: "max-w-2xl" },
+    });
     __VLS_asFunctionalDirective(__VLS_directives.vLoading)(null, { ...__VLS_directiveBindingRestFields, value: (__VLS_ctx.tabLoading.area) }, null, null);
-    __VLS_363.slots.default;
-    const __VLS_364 = {}.ElTableColumn;
-    /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
-    // @ts-ignore
-    const __VLS_365 = __VLS_asFunctionalComponent(__VLS_364, new __VLS_364({
-        prop: "areaId",
-        label: "區域 ID",
-        width: "100",
-    }));
-    const __VLS_366 = __VLS_365({
-        prop: "areaId",
-        label: "區域 ID",
-        width: "100",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_365));
-    const __VLS_368 = {}.ElTableColumn;
-    /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
-    // @ts-ignore
-    const __VLS_369 = __VLS_asFunctionalComponent(__VLS_368, new __VLS_368({
-        prop: "zipCode",
-        label: "郵遞區號",
-        width: "120",
-    }));
-    const __VLS_370 = __VLS_369({
-        prop: "zipCode",
-        label: "郵遞區號",
-        width: "120",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_369));
-    const __VLS_372 = {}.ElTableColumn;
-    /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
-    // @ts-ignore
-    const __VLS_373 = __VLS_asFunctionalComponent(__VLS_372, new __VLS_372({
-        prop: "areaParentId",
-        label: "上層區域",
-    }));
-    const __VLS_374 = __VLS_373({
-        prop: "areaParentId",
-        label: "上層區域",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_373));
-    var __VLS_363;
-    var __VLS_359;
-    const __VLS_376 = {}.ElTabPane;
-    /** @type {[typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, ]} */ ;
-    // @ts-ignore
-    const __VLS_377 = __VLS_asFunctionalComponent(__VLS_376, new __VLS_376({
-        label: "匯款資料",
-        name: "bank",
-        lazy: true,
-    }));
-    const __VLS_378 = __VLS_377({
-        label: "匯款資料",
-        name: "bank",
-        lazy: true,
-    }, ...__VLS_functionalComponentArgsRest(__VLS_377));
-    __VLS_379.slots.default;
-    if (__VLS_ctx.bank) {
-        const __VLS_380 = {}.ElDescriptions;
-        /** @type {[typeof __VLS_components.ElDescriptions, typeof __VLS_components.elDescriptions, typeof __VLS_components.ElDescriptions, typeof __VLS_components.elDescriptions, ]} */ ;
+    __VLS_asFunctionalElement(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({
+        ...{ class: "text-sm text-gray-500 mb-3" },
+    });
+    if (__VLS_ctx.areaTreeNodes.length) {
+        const __VLS_360 = {}.ElTree;
+        /** @type {[typeof __VLS_components.ElTree, typeof __VLS_components.elTree, ]} */ ;
         // @ts-ignore
-        const __VLS_381 = __VLS_asFunctionalComponent(__VLS_380, new __VLS_380({
-            column: (2),
-            border: true,
+        const __VLS_361 = __VLS_asFunctionalComponent(__VLS_360, new __VLS_360({
+            key: (__VLS_ctx.selectedAreaIds.join(',')),
+            ref: "areaTreeRef",
+            data: (__VLS_ctx.areaTreeNodes),
+            showCheckbox: true,
+            nodeKey: "id",
+            defaultCheckedKeys: (__VLS_ctx.selectedAreaIds),
+            props: ({ label: 'treeName', children: 'children' }),
         }));
-        const __VLS_382 = __VLS_381({
-            column: (2),
-            border: true,
-        }, ...__VLS_functionalComponentArgsRest(__VLS_381));
-        __VLS_asFunctionalDirective(__VLS_directives.vLoading)(null, { ...__VLS_directiveBindingRestFields, value: (__VLS_ctx.tabLoading.bank) }, null, null);
-        __VLS_383.slots.default;
-        const __VLS_384 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_385 = __VLS_asFunctionalComponent(__VLS_384, new __VLS_384({
-            label: "銀行",
-        }));
-        const __VLS_386 = __VLS_385({
-            label: "銀行",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_385));
-        __VLS_387.slots.default;
-        (__VLS_ctx.bank.bankName);
-        var __VLS_387;
-        const __VLS_388 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_389 = __VLS_asFunctionalComponent(__VLS_388, new __VLS_388({
-            label: "代碼",
-        }));
-        const __VLS_390 = __VLS_389({
-            label: "代碼",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_389));
-        __VLS_391.slots.default;
-        (__VLS_ctx.bank.bankCode);
-        var __VLS_391;
-        const __VLS_392 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_393 = __VLS_asFunctionalComponent(__VLS_392, new __VLS_392({
-            label: "分行",
-        }));
-        const __VLS_394 = __VLS_393({
-            label: "分行",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_393));
-        __VLS_395.slots.default;
-        (__VLS_ctx.bank.bankBranch);
-        var __VLS_395;
-        const __VLS_396 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_397 = __VLS_asFunctionalComponent(__VLS_396, new __VLS_396({
-            label: "戶名",
-        }));
-        const __VLS_398 = __VLS_397({
-            label: "戶名",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_397));
-        __VLS_399.slots.default;
-        (__VLS_ctx.bank.accountName);
-        var __VLS_399;
-        const __VLS_400 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_401 = __VLS_asFunctionalComponent(__VLS_400, new __VLS_400({
-            label: "帳號",
-        }));
-        const __VLS_402 = __VLS_401({
-            label: "帳號",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_401));
-        __VLS_403.slots.default;
-        (__VLS_ctx.bank.accountNo);
-        var __VLS_403;
-        const __VLS_404 = {}.ElDescriptionsItem;
-        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
-        // @ts-ignore
-        const __VLS_405 = __VLS_asFunctionalComponent(__VLS_404, new __VLS_404({
-            label: "備註",
-        }));
-        const __VLS_406 = __VLS_405({
-            label: "備註",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_405));
-        __VLS_407.slots.default;
-        (__VLS_ctx.bank.note || '—');
-        var __VLS_407;
-        var __VLS_383;
+        const __VLS_362 = __VLS_361({
+            key: (__VLS_ctx.selectedAreaIds.join(',')),
+            ref: "areaTreeRef",
+            data: (__VLS_ctx.areaTreeNodes),
+            showCheckbox: true,
+            nodeKey: "id",
+            defaultCheckedKeys: (__VLS_ctx.selectedAreaIds),
+            props: ({ label: 'treeName', children: 'children' }),
+        }, ...__VLS_functionalComponentArgsRest(__VLS_361));
+        /** @type {typeof __VLS_ctx.areaTreeRef} */ ;
+        var __VLS_364 = {};
+        var __VLS_363;
     }
-    else {
-        const __VLS_408 = {}.ElEmpty;
+    else if (!__VLS_ctx.tabLoading.area) {
+        const __VLS_366 = {}.ElEmpty;
         /** @type {[typeof __VLS_components.ElEmpty, typeof __VLS_components.elEmpty, ]} */ ;
         // @ts-ignore
-        const __VLS_409 = __VLS_asFunctionalComponent(__VLS_408, new __VLS_408({
-            description: "尚未填寫匯款資料",
+        const __VLS_367 = __VLS_asFunctionalComponent(__VLS_366, new __VLS_366({
+            description: "請先在基本資料填寫縣市，或尚無行政區資料",
         }));
-        const __VLS_410 = __VLS_409({
-            description: "尚未填寫匯款資料",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_409));
+        const __VLS_368 = __VLS_367({
+            description: "請先在基本資料填寫縣市，或尚無行政區資料",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_367));
     }
-    var __VLS_379;
-    const __VLS_412 = {}.ElTabPane;
+    const __VLS_370 = {}.ElButton;
+    /** @type {[typeof __VLS_components.ElButton, typeof __VLS_components.elButton, typeof __VLS_components.ElButton, typeof __VLS_components.elButton, ]} */ ;
+    // @ts-ignore
+    const __VLS_371 = __VLS_asFunctionalComponent(__VLS_370, new __VLS_370({
+        ...{ 'onClick': {} },
+        type: "primary",
+        ...{ class: "mt-4" },
+        loading: (__VLS_ctx.savingAreas),
+    }));
+    const __VLS_372 = __VLS_371({
+        ...{ 'onClick': {} },
+        type: "primary",
+        ...{ class: "mt-4" },
+        loading: (__VLS_ctx.savingAreas),
+    }, ...__VLS_functionalComponentArgsRest(__VLS_371));
+    let __VLS_374;
+    let __VLS_375;
+    let __VLS_376;
+    const __VLS_377 = {
+        onClick: (__VLS_ctx.saveServiceAreas)
+    };
+    __VLS_373.slots.default;
+    var __VLS_373;
+    var __VLS_359;
+    const __VLS_378 = {}.ElTabPane;
     /** @type {[typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, ]} */ ;
     // @ts-ignore
-    const __VLS_413 = __VLS_asFunctionalComponent(__VLS_412, new __VLS_412({
+    const __VLS_379 = __VLS_asFunctionalComponent(__VLS_378, new __VLS_378({
+        label: "匯款資料",
+        name: "bank",
+        lazy: true,
+    }));
+    const __VLS_380 = __VLS_379({
+        label: "匯款資料",
+        name: "bank",
+        lazy: true,
+    }, ...__VLS_functionalComponentArgsRest(__VLS_379));
+    __VLS_381.slots.default;
+    if (__VLS_ctx.bank) {
+        const __VLS_382 = {}.ElDescriptions;
+        /** @type {[typeof __VLS_components.ElDescriptions, typeof __VLS_components.elDescriptions, typeof __VLS_components.ElDescriptions, typeof __VLS_components.elDescriptions, ]} */ ;
+        // @ts-ignore
+        const __VLS_383 = __VLS_asFunctionalComponent(__VLS_382, new __VLS_382({
+            column: (2),
+            border: true,
+        }));
+        const __VLS_384 = __VLS_383({
+            column: (2),
+            border: true,
+        }, ...__VLS_functionalComponentArgsRest(__VLS_383));
+        __VLS_asFunctionalDirective(__VLS_directives.vLoading)(null, { ...__VLS_directiveBindingRestFields, value: (__VLS_ctx.tabLoading.bank) }, null, null);
+        __VLS_385.slots.default;
+        const __VLS_386 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_387 = __VLS_asFunctionalComponent(__VLS_386, new __VLS_386({
+            label: "銀行",
+        }));
+        const __VLS_388 = __VLS_387({
+            label: "銀行",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_387));
+        __VLS_389.slots.default;
+        (__VLS_ctx.bank.bankName);
+        var __VLS_389;
+        const __VLS_390 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_391 = __VLS_asFunctionalComponent(__VLS_390, new __VLS_390({
+            label: "代碼",
+        }));
+        const __VLS_392 = __VLS_391({
+            label: "代碼",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_391));
+        __VLS_393.slots.default;
+        (__VLS_ctx.bank.bankCode);
+        var __VLS_393;
+        const __VLS_394 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_395 = __VLS_asFunctionalComponent(__VLS_394, new __VLS_394({
+            label: "分行",
+        }));
+        const __VLS_396 = __VLS_395({
+            label: "分行",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_395));
+        __VLS_397.slots.default;
+        (__VLS_ctx.bank.bankBranch);
+        var __VLS_397;
+        const __VLS_398 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_399 = __VLS_asFunctionalComponent(__VLS_398, new __VLS_398({
+            label: "戶名",
+        }));
+        const __VLS_400 = __VLS_399({
+            label: "戶名",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_399));
+        __VLS_401.slots.default;
+        (__VLS_ctx.bank.accountName);
+        var __VLS_401;
+        const __VLS_402 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_403 = __VLS_asFunctionalComponent(__VLS_402, new __VLS_402({
+            label: "帳號",
+        }));
+        const __VLS_404 = __VLS_403({
+            label: "帳號",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_403));
+        __VLS_405.slots.default;
+        (__VLS_ctx.bank.accountNo);
+        var __VLS_405;
+        const __VLS_406 = {}.ElDescriptionsItem;
+        /** @type {[typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, typeof __VLS_components.ElDescriptionsItem, typeof __VLS_components.elDescriptionsItem, ]} */ ;
+        // @ts-ignore
+        const __VLS_407 = __VLS_asFunctionalComponent(__VLS_406, new __VLS_406({
+            label: "備註",
+        }));
+        const __VLS_408 = __VLS_407({
+            label: "備註",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_407));
+        __VLS_409.slots.default;
+        (__VLS_ctx.bank.note || '—');
+        var __VLS_409;
+        var __VLS_385;
+    }
+    else {
+        const __VLS_410 = {}.ElEmpty;
+        /** @type {[typeof __VLS_components.ElEmpty, typeof __VLS_components.elEmpty, ]} */ ;
+        // @ts-ignore
+        const __VLS_411 = __VLS_asFunctionalComponent(__VLS_410, new __VLS_410({
+            description: "尚未填寫匯款資料",
+        }));
+        const __VLS_412 = __VLS_411({
+            description: "尚未填寫匯款資料",
+        }, ...__VLS_functionalComponentArgsRest(__VLS_411));
+    }
+    var __VLS_381;
+    const __VLS_414 = {}.ElTabPane;
+    /** @type {[typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, typeof __VLS_components.ElTabPane, typeof __VLS_components.elTabPane, ]} */ ;
+    // @ts-ignore
+    const __VLS_415 = __VLS_asFunctionalComponent(__VLS_414, new __VLS_414({
         label: "評價",
         name: "rating",
         lazy: true,
     }));
-    const __VLS_414 = __VLS_413({
+    const __VLS_416 = __VLS_415({
         label: "評價",
         name: "rating",
         lazy: true,
-    }, ...__VLS_functionalComponentArgsRest(__VLS_413));
-    __VLS_415.slots.default;
-    const __VLS_416 = {}.ElTable;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_415));
+    __VLS_417.slots.default;
+    const __VLS_418 = {}.ElTable;
     /** @type {[typeof __VLS_components.ElTable, typeof __VLS_components.elTable, typeof __VLS_components.ElTable, typeof __VLS_components.elTable, ]} */ ;
     // @ts-ignore
-    const __VLS_417 = __VLS_asFunctionalComponent(__VLS_416, new __VLS_416({
+    const __VLS_419 = __VLS_asFunctionalComponent(__VLS_418, new __VLS_418({
         data: (__VLS_ctx.ratings),
         border: true,
         emptyText: "尚無評價",
     }));
-    const __VLS_418 = __VLS_417({
+    const __VLS_420 = __VLS_419({
         data: (__VLS_ctx.ratings),
         border: true,
         emptyText: "尚無評價",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_417));
+    }, ...__VLS_functionalComponentArgsRest(__VLS_419));
     __VLS_asFunctionalDirective(__VLS_directives.vLoading)(null, { ...__VLS_directiveBindingRestFields, value: (__VLS_ctx.tabLoading.rating) }, null, null);
-    __VLS_419.slots.default;
-    const __VLS_420 = {}.ElTableColumn;
+    __VLS_421.slots.default;
+    const __VLS_422 = {}.ElTableColumn;
     /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
     // @ts-ignore
-    const __VLS_421 = __VLS_asFunctionalComponent(__VLS_420, new __VLS_420({
+    const __VLS_423 = __VLS_asFunctionalComponent(__VLS_422, new __VLS_422({
         prop: "author",
         label: "評價者",
         width: "120",
     }));
-    const __VLS_422 = __VLS_421({
+    const __VLS_424 = __VLS_423({
         prop: "author",
         label: "評價者",
         width: "120",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_421));
-    const __VLS_424 = {}.ElTableColumn;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_423));
+    const __VLS_426 = {}.ElTableColumn;
     /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
     // @ts-ignore
-    const __VLS_425 = __VLS_asFunctionalComponent(__VLS_424, new __VLS_424({
+    const __VLS_427 = __VLS_asFunctionalComponent(__VLS_426, new __VLS_426({
         prop: "stars",
         label: "星等",
         width: "80",
     }));
-    const __VLS_426 = __VLS_425({
+    const __VLS_428 = __VLS_427({
         prop: "stars",
         label: "星等",
         width: "80",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_425));
-    const __VLS_428 = {}.ElTableColumn;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_427));
+    const __VLS_430 = {}.ElTableColumn;
     /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
     // @ts-ignore
-    const __VLS_429 = __VLS_asFunctionalComponent(__VLS_428, new __VLS_428({
+    const __VLS_431 = __VLS_asFunctionalComponent(__VLS_430, new __VLS_430({
         prop: "comments",
         label: "評語",
     }));
-    const __VLS_430 = __VLS_429({
+    const __VLS_432 = __VLS_431({
         prop: "comments",
         label: "評語",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_429));
-    const __VLS_432 = {}.ElTableColumn;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_431));
+    const __VLS_434 = {}.ElTableColumn;
     /** @type {[typeof __VLS_components.ElTableColumn, typeof __VLS_components.elTableColumn, ]} */ ;
     // @ts-ignore
-    const __VLS_433 = __VLS_asFunctionalComponent(__VLS_432, new __VLS_432({
+    const __VLS_435 = __VLS_asFunctionalComponent(__VLS_434, new __VLS_434({
         prop: "createdAt",
         label: "時間",
         width: "180",
     }));
-    const __VLS_434 = __VLS_433({
+    const __VLS_436 = __VLS_435({
         prop: "createdAt",
         label: "時間",
         width: "180",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_433));
-    var __VLS_419;
-    var __VLS_415;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_435));
+    var __VLS_421;
+    var __VLS_417;
     var __VLS_23;
-    const __VLS_436 = {}.ElDialog;
+    const __VLS_438 = {}.ElDialog;
     /** @type {[typeof __VLS_components.ElDialog, typeof __VLS_components.elDialog, typeof __VLS_components.ElDialog, typeof __VLS_components.elDialog, ]} */ ;
     // @ts-ignore
-    const __VLS_437 = __VLS_asFunctionalComponent(__VLS_436, new __VLS_436({
+    const __VLS_439 = __VLS_asFunctionalComponent(__VLS_438, new __VLS_438({
         modelValue: (__VLS_ctx.featureDialog),
         title: (__VLS_ctx.featureEditing ? '編輯特色' : '新增特色'),
         width: "520px",
     }));
-    const __VLS_438 = __VLS_437({
+    const __VLS_440 = __VLS_439({
         modelValue: (__VLS_ctx.featureDialog),
         title: (__VLS_ctx.featureEditing ? '編輯特色' : '新增特色'),
         width: "520px",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_437));
-    __VLS_439.slots.default;
-    const __VLS_440 = {}.ElForm;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_439));
+    __VLS_441.slots.default;
+    const __VLS_442 = {}.ElForm;
     /** @type {[typeof __VLS_components.ElForm, typeof __VLS_components.elForm, typeof __VLS_components.ElForm, typeof __VLS_components.elForm, ]} */ ;
     // @ts-ignore
-    const __VLS_441 = __VLS_asFunctionalComponent(__VLS_440, new __VLS_440({
+    const __VLS_443 = __VLS_asFunctionalComponent(__VLS_442, new __VLS_442({
         labelWidth: "80px",
     }));
-    const __VLS_442 = __VLS_441({
+    const __VLS_444 = __VLS_443({
         labelWidth: "80px",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_441));
-    __VLS_443.slots.default;
-    const __VLS_444 = {}.ElFormItem;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_443));
+    __VLS_445.slots.default;
+    const __VLS_446 = {}.ElFormItem;
     /** @type {[typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, ]} */ ;
     // @ts-ignore
-    const __VLS_445 = __VLS_asFunctionalComponent(__VLS_444, new __VLS_444({
+    const __VLS_447 = __VLS_asFunctionalComponent(__VLS_446, new __VLS_446({
         label: "語系",
     }));
-    const __VLS_446 = __VLS_445({
+    const __VLS_448 = __VLS_447({
         label: "語系",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_445));
-    __VLS_447.slots.default;
-    const __VLS_448 = {}.ElRadioGroup;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_447));
+    __VLS_449.slots.default;
+    const __VLS_450 = {}.ElRadioGroup;
     /** @type {[typeof __VLS_components.ElRadioGroup, typeof __VLS_components.elRadioGroup, typeof __VLS_components.ElRadioGroup, typeof __VLS_components.elRadioGroup, ]} */ ;
     // @ts-ignore
-    const __VLS_449 = __VLS_asFunctionalComponent(__VLS_448, new __VLS_448({
+    const __VLS_451 = __VLS_asFunctionalComponent(__VLS_450, new __VLS_450({
         modelValue: (__VLS_ctx.featureForm.language),
     }));
-    const __VLS_450 = __VLS_449({
+    const __VLS_452 = __VLS_451({
         modelValue: (__VLS_ctx.featureForm.language),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_449));
-    __VLS_451.slots.default;
-    const __VLS_452 = {}.ElRadio;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_451));
+    __VLS_453.slots.default;
+    const __VLS_454 = {}.ElRadio;
     /** @type {[typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, ]} */ ;
     // @ts-ignore
-    const __VLS_453 = __VLS_asFunctionalComponent(__VLS_452, new __VLS_452({
+    const __VLS_455 = __VLS_asFunctionalComponent(__VLS_454, new __VLS_454({
         label: "tw",
     }));
-    const __VLS_454 = __VLS_453({
+    const __VLS_456 = __VLS_455({
         label: "tw",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_453));
-    __VLS_455.slots.default;
-    var __VLS_455;
-    const __VLS_456 = {}.ElRadio;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_455));
+    __VLS_457.slots.default;
+    var __VLS_457;
+    const __VLS_458 = {}.ElRadio;
     /** @type {[typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, ]} */ ;
     // @ts-ignore
-    const __VLS_457 = __VLS_asFunctionalComponent(__VLS_456, new __VLS_456({
+    const __VLS_459 = __VLS_asFunctionalComponent(__VLS_458, new __VLS_458({
         label: "en",
     }));
-    const __VLS_458 = __VLS_457({
+    const __VLS_460 = __VLS_459({
         label: "en",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_457));
-    __VLS_459.slots.default;
-    var __VLS_459;
-    const __VLS_460 = {}.ElRadio;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_459));
+    __VLS_461.slots.default;
+    var __VLS_461;
+    const __VLS_462 = {}.ElRadio;
     /** @type {[typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, ]} */ ;
     // @ts-ignore
-    const __VLS_461 = __VLS_asFunctionalComponent(__VLS_460, new __VLS_460({
+    const __VLS_463 = __VLS_asFunctionalComponent(__VLS_462, new __VLS_462({
         label: "jp",
     }));
-    const __VLS_462 = __VLS_461({
+    const __VLS_464 = __VLS_463({
         label: "jp",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_461));
-    __VLS_463.slots.default;
-    var __VLS_463;
-    const __VLS_464 = {}.ElRadio;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_463));
+    __VLS_465.slots.default;
+    var __VLS_465;
+    const __VLS_466 = {}.ElRadio;
     /** @type {[typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, typeof __VLS_components.ElRadio, typeof __VLS_components.elRadio, ]} */ ;
     // @ts-ignore
-    const __VLS_465 = __VLS_asFunctionalComponent(__VLS_464, new __VLS_464({
+    const __VLS_467 = __VLS_asFunctionalComponent(__VLS_466, new __VLS_466({
         label: "kr",
     }));
-    const __VLS_466 = __VLS_465({
+    const __VLS_468 = __VLS_467({
         label: "kr",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_465));
-    __VLS_467.slots.default;
-    var __VLS_467;
-    var __VLS_451;
-    var __VLS_447;
-    const __VLS_468 = {}.ElFormItem;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_467));
+    __VLS_469.slots.default;
+    var __VLS_469;
+    var __VLS_453;
+    var __VLS_449;
+    const __VLS_470 = {}.ElFormItem;
     /** @type {[typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, ]} */ ;
     // @ts-ignore
-    const __VLS_469 = __VLS_asFunctionalComponent(__VLS_468, new __VLS_468({
+    const __VLS_471 = __VLS_asFunctionalComponent(__VLS_470, new __VLS_470({
         label: "類型",
     }));
-    const __VLS_470 = __VLS_469({
+    const __VLS_472 = __VLS_471({
         label: "類型",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_469));
-    __VLS_471.slots.default;
-    const __VLS_472 = {}.ElSelect;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_471));
+    __VLS_473.slots.default;
+    const __VLS_474 = {}.ElSelect;
     /** @type {[typeof __VLS_components.ElSelect, typeof __VLS_components.elSelect, typeof __VLS_components.ElSelect, typeof __VLS_components.elSelect, ]} */ ;
     // @ts-ignore
-    const __VLS_473 = __VLS_asFunctionalComponent(__VLS_472, new __VLS_472({
+    const __VLS_475 = __VLS_asFunctionalComponent(__VLS_474, new __VLS_474({
         modelValue: (__VLS_ctx.featureForm.featureType),
     }));
-    const __VLS_474 = __VLS_473({
+    const __VLS_476 = __VLS_475({
         modelValue: (__VLS_ctx.featureForm.featureType),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_473));
-    __VLS_475.slots.default;
-    const __VLS_476 = {}.ElOption;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_475));
+    __VLS_477.slots.default;
+    const __VLS_478 = {}.ElOption;
     /** @type {[typeof __VLS_components.ElOption, typeof __VLS_components.elOption, ]} */ ;
     // @ts-ignore
-    const __VLS_477 = __VLS_asFunctionalComponent(__VLS_476, new __VLS_476({
+    const __VLS_479 = __VLS_asFunctionalComponent(__VLS_478, new __VLS_478({
         label: "風格",
         value: "style",
     }));
-    const __VLS_478 = __VLS_477({
+    const __VLS_480 = __VLS_479({
         label: "風格",
         value: "style",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_477));
-    const __VLS_480 = {}.ElOption;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_479));
+    const __VLS_482 = {}.ElOption;
     /** @type {[typeof __VLS_components.ElOption, typeof __VLS_components.elOption, ]} */ ;
     // @ts-ignore
-    const __VLS_481 = __VLS_asFunctionalComponent(__VLS_480, new __VLS_480({
+    const __VLS_483 = __VLS_asFunctionalComponent(__VLS_482, new __VLS_482({
         label: "服務",
         value: "service",
     }));
-    const __VLS_482 = __VLS_481({
+    const __VLS_484 = __VLS_483({
         label: "服務",
         value: "service",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_481));
-    const __VLS_484 = {}.ElOption;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_483));
+    const __VLS_486 = {}.ElOption;
     /** @type {[typeof __VLS_components.ElOption, typeof __VLS_components.elOption, ]} */ ;
     // @ts-ignore
-    const __VLS_485 = __VLS_asFunctionalComponent(__VLS_484, new __VLS_484({
+    const __VLS_487 = __VLS_asFunctionalComponent(__VLS_486, new __VLS_486({
         label: "器材",
         value: "equipment",
     }));
-    const __VLS_486 = __VLS_485({
+    const __VLS_488 = __VLS_487({
         label: "器材",
         value: "equipment",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_485));
-    var __VLS_475;
-    var __VLS_471;
-    const __VLS_488 = {}.ElFormItem;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_487));
+    var __VLS_477;
+    var __VLS_473;
+    const __VLS_490 = {}.ElFormItem;
     /** @type {[typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, ]} */ ;
     // @ts-ignore
-    const __VLS_489 = __VLS_asFunctionalComponent(__VLS_488, new __VLS_488({
+    const __VLS_491 = __VLS_asFunctionalComponent(__VLS_490, new __VLS_490({
         label: "內容",
     }));
-    const __VLS_490 = __VLS_489({
+    const __VLS_492 = __VLS_491({
         label: "內容",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_489));
-    __VLS_491.slots.default;
-    const __VLS_492 = {}.ElInput;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_491));
+    __VLS_493.slots.default;
+    const __VLS_494 = {}.ElInput;
     /** @type {[typeof __VLS_components.ElInput, typeof __VLS_components.elInput, ]} */ ;
     // @ts-ignore
-    const __VLS_493 = __VLS_asFunctionalComponent(__VLS_492, new __VLS_492({
+    const __VLS_495 = __VLS_asFunctionalComponent(__VLS_494, new __VLS_494({
         modelValue: (__VLS_ctx.featureForm.featureContent),
         type: "textarea",
         rows: (3),
     }));
-    const __VLS_494 = __VLS_493({
+    const __VLS_496 = __VLS_495({
         modelValue: (__VLS_ctx.featureForm.featureContent),
         type: "textarea",
         rows: (3),
-    }, ...__VLS_functionalComponentArgsRest(__VLS_493));
-    var __VLS_491;
-    const __VLS_496 = {}.ElFormItem;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_495));
+    var __VLS_493;
+    const __VLS_498 = {}.ElFormItem;
     /** @type {[typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, typeof __VLS_components.ElFormItem, typeof __VLS_components.elFormItem, ]} */ ;
     // @ts-ignore
-    const __VLS_497 = __VLS_asFunctionalComponent(__VLS_496, new __VLS_496({
+    const __VLS_499 = __VLS_asFunctionalComponent(__VLS_498, new __VLS_498({
         label: "啟用",
     }));
-    const __VLS_498 = __VLS_497({
+    const __VLS_500 = __VLS_499({
         label: "啟用",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_497));
-    __VLS_499.slots.default;
-    const __VLS_500 = {}.ElSwitch;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_499));
+    __VLS_501.slots.default;
+    const __VLS_502 = {}.ElSwitch;
     /** @type {[typeof __VLS_components.ElSwitch, typeof __VLS_components.elSwitch, ]} */ ;
     // @ts-ignore
-    const __VLS_501 = __VLS_asFunctionalComponent(__VLS_500, new __VLS_500({
+    const __VLS_503 = __VLS_asFunctionalComponent(__VLS_502, new __VLS_502({
         modelValue: (__VLS_ctx.featureForm.enable),
         activeValue: "Y",
         inactiveValue: "N",
     }));
-    const __VLS_502 = __VLS_501({
+    const __VLS_504 = __VLS_503({
         modelValue: (__VLS_ctx.featureForm.enable),
         activeValue: "Y",
         inactiveValue: "N",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_501));
-    var __VLS_499;
-    var __VLS_443;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_503));
+    var __VLS_501;
+    var __VLS_445;
     {
-        const { footer: __VLS_thisSlot } = __VLS_439.slots;
-        const __VLS_504 = {}.ElButton;
+        const { footer: __VLS_thisSlot } = __VLS_441.slots;
+        const __VLS_506 = {}.ElButton;
         /** @type {[typeof __VLS_components.ElButton, typeof __VLS_components.elButton, typeof __VLS_components.ElButton, typeof __VLS_components.elButton, ]} */ ;
         // @ts-ignore
-        const __VLS_505 = __VLS_asFunctionalComponent(__VLS_504, new __VLS_504({
+        const __VLS_507 = __VLS_asFunctionalComponent(__VLS_506, new __VLS_506({
             ...{ 'onClick': {} },
         }));
-        const __VLS_506 = __VLS_505({
+        const __VLS_508 = __VLS_507({
             ...{ 'onClick': {} },
-        }, ...__VLS_functionalComponentArgsRest(__VLS_505));
-        let __VLS_508;
-        let __VLS_509;
+        }, ...__VLS_functionalComponentArgsRest(__VLS_507));
         let __VLS_510;
-        const __VLS_511 = {
+        let __VLS_511;
+        let __VLS_512;
+        const __VLS_513 = {
             onClick: (...[$event]) => {
                 if (!(__VLS_ctx.provider))
                     return;
                 __VLS_ctx.featureDialog = false;
             }
         };
-        __VLS_507.slots.default;
-        var __VLS_507;
-        const __VLS_512 = {}.ElButton;
+        __VLS_509.slots.default;
+        var __VLS_509;
+        const __VLS_514 = {}.ElButton;
         /** @type {[typeof __VLS_components.ElButton, typeof __VLS_components.elButton, typeof __VLS_components.ElButton, typeof __VLS_components.elButton, ]} */ ;
         // @ts-ignore
-        const __VLS_513 = __VLS_asFunctionalComponent(__VLS_512, new __VLS_512({
+        const __VLS_515 = __VLS_asFunctionalComponent(__VLS_514, new __VLS_514({
             ...{ 'onClick': {} },
             type: "primary",
         }));
-        const __VLS_514 = __VLS_513({
+        const __VLS_516 = __VLS_515({
             ...{ 'onClick': {} },
             type: "primary",
-        }, ...__VLS_functionalComponentArgsRest(__VLS_513));
-        let __VLS_516;
-        let __VLS_517;
+        }, ...__VLS_functionalComponentArgsRest(__VLS_515));
         let __VLS_518;
-        const __VLS_519 = {
+        let __VLS_519;
+        let __VLS_520;
+        const __VLS_521 = {
             onClick: (__VLS_ctx.saveFeature)
         };
-        __VLS_515.slots.default;
-        var __VLS_515;
+        __VLS_517.slots.default;
+        var __VLS_517;
     }
-    var __VLS_439;
+    var __VLS_441;
 }
 else {
-    const __VLS_520 = {}.ElEmpty;
+    const __VLS_522 = {}.ElEmpty;
     /** @type {[typeof __VLS_components.ElEmpty, typeof __VLS_components.elEmpty, ]} */ ;
     // @ts-ignore
-    const __VLS_521 = __VLS_asFunctionalComponent(__VLS_520, new __VLS_520({
+    const __VLS_523 = __VLS_asFunctionalComponent(__VLS_522, new __VLS_522({
         description: "載入中或找不到攝影師",
     }));
-    const __VLS_522 = __VLS_521({
+    const __VLS_524 = __VLS_523({
         description: "載入中或找不到攝影師",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_521));
-    var __VLS_524 = {};
-    var __VLS_523;
+    }, ...__VLS_functionalComponentArgsRest(__VLS_523));
+    var __VLS_526 = {};
+    var __VLS_525;
 }
 /** @type {__VLS_StyleScopedClasses['mb-4']} */ ;
 /** @type {__VLS_StyleScopedClasses['mb-4']} */ ;
@@ -1968,6 +2013,13 @@ else {
 /** @type {__VLS_StyleScopedClasses['opacity-0']} */ ;
 /** @type {__VLS_StyleScopedClasses['group-hover:opacity-100']} */ ;
 /** @type {__VLS_StyleScopedClasses['col-span-full']} */ ;
+/** @type {__VLS_StyleScopedClasses['max-w-2xl']} */ ;
+/** @type {__VLS_StyleScopedClasses['text-sm']} */ ;
+/** @type {__VLS_StyleScopedClasses['text-gray-500']} */ ;
+/** @type {__VLS_StyleScopedClasses['mb-3']} */ ;
+/** @type {__VLS_StyleScopedClasses['mt-4']} */ ;
+// @ts-ignore
+var __VLS_365 = __VLS_364;
 var __VLS_dollars;
 const __VLS_self = (await import('vue')).defineComponent({
     setup() {
@@ -1980,7 +2032,10 @@ const __VLS_self = (await import('vue')).defineComponent({
             districts: districts,
             serviceTypeOptions: serviceTypeOptions,
             schedule: schedule,
-            serviceAreas: serviceAreas,
+            areaTreeNodes: areaTreeNodes,
+            selectedAreaIds: selectedAreaIds,
+            areaTreeRef: areaTreeRef,
+            savingAreas: savingAreas,
             bank: bank,
             features: features,
             works: works,
@@ -2002,6 +2057,7 @@ const __VLS_self = (await import('vue')).defineComponent({
             removeFeature: removeFeature,
             uploadWork: uploadWork,
             removeWork: removeWork,
+            saveServiceAreas: saveServiceAreas,
         };
     },
 });

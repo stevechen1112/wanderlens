@@ -147,6 +147,8 @@ services:
     build:
       context: ../wanderlens-web
       dockerfile: Dockerfile
+      args:
+        NUXT_PUBLIC_API_BASE: https://api.wanderlenstw.com/api
     container_name: wanderlens-web
     restart: unless-stopped
     ports:

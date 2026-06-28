@@ -161,11 +161,21 @@
       </el-tab-pane>
 
       <el-tab-pane label="服務地區" name="area" lazy>
-        <el-table v-loading="tabLoading.area" :data="serviceAreas" border empty-text="尚無服務地區">
-          <el-table-column prop="areaId" label="區域 ID" width="100" />
-          <el-table-column prop="zipCode" label="郵遞區號" width="120" />
-          <el-table-column prop="areaParentId" label="上層區域" />
-        </el-table>
+        <div v-loading="tabLoading.area" class="max-w-2xl">
+          <p class="text-sm text-gray-500 mb-3">勾選此攝影師可接案的行政區（依基本資料縣市顯示樹狀選單）</p>
+          <el-tree
+            v-if="areaTreeNodes.length"
+            :key="selectedAreaIds.join(',')"
+            ref="areaTreeRef"
+            :data="areaTreeNodes"
+            show-checkbox
+            node-key="id"
+            :default-checked-keys="selectedAreaIds"
+            :props="{ label: 'treeName', children: 'children' }"
+          />
+          <el-empty v-else-if="!tabLoading.area" description="請先在基本資料填寫縣市，或尚無行政區資料" />
+          <el-button type="primary" class="mt-4" :loading="savingAreas" @click="saveServiceAreas">儲存服務地區</el-button>
+        </div>
       </el-tab-pane>
 
       <el-tab-pane label="匯款資料" name="bank" lazy>
@@ -242,7 +252,10 @@ const areaTree = ref<any[]>([])
 const serviceTypeOptions = ref<any[]>([])
 
 const schedule = ref<any[]>([])
-const serviceAreas = ref<any[]>([])
+const areaTreeNodes = ref<any[]>([])
+const selectedAreaIds = ref<number[]>([])
+const areaTreeRef = ref<any>(null)
+const savingAreas = ref(false)
 const bank = ref<any>(null)
 const features = ref<any[]>([])
 const works = ref<any[]>([])
@@ -401,6 +414,30 @@ const removeWork = async (id: number) => {
   }
 }
 
+const buildAreaTreeLabels = (nodes: any[]) => {
+  nodes.forEach((n) => {
+    n.treeName = n.minHour ? `${n.name}（${n.minHour} 小時）` : n.name
+    if (n.children?.length) buildAreaTreeLabels(n.children)
+  })
+}
+
+const saveServiceAreas = async () => {
+  savingAreas.value = true
+  try {
+    const checked = areaTreeRef.value?.getCheckedKeys() || []
+    await api.setProviderServiceArea(providerId, {
+      rootNodes: areaTreeNodes.value.map((n: { id: number }) => n.id),
+      selectedNodes: checked,
+    })
+    selectedAreaIds.value = checked
+    ElMessage.success('服務地區已儲存')
+  } catch {
+    ElMessage.error('儲存失敗')
+  } finally {
+    savingAreas.value = false
+  }
+}
+
 const loadTab = async (tab: string) => {
   if (loaded[tab]) return
   loaded[tab] = true
@@ -411,8 +448,11 @@ const loadTab = async (tab: string) => {
       schedule.value = res.data || []
     } else if (tab === 'area') {
       tabLoading.area = true
-      const res: any = await request.get(`/providers/service-area/${providerId}`, { params: { view: 'flat' } })
-      serviceAreas.value = res.data || []
+      const res: any = await api.getProviderServiceArea(providerId)
+      const raw = res.data?.rootNodes || []
+      buildAreaTreeLabels(raw)
+      areaTreeNodes.value = raw
+      selectedAreaIds.value = res.data?.selectedNodes || []
     } else if (tab === 'bank') {
       tabLoading.bank = true
       const res: any = await request.get('/providers/bank', { params: { providerId } })

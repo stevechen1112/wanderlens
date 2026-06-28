@@ -1,6 +1,6 @@
 <template>
   <WlStateView
-    v-if="loading"
+    v-if="pending"
     status="loading"
     :loading-message="$t('common.loading')"
     empty-title=" "
@@ -10,7 +10,7 @@
     status="error"
     :error-title="$t('photographer.loadFailed')"
     empty-title=" "
-    @retry="loadData"
+    @retry="() => refresh()"
   />
   <WlStateView
     v-else-if="!photographer"
@@ -208,12 +208,36 @@ const route = useRoute()
 const bookingStore = useBookingStore()
 const { getPublicProfile, getRatings } = useProviderApi()
 
-const profile = ref<any>(null)
-const ratings = ref<any[]>([])
-const loading = ref(true)
-const loadError = ref(false)
+const uuid = computed(() => route.params.uuid as string)
 const introCollapsed = ref(true)
 const lightboxUrl = ref('')
+
+const { data: pageData, pending, error, refresh } = await useAsyncData(
+  () => `photographer-profile-${uuid.value}`,
+  async () => {
+    const id = uuid.value
+    if (!id) return null
+    const resp = await getPublicProfile(id)
+    const profile = resp?.data ?? null
+    if (!profile?.provider) return null
+    let ratings: any[] = []
+    const pid = profile.provider.id
+    if (pid) {
+      try {
+        const ratingResp = await getRatings(pid, 1, 6)
+        ratings = ratingResp?.data ?? []
+      } catch {
+        ratings = []
+      }
+    }
+    return { profile, ratings }
+  },
+  { watch: [uuid] },
+)
+
+const profile = computed(() => pageData.value?.profile ?? null)
+const ratings = computed(() => pageData.value?.ratings ?? [])
+const loadError = computed(() => !!error.value)
 
 const bookingDate = ref(new Date().toISOString().split('T')[0])
 const bookingStart = ref('10:00')
@@ -304,36 +328,6 @@ const bookNow = () => {
     })
     bookingStore.setStep(5)
     navigateTo('/booking')
-  }
-}
-
-onMounted(loadData)
-
-async function loadData() {
-  loading.value = true
-  loadError.value = false
-  try {
-    const uuid = route.params.uuid as string
-    const resp = await getPublicProfile(uuid)
-    profile.value = resp?.data ?? null
-    if (!profile.value?.provider) {
-      profile.value = null
-      return
-    }
-    const pid = profile.value.provider.id
-    if (pid) {
-      try {
-        const ratingResp = await getRatings(pid, 1, 6)
-        ratings.value = ratingResp?.data ?? []
-      } catch {
-        ratings.value = []
-      }
-    }
-  } catch {
-    loadError.value = true
-    profile.value = null
-  } finally {
-    loading.value = false
   }
 }
 

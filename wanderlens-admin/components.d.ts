@@ -57,6 +57,7 @@ declare module 'vue' {
     ElText: typeof import('element-plus/es')['ElText']
     ElTimeline: typeof import('element-plus/es')['ElTimeline']
     ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
+    ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     GenericCrud: typeof import('./src/components/common/GenericCrud.vue')['default']
     RichTextEditor: typeof import('./src/components/common/RichTextEditor.vue')['default']

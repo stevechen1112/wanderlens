@@ -38,6 +38,9 @@ export default {
   deleteProviderWork: (workId: number, providerId: number) =>
     request.delete(`/providers/works/${workId}`, { params: { providerId } }),
   getAreasTree: () => request.get('/areas/tree'),
+  getProviderServiceArea: (providerId: number) => request.get(`/providers/service-area/${providerId}`),
+  setProviderServiceArea: (providerId: number, data: { rootNodes: number[]; selectedNodes: number[] }) =>
+    request.post(`/providers/service-area/${providerId}`, data),
 
   // 客戶
   getCustomers: (params?: any) => request.get('/customers', { params }),
