@@ -76,8 +76,8 @@ mkdir -p deploy/wanderlenstw/static/{app-web,papp-web}
 echo "==> [4/8] Build wanderlens-web (.output for Docker)"
 cd "$DEPLOY_DIR/wanderlens-web"
 export NUXT_PUBLIC_API_BASE="${NUXT_PUBLIC_API_BASE:-https://api.wanderlenstw.com/api}"
-if [ -d .output/server ] && [ "${FORCE_WEB_BUILD:-}" != "1" ]; then
-  echo "Using existing .output (set FORCE_WEB_BUILD=1 to rebuild)"
+if [ "${SKIP_WEB_BUILD:-}" = "1" ] && [ -d .output/server ]; then
+  echo "SKIP_WEB_BUILD=1: using existing .output"
 elif ! (npm install && npm run build); then
   echo "WARN: npm build failed; continuing only if .output exists" >&2
   [ -d .output/server ] || exit 1

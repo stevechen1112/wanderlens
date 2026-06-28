@@ -174,7 +174,13 @@
             :props="{ label: 'treeName', children: 'children' }"
           />
           <el-empty v-else-if="!tabLoading.area" description="請先在基本資料填寫縣市，或尚無行政區資料" />
-          <el-button type="primary" class="mt-4" :loading="savingAreas" @click="saveServiceAreas">儲存服務地區</el-button>
+          <el-button
+            type="primary"
+            class="mt-4"
+            :loading="savingAreas"
+            :disabled="!canSaveServiceAreas"
+            @click="saveServiceAreas"
+          >儲存服務地區</el-button>
         </div>
       </el-tab-pane>
 
@@ -414,17 +420,26 @@ const removeWork = async (id: number) => {
   }
 }
 
+const canSaveServiceAreas = computed(
+  () => areaTreeNodes.value.length > 0 && !tabLoading.area,
+)
+
 const buildAreaTreeLabels = (nodes: any[]) => {
   nodes.forEach((n) => {
-    n.treeName = n.minHour ? `${n.name}（${n.minHour} 小時）` : n.name
+    const hours = n.minHours ?? n.minHour
+    n.treeName = hours ? `${n.name}（${hours} 小時）` : n.name
     if (n.children?.length) buildAreaTreeLabels(n.children)
   })
 }
 
 const saveServiceAreas = async () => {
+  if (!areaTreeNodes.value.length || !areaTreeRef.value) {
+    ElMessage.warning('尚無可勾選的行政區，請先在基本資料填寫縣市')
+    return
+  }
   savingAreas.value = true
   try {
-    const checked = areaTreeRef.value?.getCheckedKeys() || []
+    const checked = areaTreeRef.value.getCheckedKeys()
     await api.setProviderServiceArea(providerId, {
       rootNodes: areaTreeNodes.value.map((n: { id: number }) => n.id),
       selectedNodes: checked,
