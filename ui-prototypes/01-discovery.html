@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>原型 01 — 搜尋與發現</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    #previewWrap.mobile-preview .discovery-layout { grid-template-columns: 1fr; }
+    #previewWrap.mobile-preview .filter-sidebar { display: none; }
+    #previewWrap.mobile-preview .cards-grid { grid-template-columns: 1fr; }
+    #previewWrap.mobile-preview .map-panel { min-height: 220px; }
+    .discovery-page { padding-bottom: 60px; }
+    .search-recap {
+      padding: 16px 20px;
+      margin: 24px 0 20px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    }
+    .search-recap strong { font-size: 15px; margin-right: 8px; }
+    .discovery-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .discovery-layout.split-map { grid-template-columns: 220px 1fr 360px; }
+    .filter-sidebar { padding: 18px; position: sticky; top: calc(var(--wl-proto-bar-h) + var(--wl-header-h) + 16px); }
+    .filter-group { margin-bottom: 18px; }
+    .filter-group h4 { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--wl-text-regular); }
+    .filter-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; cursor: pointer; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px;
+    }
+    .toolbar-meta { font-size: 14px; color: var(--wl-text-regular); margin-left: auto; }
+    .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .p-card { overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .p-card:hover { transform: translateY(-3px); box-shadow: var(--wl-shadow-lg); }
+    .p-card-img { aspect-ratio: 4/3; position: relative; overflow: hidden; }
+    .p-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .p-card:hover .p-card-img img { transform: scale(1.04); }
+    .p-card-badges { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .p-card-price {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+      padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; color: var(--wl-primary);
+    }
+    .p-card-body { padding: 14px 16px 16px; }
+    .p-card-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .p-card-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: var(--wl-shadow); }
+    .p-card-name { font-weight: 700; font-size: 15px; }
+    .p-card-sub { font-size: 12px; color: var(--wl-text-secondary); }
+    .p-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .p-card-tags span { font-size: 11px; background: var(--wl-bg); padding: 3px 8px; border-radius: 4px; color: var(--wl-text-regular); }
+    .map-panel {
+      border-radius: var(--wl-radius-lg); min-height: 520px; position: relative; overflow: hidden;
+      border: 1px solid var(--wl-border);
+    }
+    .map-panel img { width: 100%; height: 100%; object-fit: cover; min-height: 520px; }
+    .map-pin {
+      position: absolute; transform: translate(-50%, -100%); cursor: pointer;
+      background: var(--wl-surface); border: 2px solid var(--wl-primary);
+      padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 700;
+      box-shadow: var(--wl-shadow-lg); white-space: nowrap; transition: transform 0.15s;
+    }
+    .map-pin:hover, .map-pin.active { transform: translate(-50%, -100%) scale(1.05); background: var(--wl-primary); color: #fff; }
+    .map-pin::after {
+      content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+      border: 8px solid transparent; border-top-color: var(--wl-primary);
+    }
+    .map-pin:not(.active):not(:hover)::after { border-top-color: var(--wl-surface); }
+    .fallback-panel {
+      background: linear-gradient(135deg, #fff0ee, #fff);
+      border: 2px dashed var(--wl-primary);
+      border-radius: var(--wl-radius-lg);
+      padding: 40px 24px; text-align: center;
+    }
+    .fallback-panel h3 { font-size: 20px; margin-bottom: 8px; }
+    .fallback-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+    .browse-banner {
+      background: var(--wl-secondary-light);
+      border: 1px solid #a5d8e8;
+      border-radius: var(--wl-radius);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+      font-size: 14px;
+    }
+    .state-panel { display: none; }
+    .state-panel.active { display: block; }
+    .mobile-filter-btn { display: none; width: 100%; margin-bottom: 12px; }
+    #previewWrap.mobile-preview .mobile-filter-btn { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span>01 搜尋與發現 <span class="proto-ref">Fresha · Airbnb · GYG</span></span>
+    <div class="proto-bar-actions">
+      <div class="device-toggle hide-mobile">
+        <button class="proto-btn-ghost active" id="viewDesktop">桌面</button>
+        <button class="proto-btn-ghost" id="viewMobile">手機</button>
+      </div>
+      <button class="proto-btn-ghost" id="toggleNotes">設計說明</button>
+      <a href="index.html">目錄</a>
+      <a href="02-profile.html">下一頁 →</a>
+    </div>
+  </div>
+
+  <aside class="proto-notes">
+    <h4>現站 Gap</h4>
+    <div class="note-item"><strong>placeholder 圖片</strong>search.vue 用 getCategoryPhoto，非攝影師真實作品<span class="ref">→ GYG Activity Cards</span></div>
+    <div class="note-item"><strong>無篩選排序</strong>只有條件 badge，無價格／評分／距離<span class="ref">→ Booking.com 精簡版</span></div>
+    <div class="note-item"><strong>無地圖模式</strong>純 grid 列表<span class="ref">→ Airbnb Map</span></div>
+    <div class="note-item"><strong>0 結果 dead-end</strong>只有 empty state，無 fallback<span class="ref">→ Treatwell</span></div>
+    <h4>建議新增</h4>
+    <div class="note-item"><strong>左側篩選欄</strong>桌面常駐；手機改 bottom sheet</div>
+    <div class="note-item"><strong>卡片資訊</strong>最早可約、完成單數、風格 tag、Instant 可約</div>
+    <div class="note-item"><strong>Browse-first</strong>先逛攝影師再選時段（Klook 雙入口）</div>
+    <h4>對應檔案</h4>
+    <div class="note-item">wanderlens-web/src/pages/search.vue<br>components/photographer/PhotographerCardInner.vue</div>
+  </aside>
+
+  <div class="page-wrap" id="previewWrap">
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a href="index.html" class="site-logo">Wander<span>Lens</span></a>
+        <nav class="site-nav hide-mobile">
+          <a href="#">攝影師列表</a>
+          <a href="#">常見問題</a>
+        </nav>
+        <div class="site-header-actions">
+          <button class="btn btn-ghost btn-sm">登入</button>
+          <button class="btn btn-primary btn-sm">開始預約</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-wide discovery-page">
+      <div class="compare-row hide-mobile" style="margin-top:24px">
+        <div class="compare-panel current">
+          <div class="compare-label">現站 search.vue</div>
+          <div class="compare-body">
+            <p style="font-size:13px;color:var(--wl-text-regular);margin-bottom:10px">4 欄 grid · placeholder 圖 · rating fallback 5.0 · 無 map/filter</p>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-panel proposed">
+          <div class="compare-label">建議（本頁下方）</div>
+          <div class="compare-body">
+            <p style="font-size:13px;color:var(--wl-text-regular)">真實作品 · 篩選 · 地圖 · 最早可約 · 0 結果 fallback · Browse 入口</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="browse-banner">
+        <span>💡 <strong>Browse-first</strong>：還沒決定日期？<a href="#">先瀏覽全部攝影師</a>（Klook 雙 intent）</span>
+        <button class="btn btn-outline btn-sm">前往列表</button>
+      </div>
+
+      <div class="card search-recap">
+        <strong>🔍 搜尋結果</strong>
+        <span class="badge">2026/07/05（週六）</span>
+        <span class="badge">14:00 – 17:00 · 3hr</span>
+        <span class="badge">台北市</span>
+        <span class="badge">情侶寫真</span>
+        <a href="#" style="margin-left:auto;font-size:13px;font-weight:600">調整條件</a>
+      </div>
+
+      <button class="btn btn-outline mobile-filter-btn">☰ 篩選與排序</button>
+
+      <div class="toolbar">
+        <button class="chip active" data-state="results">有結果 (4)</button>
+        <button class="chip" data-state="loading">骨架屏</button>
+        <button class="chip" data-state="empty">0 結果</button>
+        <button class="chip" id="toggleMap">🗺 並排地圖</button>
+        <span class="toolbar-meta" id="resultMeta">排序：<strong>最近可約</strong></span>
+      </div>
+
+      <!-- Results state -->
+      <div class="state-panel active" id="state-results">
+        <div class="discovery-layout" id="discoveryLayout">
+          <aside class="card filter-sidebar hide-mobile">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">篩選</h3>
+            <div class="filter-group">
+              <h4>價格（每小時）</h4>
+              <label><input type="checkbox" checked /> $800 – $1,200</label>
+              <label><input type="checkbox" /> $1,200 – $1,800</label>
+              <label><input type="checkbox" /> $1,800+</label>
+            </div>
+            <div class="filter-group">
+              <h4>評分</h4>
+              <label><input type="checkbox" checked /> ★ 4.5 以上</label>
+              <label><input type="checkbox" /> ★ 4.0 以上</label>
+            </div>
+            <div class="filter-group">
+              <h4>可約狀態</h4>
+              <label><input type="checkbox" checked /> 所選時段可約</label>
+              <label><input type="checkbox" /> 今日可約</label>
+            </div>
+            <div class="filter-group">
+              <h4>風格</h4>
+              <label><input type="checkbox" /> 自然光</label>
+              <label><input type="checkbox" /> 電影感</label>
+              <label><input type="checkbox" /> 棚拍</label>
+            </div>
+            <button class="btn btn-primary btn-sm btn-block">套用</button>
+          </aside>
+
+          <div class="cards-grid" id="cardGrid">
+            <!-- Card 1 - Lens 大師 -->
+            <article class="card p-card" data-pin="48,42">
+              <div class="p-card-img">
+                <img src="assets/photo-couple.jpg" alt="" />
+                <div class="p-card-badges">
+                  <span class="badge badge-green">最早 7/5 14:00</span>
+                  <span class="badge badge-blue">Instant 可約</span>
+                </div>
+                <span class="p-card-price">$1,200/hr</span>
+              </div>
+              <div class="p-card-body">
+                <div class="p-card-head">
+                  <img class="p-card-avatar" src="assets/avatar-1.jpg" alt="" />
+                  <div>
+                    <div class="p-card-name">Lens 大師</div>
+                    <div class="p-card-sub"><span class="star">★ 4.7</span> · 128 單 · 中正區</div>
+                  </div>
+                </div>
+                <div class="p-card-tags"><span>情侶寫真</span><span>街拍</span><span>電影感</span></div>
+              </div>
+            </article>
+            <article class="card p-card" data-pin="62,55">
+              <div class="p-card-img">
+                <img src="assets/photo-wedding.jpg" alt="" />
+                <div class="p-card-badges"><span class="badge badge-green">7/5 可約</span></div>
+                <span class="p-card-price">$1,500/hr</span>
+              </div>
+              <div class="p-card-body">
+                <div class="p-card-head">
+                  <img class="p-card-avatar" src="assets/avatar-2.jpg" alt="" />
+                  <div>
+                    <div class="p-card-name">光影旅人 Mia</div>
+                    <div class="p-card-sub"><span class="star">★ 4.9</span> · 56 單 · 大安區</div>
+                  </div>
+                </div>
+                <div class="p-card-tags"><span>婚禮</span><span>自然光</span></div>
+              </div>
+            </article>
+            <article class="card p-card" data-pin="35,58">
+              <div class="p-card-img">
+                <img src="assets/photo-portrait.jpg" alt="" />
+                <span class="p-card-price">$900/hr</span>
+              </div>
+              <div class="p-card-body">
+                <div class="p-card-head">
+                  <img class="p-card-avatar" src="assets/photo-portrait.jpg" alt="" />
+                  <div>
+                    <div class="p-card-name">小安寫真</div>
+                    <div class="p-card-sub"><span class="badge badge-gray">新加入</span> · 7/6 可約</div>
+                  </div>
+                </div>
+                <div class="p-card-tags"><span>個人寫真</span></div>
+              </div>
+            </article>
+            <article class="card p-card" data-pin="55,38">
+              <div class="p-card-img">
+                <img src="assets/photo-family.jpg" alt="" />
+                <span class="p-card-price">$1,100/hr</span>
+              </div>
+              <div class="p-card-body">
+                <div class="p-card-head">
+                  <img class="p-card-avatar" src="assets/avatar-4.jpg" alt="" />
+                  <div>
+                    <div class="p-card-name">阿Ken 紀實</div>
+                    <div class="p-card-sub"><span class="star">★ 4.8</span> · 89 單 · 大同區</div>
+                  </div>
+                </div>
+                <div class="p-card-tags"><span>全家福</span><span>紀實</span></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="map-panel hide-mobile" id="mapPanel" style="display:none">
+            <img src="assets/map-bg.jpg" alt="" />
+            <div class="map-pin active" style="top:42%;left:48%">Lens 大師 · $1200</div>
+            <div class="map-pin" style="top:55%;left:62%">Mia · $1500</div>
+            <div class="map-pin" style="top:58%;left:35%">小安 · $900</div>
+            <div class="map-pin" style="top:38%;left:55%">阿Ken · $1100</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div class="state-panel" id="state-loading">
+        <div class="cards-grid">
+          <div class="card" style="padding:0;overflow:hidden"><div class="skeleton skeleton-card"></div><div style="padding:14px"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div></div>
+          <div class="card" style="padding:0;overflow:hidden"><div class="skeleton skeleton-card"></div><div style="padding:14px"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div></div>
+          <div class="card" style="padding:0;overflow:hidden"><div class="skeleton skeleton-card"></div><div style="padding:14px"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div></div>
+          <div class="card" style="padding:0;overflow:hidden"><div class="skeleton skeleton-card"></div><div style="padding:14px"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div></div>
+        </div>
+        <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--wl-text-secondary)">Fresha 式 skeleton · 避免空白閃爍</p>
+      </div>
+
+      <!-- Empty state -->
+      <div class="state-panel" id="state-empty">
+        <div class="fallback-panel">
+          <h3>7/5 14:00–17:00 暫無符合的攝影師</h3>
+          <p style="color:var(--wl-text-regular);font-size:14px;max-width:480px;margin:0 auto">常見原因：攝影師尚未開放該日空檔（+14 天問題）。請提供替代方案，不要讓用戶離開。</p>
+          <div class="fallback-actions">
+            <button class="btn btn-primary btn-sm">改查 7/6 同時段</button>
+            <button class="btn btn-outline btn-sm">放寬至新北市</button>
+            <button class="btn btn-outline btn-sm">改 2 小時方案</button>
+            <button class="btn btn-outline btn-sm">瀏覽全部攝影師</button>
+          </div>
+          <p style="margin-top:20px;font-size:12px;color:var(--wl-text-muted)">API 可回傳 nextAvailableDate 驅動按鈕文案</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    document.querySelectorAll('[data-state]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-state]').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        document.querySelectorAll('.state-panel').forEach(function (p) { p.classList.remove('active'); });
+        document.getElementById('state-' + btn.dataset.state).classList.add('active');
+      });
+    });
+    document.getElementById('toggleMap').addEventListener('click', function () {
+      var layout = document.getElementById('discoveryLayout');
+      var map = document.getElementById('mapPanel');
+      var on = map.style.display !== 'none';
+      map.style.display = on ? 'none' : 'block';
+      layout.classList.toggle('split-map', !on);
+      this.classList.toggle('active', !on);
+    });
+    document.querySelectorAll('.p-card').forEach(function (card, i) {
+      card.addEventListener('mouseenter', function () {
+        document.querySelectorAll('.map-pin').forEach(function (p) { p.classList.remove('active'); });
+        var pins = document.querySelectorAll('.map-pin');
+        if (pins[i]) pins[i].classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

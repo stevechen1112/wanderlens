@@ -155,6 +155,7 @@ export const orderApi = {
 
 export const conversationApi = {
   list: () => client.get('/conversations'),
+  getConversation: (id: number) => client.get(`/conversations/${id}`),
   getMessages: (id: number, page = 1, size = 50) =>
     client.get(`/conversations/${id}/messages`, { params: { page, size } }),
   sendMessage: (id: number, content: string) =>
@@ -164,6 +165,11 @@ export const conversationApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
   markAsRead: (id: number) => client.post(`/conversations/${id}/read`),
+  getParticipants: (id: number) => client.get(`/conversations/${id}/participants`),
+  addParticipant: (id: number, userId: number, userType: string) =>
+    client.post(`/conversations/${id}/participants`, { userId, userType }),
+  removeParticipant: (id: number, userId: number) =>
+    client.delete(`/conversations/${id}/participants/${userId}`),
 }
 
 export const matchApi = {

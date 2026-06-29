@@ -16,6 +16,7 @@
               'max-w-[70%] rounded-lg px-4 py-2 text-sm overflow-hidden',
               msg.senderId === userId ? 'text-white' : 'bg-gray-100'
             ]" :style="msg.senderId === userId ? { background: 'var(--wl-primary)' } : {}">
+              <span v-if="msg.senderId !== userId && getSenderLabel(msg.senderId)" class="block text-xs font-bold mb-1" style="color: var(--wl-primary)">{{ getSenderLabel(msg.senderId) }}</span>
               <p v-if="msg.messageType === 'TEXT'">{{ msg.content }}</p>
               <el-image v-else-if="msg.messageType === 'IMAGE'" :src="msg.imageUrl" class="rounded max-w-full" />
             </div>
@@ -36,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
@@ -51,20 +52,41 @@ const inputText = ref('')
 const sending = ref(false)
 const loading = ref(false)
 const loadError = ref(false)
+const participants = ref<any[]>([])
 const msgContainer = ref<HTMLElement>()
 let pollTimer: ReturnType<typeof setInterval> | undefined
+
+const senderTypeMap = computed(() => {
+  const map: Record<number, string> = {}
+  for (const p of participants.value) {
+    map[p.userId] = p.userType
+  }
+  return map
+})
+
+const getSenderLabel = (senderId: number) => {
+  if (senderId === 0) return ''
+  const type = senderTypeMap.value[senderId]
+  if (type === 'CONSUMER') return t('conversation.consumer')
+  if (type === 'PHOTOGRAPHER') return t('conversation.photographer')
+  if (type === 'STYLIST') return t('conversation.stylist')
+  if (type === 'ADMIN') return t('conversation.admin')
+  return ''
+}
 
 const loadAll = async () => {
   const id = Number(route.params.id)
   loading.value = true
   loadError.value = false
   try {
-    const [convRes, msgRes]: any[] = await Promise.all([
+    const [convRes, msgRes, partRes]: any[] = await Promise.all([
       api.getConversation(id),
       api.getMessages(id),
+      api.getParticipants(id),
     ])
     conversation.value = convRes.data
     messages.value = msgRes.data || []
+    participants.value = partRes.data || []
     await api.markAsRead(id)
     await nextTick()
     if (msgContainer.value) msgContainer.value.scrollTop = msgContainer.value.scrollHeight

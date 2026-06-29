@@ -109,7 +109,11 @@
     "readonly": "This chat is closed",
     "sendFailed": "Failed to send message",
     "statusOpen": "● Active",
-    "statusClosed": "○ Closed"
+    "statusClosed": "○ Closed",
+    "consumer": "Consumer",
+    "photographer": "Photographer",
+    "stylist": "Stylist",
+    "admin": "Staff"
   },
   "profile": {
     "orders": "My orders",

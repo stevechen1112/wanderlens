@@ -166,13 +166,20 @@ public class PaymentServiceImpl implements PaymentService {
             notifyService.triggerFlow("order_paid", order.getPhotographerId(),
                     "新訂單通知", "您有新訂單 " + orderNo + "，請於 24 小時內聯繫客戶。");
 
-            // 2. 開啟站內溝通室（攝影師 + 造型師）
-            conversationService.openOrderConversation(order.getId(), order.getConsumerId(), order.getPhotographerId());
+            // 2. 開啟站內溝通室（多人：消費者 + 攝影師 + 造型師）
+            List<Long> participantIds = new java.util.ArrayList<>();
+            List<String> userTypes = new java.util.ArrayList<>();
+            participantIds.add(order.getConsumerId());
+            userTypes.add("CONSUMER");
+            participantIds.add(order.getPhotographerId());
+            userTypes.add("PHOTOGRAPHER");
             if (order.getStylistId() != null) {
-                conversationService.openOrderConversation(order.getId(), order.getConsumerId(), order.getStylistId());
+                participantIds.add(order.getStylistId());
+                userTypes.add("STYLIST");
                 notifyService.triggerFlow("order_paid", order.getStylistId(),
                         "新訂單通知", "您有新訂單 " + orderNo + "（造型服務），請於 24 小時內聯繫客戶。");
             }
+            conversationService.openOrderConversation(order.getId(), participantIds, userTypes);
 
             // 3. 建立清算分錄
             ledgerService.createEntriesOnPayment(order.getId(), order.getTotalFee(), 0, order.getPhotographerProfit(), order.getPhotographerId());

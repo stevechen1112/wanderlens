@@ -229,7 +229,12 @@
     "uploadFailed": "Image send failed",
     "uploadFailedDesc": "Failed to upload image, please try again",
     "permTitle": "Photo library permission needed",
-    "permDesc": "Enable photo library access in system settings to send images"
+    "permDesc": "Enable photo library access in system settings to send images",
+    "readonly": "This conversation is read-only",
+    "consumer": "Consumer",
+    "photographer": "Photographer",
+    "stylist": "Stylist",
+    "admin": "Staff"
   },
   "notification": {
     "title": "Notifications",

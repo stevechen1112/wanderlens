@@ -121,6 +121,15 @@ export default {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 
+  getParticipants: (id: number) =>
+    request.get(`/conversations/${id}/participants`),
+
+  addParticipant: (id: number, userId: number, userType: string) =>
+    request.post(`/conversations/${id}/participants`, { userId, userType }),
+
+  removeParticipant: (id: number, userId: number) =>
+    request.delete(`/conversations/${id}/participants/${userId}`),
+
   // 通知
   getUnreadCount: () =>
     request.get('/notify/unread'),

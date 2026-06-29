@@ -1,8 +1,11 @@
 package com.wanderlens.api.util;
 
 import com.wanderlens.api.common.ResultCode;
+import com.wanderlens.api.entity.ConversationParticipant;
 import com.wanderlens.api.entity.Order;
 import com.wanderlens.api.exception.ServiceException;
+import com.wanderlens.api.mapper.ConversationParticipantMapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class AuthUtil {
 
     private final ProviderIdResolver providerIdResolver;
+    private final ConversationParticipantMapper conversationParticipantMapper;
 
     /**
      * 從 request 取得 userId
@@ -135,8 +139,28 @@ public class AuthUtil {
     }
 
     /**
-     * 驗證使用者為溝通室參與者或管理員
+     * 驗證使用者為溝通室參與者或管理員（新版：查 participant 表）
      */
+    public void requireConversationAccess(Long userId, String role, Long conversationId) {
+        if ("ADMIN".equals(role) || "SUPPORT".equals(role)) {
+            return;
+        }
+        Long count = conversationParticipantMapper.selectCount(
+                new LambdaQueryWrapper<ConversationParticipant>()
+                        .eq(ConversationParticipant::getConversationId, conversationId)
+                        .eq(ConversationParticipant::getUserId, userId)
+                        .eq(ConversationParticipant::getIsActive, true)
+        );
+        if (count == null || count == 0) {
+            throw new ServiceException(ResultCode.FORBIDDEN, "非此溝通室的參與者或已被移除");
+        }
+    }
+
+    /**
+     * 驗證使用者為溝通室參與者或管理員（舊版：向後相容，過渡期保留）
+     * @deprecated 改用 {@link #requireConversationAccess(Long, String, Long)}
+     */
+    @Deprecated
     public void requireConversationAccess(Long userId, String role, Long participantAId, Long participantBId) {
         if ("ADMIN".equals(role) || "SUPPORT".equals(role)) {
             return;

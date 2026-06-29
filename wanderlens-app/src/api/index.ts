@@ -54,6 +54,11 @@ export const conversationApi = {
     client.post('/conversations/customer-service', content ? { content } : {}),
   getOrderConversation: (orderId: number, providerId?: number) =>
     client.get(`/conversations/order/${orderId}`, { params: providerId ? { providerId } : {} }),
+  getParticipants: (id: number) => client.get(`/conversations/${id}/participants`),
+  addParticipant: (id: number, userId: number, userType: string) =>
+    client.post(`/conversations/${id}/participants`, { userId, userType }),
+  removeParticipant: (id: number, userId: number) =>
+    client.delete(`/conversations/${id}/participants/${userId}`),
 }
 
 export const bookingApi = {

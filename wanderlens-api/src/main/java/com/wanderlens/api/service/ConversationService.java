@@ -3,6 +3,7 @@ package com.wanderlens.api.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wanderlens.api.entity.Conversation;
 import com.wanderlens.api.entity.ConversationAccessLog;
+import com.wanderlens.api.entity.ConversationParticipant;
 import com.wanderlens.api.entity.Message;
 import com.wanderlens.api.entity.dto.ConversationSummaryDto;
 
@@ -18,7 +19,8 @@ public interface ConversationService extends IService<Conversation> {
 
     List<Conversation> getOrderConversations(Long orderId);
 
-    Conversation openOrderConversation(Long orderId, Long consumerId, Long providerId);
+    // 簽名變更：支援多 participant
+    Conversation openOrderConversation(Long orderId, List<Long> participantIds, List<String> userTypes);
 
     Conversation openCustomerServiceConversation(Long consumerId, String initialMessage);
 
@@ -45,4 +47,18 @@ public interface ConversationService extends IService<Conversation> {
     List<Message> accessMessages(Long conversationId, Long accessorId, String reason);
 
     List<ConversationAccessLog> getAccessLogs(Long conversationId);
+
+    // ── 新增：參與者管理 ──
+
+    /** 檢查 userId 是否為對話的活躍參與者 */
+    boolean isActiveParticipant(Long conversationId, Long userId);
+
+    /** 新增參與者（若已存在且被移除則重新啟用） */
+    ConversationParticipant addParticipant(Long conversationId, Long userId, String userType);
+
+    /** 移除參與者（軟刪除，不能移除消費者） */
+    void removeParticipant(Long conversationId, Long userId, Long removedBy);
+
+    /** 取得參與者列表 */
+    List<ConversationParticipant> getParticipants(Long conversationId, boolean activeOnly);
 }

@@ -229,7 +229,12 @@
     "uploadFailed": "圖片傳送失敗",
     "uploadFailedDesc": "圖片上傳失敗，請稍後再試",
     "permTitle": "需要相簿權限",
-    "permDesc": "請至系統設定開啟相簿存取權限以傳送圖片"
+    "permDesc": "請至系統設定開啟相簿存取權限以傳送圖片",
+    "readonly": "此對話為唯讀模式",
+    "consumer": "消費者",
+    "photographer": "攝影師",
+    "stylist": "造型師",
+    "admin": "站方"
   },
   "notification": {
     "title": "通知",

@@ -8,6 +8,7 @@ import { useColors, type AppColors } from '@/theme'
 import { conversationApi } from '@/api'
 import { haptics } from '@/utils/haptics'
 import * as secureStorage from '@/utils/secureStorage'
+import { t } from '@/i18n'
 
 const getImageUri = (item: any): string | undefined => {
   if (item?.imageUrl) return item.imageUrl
@@ -24,11 +25,42 @@ export default function ConversationRoomScreen({ route }: { route: any }) {
   const [userId, setUserId] = React.useState<number>(0)
   const [sending, setSending] = React.useState(false)
   const [viewerUri, setViewerUri] = React.useState<string | null>(null)
+  const [conversationStatus, setConversationStatus] = React.useState<string>('OPEN')
+  const [participants, setParticipants] = React.useState<any[]>([])
   const flatListRef = React.useRef<FlatList>(null)
   const lastCountRef = React.useRef<number>(-1)
 
+  const isReadonly = conversationStatus === 'READONLY' || conversationStatus === 'CLOSED'
+
+  // senderId → userType 映射
+  const senderTypeMap = React.useMemo(() => {
+    const map: Record<number, string> = {}
+    for (const p of participants) {
+      map[p.userId] = p.userType
+    }
+    return map
+  }, [participants])
+
+  const senderLabel = (senderId: number) => {
+    if (senderId === 0) return ''
+    const type = senderTypeMap[senderId]
+    if (type === 'CONSUMER') return t('conversation.consumer')
+    if (type === 'PHOTOGRAPHER') return t('conversation.photographer')
+    if (type === 'STYLIST') return t('conversation.stylist')
+    if (type === 'ADMIN') return t('conversation.admin')
+    return ''
+  }
+
   React.useEffect(() => {
     secureStorage.getItemAsync('wl_user_id').then((val) => { if (val) setUserId(Number(val)) })
+    // 載入對話狀態
+    conversationApi.getConversation(conversationId).then((res: any) => {
+      if (res?.data?.status) setConversationStatus(res.data.status)
+    }).catch(() => {})
+    // 載入參與者列表
+    conversationApi.getParticipants(conversationId).then((res: any) => {
+      setParticipants(res.data || [])
+    }).catch(() => {})
     loadMessages()
     const interval = setInterval(loadMessages, 10000)
     return () => clearInterval(interval)
@@ -108,6 +140,8 @@ export default function ConversationRoomScreen({ route }: { route: any }) {
     const isMine = item.senderId === userId
     const showDate = index > 0 && messages[index - 1]?.createdAt?.split('T')[0] !== item.createdAt?.split('T')[0]
     const imageUri = getImageUri(item)
+    const label = senderLabel(item.senderId)
+    const showSenderLabel = !isMine && label
 
     return (
       <View>
@@ -128,6 +162,9 @@ export default function ConversationRoomScreen({ route }: { route: any }) {
             </TouchableOpacity>
           ) : (
             <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleOther]}>
+              {showSenderLabel ? (
+                <Text style={styles.senderLabel}>{label}</Text>
+              ) : null}
               <Text style={[styles.msgText, isMine && styles.msgTextMine]}>
                 {item.content}
               </Text>
@@ -141,6 +178,12 @@ export default function ConversationRoomScreen({ route }: { route: any }) {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
+      {isReadonly && (
+        <View style={styles.readonlyBanner}>
+          <Ionicons name="lock-closed-outline" size={16} color={colors.warning} />
+          <Text style={styles.readonlyText}>訂單已結案，對話為唯讀模式</Text>
+        </View>
+      )}
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -154,39 +197,41 @@ export default function ConversationRoomScreen({ route }: { route: any }) {
           </View>
         }
       />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <View style={styles.inputBar}>
-          <TouchableOpacity
-            style={styles.imageBtn}
-            onPress={pickAndSendImage}
-            disabled={sending}
-            accessibilityRole="button"
-            accessibilityLabel="傳送圖片"
-          >
-            <Ionicons name="image-outline" size={24} color={sending ? colors.textSecondary : colors.primary} />
-          </TouchableOpacity>
-          <View style={styles.inputWrap}>
-            <TextInput
-              style={styles.input}
-              value={input}
-              onChangeText={setInput}
-              placeholder="輸入訊息..."
-              placeholderTextColor={colors.textSecondary}
-              multiline
-              maxLength={500}
-            />
+      {!isReadonly && (
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.inputBar}>
             <TouchableOpacity
-              style={[styles.sendBtn, (!input.trim() || sending) && styles.sendBtnDisabled]}
-              onPress={send}
-              disabled={!input.trim() || sending}
+              style={styles.imageBtn}
+              onPress={pickAndSendImage}
+              disabled={sending}
               accessibilityRole="button"
-              accessibilityLabel="傳送訊息"
+              accessibilityLabel="傳送圖片"
             >
-              <Ionicons name="send" size={18} color={colors.white} />
+              <Ionicons name="image-outline" size={24} color={sending ? colors.textSecondary : colors.primary} />
             </TouchableOpacity>
+            <View style={styles.inputWrap}>
+              <TextInput
+                style={styles.input}
+                value={input}
+                onChangeText={setInput}
+                placeholder="輸入訊息..."
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                maxLength={500}
+              />
+              <TouchableOpacity
+                style={[styles.sendBtn, (!input.trim() || sending) && styles.sendBtnDisabled]}
+                onPress={send}
+                disabled={!input.trim() || sending}
+                accessibilityRole="button"
+                accessibilityLabel="傳送訊息"
+              >
+                <Ionicons name="send" size={18} color={colors.white} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      )}
 
       <Modal visible={!!viewerUri} transparent animationType="fade" onRequestClose={() => setViewerUri(null)}>
         <View style={styles.viewerContainer}>
@@ -218,6 +263,9 @@ const formatDate = (d: string) => {
 
 const makeStyles = (colors: AppColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  readonlyBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 8, backgroundColor: colors.warningLight },
+  readonlyText: { fontSize: 13, color: colors.warning, fontWeight: '600' },
+  senderLabel: { fontSize: 11, fontWeight: '700', color: colors.primary, marginBottom: 2 },
   emptyChat: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 120 },
   emptyText: { fontSize: 15, color: colors.textSecondary, marginTop: 12 },
   systemMsg: { alignItems: 'center', marginVertical: 8 },

@@ -109,7 +109,11 @@
     "readonly": "此對話已結束，無法發送新訊息",
     "sendFailed": "訊息發送失敗",
     "statusOpen": "● 進行中",
-    "statusClosed": "○ 已結束"
+    "statusClosed": "○ 已結束",
+    "consumer": "消費者",
+    "photographer": "攝影師",
+    "stylist": "造型師",
+    "admin": "站方"
   },
   "profile": {
     "orders": "我的訂單",

@@ -241,7 +241,11 @@
     "sendImage": "Send image",
     "sendFailed": "Send failed",
     "imageSendFailed": "Image send failed",
-    "readonly": "This conversation is read-only"
+    "readonly": "This conversation is read-only",
+    "consumer": "Consumer",
+    "photographer": "Photographer",
+    "stylist": "Stylist",
+    "admin": "Staff"
   },
   "accountDetail": {
     "tabBasic": "Profile",

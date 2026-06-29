@@ -108,5 +108,14 @@ export const useConversationApi = () => {
 
     getOrderConversation: (orderId: number, providerId?: number) =>
       api.get(`/conversations/order/${orderId}`, { params: providerId ? { providerId } : {} }),
+
+    getParticipants: (id: number) =>
+      api.get(`/conversations/${id}/participants`),
+
+    addParticipant: (id: number, userId: number, userType: string) =>
+      api.post(`/conversations/${id}/participants`, { userId, userType }),
+
+    removeParticipant: (id: number, userId: number) =>
+      api.delete(`/conversations/${id}/participants/${userId}`),
   }
 }

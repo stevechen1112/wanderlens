@@ -35,7 +35,30 @@ export default function ConversationRoomScreen() {
   const [sending, setSending] = React.useState(false)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(false)
+  const [conversationStatus, setConversationStatus] = React.useState<string>('OPEN')
+  const [participants, setParticipants] = React.useState<any[]>([])
   const flatListRef = React.useRef<FlatList>(null)
+
+  const isReadonly = conversationStatus === 'READONLY' || conversationStatus === 'CLOSED'
+
+  // senderId → userType 映射
+  const senderTypeMap = React.useMemo(() => {
+    const map: Record<number, string> = {}
+    for (const p of participants) {
+      map[p.userId] = p.userType
+    }
+    return map
+  }, [participants])
+
+  const senderLabel = (senderId: number) => {
+    if (senderId === 0) return ''
+    const type = senderTypeMap[senderId]
+    if (type === 'CONSUMER') return t('conversation.consumer')
+    if (type === 'PHOTOGRAPHER') return t('conversation.photographer')
+    if (type === 'STYLIST') return t('conversation.stylist')
+    if (type === 'ADMIN') return t('conversation.admin')
+    return ''
+  }
 
   const loadMessages = React.useCallback(async (options?: { background?: boolean }) => {
     try {
@@ -54,6 +77,14 @@ export default function ConversationRoomScreen() {
   React.useEffect(() => {
     loadMessages()
     conversationApi.markAsRead(conversationId).catch(() => {})
+    // 載入對話狀態
+    conversationApi.getConversation(conversationId).then((res: any) => {
+      if (res?.data?.status) setConversationStatus(res.data.status)
+    }).catch(() => {})
+    // 載入參與者列表
+    conversationApi.getParticipants(conversationId).then((res: any) => {
+      setParticipants(res.data || [])
+    }).catch(() => {})
   }, [conversationId, loadMessages])
 
   useConversationStream(conversationId, (payload) => {
@@ -125,6 +156,8 @@ export default function ConversationRoomScreen() {
       && messages[index - 1]?.createdAt?.split('T')[0] !== item.createdAt?.split('T')[0]
     const imageUri = item.imageUrl || (item.messageType === 'IMAGE' ? item.content : undefined)
     const isImage = !!imageUri
+    const label = senderLabel(item.senderId)
+    const showSenderLabel = !isMine && label
 
     return (
       <View>
@@ -144,6 +177,9 @@ export default function ConversationRoomScreen() {
             />
           ) : (
             <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleOther]}>
+              {showSenderLabel ? (
+                <Text style={styles.senderLabel}>{label}</Text>
+              ) : null}
               <Text style={[styles.msgText, isMine && styles.msgTextMine]}>
                 {item.content || t('conversation.image')}
               </Text>
@@ -177,47 +213,57 @@ export default function ConversationRoomScreen() {
           }
         />
       )}
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <View style={styles.inputBar}>
-          <View style={styles.inputWrap}>
-            <TouchableOpacity
-              style={styles.imageBtn}
-              onPress={pickAndSendImage}
-              disabled={sending}
-              accessibilityRole="button"
-              accessibilityLabel={t('conversation.sendImage')}
-              accessibilityState={{ disabled: sending }}
-            >
-              <Ionicons name="image-outline" size={22} color={colors.textSecondary} />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              value={input}
-              onChangeText={setInput}
-              placeholder={t('conversation.placeholder')}
-              placeholderTextColor={colors.textSecondary}
-              multiline
-              maxLength={500}
-            />
-            <TouchableOpacity
-              style={[styles.sendBtn, (!input.trim() || sending) && styles.sendBtnDisabled]}
-              onPress={send}
-              disabled={!input.trim() || sending}
-              accessibilityRole="button"
-              accessibilityLabel={t('conversation.send')}
-              accessibilityState={{ disabled: !input.trim() || sending }}
-            >
-              <Ionicons name="send" size={18} color={colors.white} />
-            </TouchableOpacity>
-          </View>
+      {isReadonly ? (
+        <View style={styles.readonlyBanner}>
+          <Ionicons name="lock-closed-outline" size={16} color={colors.warning} />
+          <Text style={styles.readonlyText}>{t('conversation.readonly')}</Text>
         </View>
-      </KeyboardAvoidingView>
+      ) : (
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.inputBar}>
+            <View style={styles.inputWrap}>
+              <TouchableOpacity
+                style={styles.imageBtn}
+                onPress={pickAndSendImage}
+                disabled={sending}
+                accessibilityRole="button"
+                accessibilityLabel={t('conversation.sendImage')}
+                accessibilityState={{ disabled: sending }}
+              >
+                <Ionicons name="image-outline" size={22} color={colors.textSecondary} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                value={input}
+                onChangeText={setInput}
+                placeholder={t('conversation.placeholder')}
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                maxLength={500}
+              />
+              <TouchableOpacity
+                style={[styles.sendBtn, (!input.trim() || sending) && styles.sendBtnDisabled]}
+                onPress={send}
+                disabled={!input.trim() || sending}
+                accessibilityRole="button"
+                accessibilityLabel={t('conversation.send')}
+                accessibilityState={{ disabled: !input.trim() || sending }}
+              >
+                <Ionicons name="send" size={18} color={colors.white} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      )}
     </SafeAreaView>
   )
 }
 
 const makeStyles = (colors: AppColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  readonlyBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: spacing.md, backgroundColor: colors.warningLight },
+  readonlyText: { fontSize: 13, color: colors.warning, fontWeight: '600' },
+  senderLabel: { fontSize: 11, fontWeight: '700', color: colors.primary, marginBottom: 2 },
   listContent: { padding: spacing.md, paddingBottom: spacing.sm },
   emptyChat: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 120 },
   emptyText: { fontSize: 15, color: colors.textSecondary, marginTop: spacing.md },

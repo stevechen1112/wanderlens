@@ -4,10 +4,12 @@ import com.wanderlens.api.common.Result;
 import com.wanderlens.api.common.ResultCode;
 import com.wanderlens.api.entity.Conversation;
 import com.wanderlens.api.entity.ConversationAccessLog;
+import com.wanderlens.api.entity.ConversationParticipant;
 import com.wanderlens.api.entity.Message;
 import com.wanderlens.api.entity.dto.ConversationSummaryDto;
 import com.wanderlens.api.entity.dto.OpenSupportConversationRequest;
 import com.wanderlens.api.entity.dto.SendMessageRequest;
+import com.wanderlens.api.entity.dto.AddParticipantRequest;
 import com.wanderlens.api.entity.Order;
 import com.wanderlens.api.service.ConversationEventHub;
 import com.wanderlens.api.service.ConversationService;
@@ -88,7 +90,7 @@ public class ConversationController {
         if (conv == null) return Result.ok(null);
         Long userId = authUtil.getUserId(request);
         String role = authUtil.getRole(request);
-        authUtil.requireConversationAccess(userId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(userId, role, conv.getId());
         return Result.ok(conv);
     }
 
@@ -102,7 +104,7 @@ public class ConversationController {
         if (conv == null) return Result.ok(null);
         Long userId = authUtil.getUserId(request);
         String role = authUtil.getRole(request);
-        authUtil.requireConversationAccess(userId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(userId, role, conv.getId());
         return Result.ok(conversationService.getMessages(id, page, size));
     }
 
@@ -116,7 +118,7 @@ public class ConversationController {
         }
         Long userId = authUtil.getUserId(request);
         String role = authUtil.getRole(request);
-        authUtil.requireConversationAccess(userId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(userId, role, conv.getId());
         return eventHub.subscribe(id);
     }
 
@@ -151,7 +153,7 @@ public class ConversationController {
         if (conv == null) {
             return Result.error(ResultCode.CONVERSATION_NOT_FOUND.getCode(), ResultCode.CONVERSATION_NOT_FOUND.getMessage());
         }
-        authUtil.requireConversationAccess(senderId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(senderId, role, conv.getId());
         String url = fileStorageService.store("conversation", UUID.randomUUID().toString(), file);
         return Result.ok(conversationService.sendImageMessage(id, senderId, role, url));
     }
@@ -165,25 +167,23 @@ public class ConversationController {
         }
         Long userId = authUtil.getUserId(request);
         String role = authUtil.getRole(request);
-        authUtil.requireConversationAccess(userId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(userId, role, conv.getId());
         conversationService.markAsRead(id, userId, role);
         return Result.ok();
     }
 
     @GetMapping("/order/{orderId}")
-    @Operation(summary = "取得訂單溝通室（預設攝影師）")
+    @Operation(summary = "取得訂單溝通室")
     public Result<Conversation> getOrderConversation(HttpServletRequest request,
                                                      @PathVariable Long orderId,
                                                      @RequestParam(required = false) Long providerId) {
         Long userId = authUtil.getUserId(request);
         String role = authUtil.getRole(request);
-        Conversation conv = providerId != null
-                ? conversationService.getOrderConversation(orderId, providerId)
-                : null;
+        Conversation conv = conversationService.getOrderConversation(orderId, providerId);
         if (conv == null) {
-            return Result.error(ResultCode.BAD_REQUEST.getCode(), "請指定 providerId 以取得訂單溝通室");
+            return Result.error(ResultCode.NOT_FOUND.getCode(), "此訂單尚無溝通室");
         }
-        authUtil.requireConversationAccess(userId, role, conv.getParticipantAId(), conv.getParticipantBId());
+        authUtil.requireConversationAccess(userId, role, conv.getId());
         return Result.ok(conv);
     }
 
@@ -214,5 +214,38 @@ public class ConversationController {
         authUtil.requireRole(request, "ADMIN", "SUPPORT");
         Long accessorId = authUtil.getUserId(request);
         return Result.ok(conversationService.accessMessages(id, accessorId, reason));
+    }
+
+    // ── 參與者管理 ──
+
+    @GetMapping("/{id}/participants")
+    @Operation(summary = "查看對話參與者列表")
+    public Result<List<ConversationParticipant>> getParticipants(HttpServletRequest request, @PathVariable Long id) {
+        Long userId = authUtil.getUserId(request);
+        String role = authUtil.getRole(request);
+        authUtil.requireConversationAccess(userId, role, id);
+        // 一般用戶只看活躍參與者；站方可看全部（含已移除）
+        boolean activeOnly = !"ADMIN".equals(role) && !"SUPPORT".equals(role);
+        return Result.ok(conversationService.getParticipants(id, activeOnly));
+    }
+
+    @PostMapping("/{id}/participants")
+    @Operation(summary = "新增參與者（站方）")
+    public Result<ConversationParticipant> addParticipant(HttpServletRequest request,
+                                                          @PathVariable Long id,
+                                                          @Valid @RequestBody AddParticipantRequest body) {
+        authUtil.requireRole(request, "ADMIN", "SUPPORT");
+        return Result.ok(conversationService.addParticipant(id, body.getUserId(), body.getUserType()));
+    }
+
+    @DeleteMapping("/{id}/participants/{userId}")
+    @Operation(summary = "移除參與者（站方）")
+    public Result<Void> removeParticipant(HttpServletRequest request,
+                                            @PathVariable Long id,
+                                            @PathVariable Long userId) {
+        authUtil.requireRole(request, "ADMIN", "SUPPORT");
+        Long removedBy = authUtil.getUserId(request);
+        conversationService.removeParticipant(id, userId, removedBy);
+        return Result.ok();
     }
 }

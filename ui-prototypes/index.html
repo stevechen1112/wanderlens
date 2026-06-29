@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WanderLens UI 原型 — 預覽入口</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .hub-hero {
+      background: linear-gradient(160deg, #fff0ee 0%, #fff 40%, #e8f7fa 100%);
+      padding: 56px 20px 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--wl-border);
+    }
+    .hub-hero h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .hub-hero p { color: var(--wl-text-regular); max-width: 640px; margin: 0 auto 24px; font-size: 15px; }
+    .hub-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-top: 28px; }
+    .hub-stat strong { display: block; font-size: 28px; color: var(--wl-primary); }
+    .hub-stat span { font-size: 12px; color: var(--wl-text-secondary); }
+    .hub-body { padding: 48px 20px 80px; max-width: 1200px; margin: 0 auto; }
+    .info-box {
+      background: #fff;
+      border: 1px solid var(--wl-border);
+      border-radius: var(--wl-radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 40px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .info-box ul { margin: 10px 0 0 20px; color: var(--wl-text-regular); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+    .hub-card {
+      padding: 0;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .hub-card:hover { transform: translateY(-4px); box-shadow: var(--wl-shadow-lg); text-decoration: none; }
+    .hub-card-preview {
+      height: 140px;
+      background: var(--wl-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .hub-card-preview img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+    .hub-card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .hub-card-top { display: flex; align-items: center; gap: 10px; }
+    .hub-num {
+      width: 28px; height: 28px;
+      background: var(--wl-primary);
+      color: #fff;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 13px;
+    }
+    .hub-card h2 { font-size: 17px; font-weight: 700; }
+    .hub-card p { font-size: 13px; color: var(--wl-text-regular); flex: 1; line-height: 1.5; }
+    .hub-card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .hub-card-links { font-size: 12px; color: var(--wl-primary); font-weight: 600; margin-top: 8px; }
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .matrix th, .matrix td {
+      border: 1px solid var(--wl-border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .matrix th { background: var(--wl-bg); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span><strong>WanderLens UI Prototypes v2</strong> · 獨立靜態預覽</span>
+    <span class="proto-tag">不修改 wanderlens-web 程式碼</span>
+  </div>
+
+  <div class="hub-hero">
+    <p class="badge badge-blue" style="margin-bottom:12px">2026-06-28 細化版</p>
+    <h1>UX 改善原型庫</h1>
+    <p>對照 Fresha、Airbnb、Treatwell 等 21 個參考站，針對 WanderLens 六端提出可互動 mockup。每頁含<strong>現站 vs 建議</strong>對照、設計說明側欄、桌面／手機預覽切換。</p>
+    <div class="hub-stats">
+      <div class="hub-stat"><strong>6</strong><span>原型頁面</span></div>
+      <div class="hub-stat"><strong>21</strong><span>參考站點</span></div>
+      <div class="hub-stat"><strong>5</strong><span>優先落地項</span></div>
+    </div>
+  </div>
+
+  <div class="hub-body">
+    <div class="info-box">
+      <strong>如何使用</strong>
+      <ul>
+        <li>點下方卡片進入各原型；頂部工具列可開啟「設計說明」、切換手機預覽</li>
+        <li>請用 <strong>Chrome / Edge 直接開啟</strong> HTML；若在 IDE 內嵌預覽出現 <code>file://</code> frame 安全警告，可忽略或改用瀏覽器開啟</li>
+        <li>紅框／紅標 = 現站 WanderLens 問題；綠框／綠標 = 建議方向</li>
+        <li>所有資料為 demo（Lens 大師 UUID 等），不呼叫 production API</li>
+        <li>確認方向後，再指定要落地至 <code>wanderlens-web</code> / <code>wanderlens-provider</code> 的頁面</li>
+      </ul>
+    </div>
+
+    <div class="grid">
+      <a href="01-discovery.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/map-bg.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">1</div><h2>搜尋與發現</h2></div>
+          <p>Hero 搜尋列、左側篩選、列表／地圖雙模式、真實作品卡片、骨架屏、0 結果 fallback、Browse-first 入口。</p>
+          <div class="hub-card-meta">
+            <span class="badge">消費者 Web</span>
+            <span class="badge badge-gray">search.vue</span>
+          </div>
+          <div class="hub-card-links">Fresha · Airbnb · GYG →</div>
+        </div>
+      </a>
+
+      <a href="02-profile.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/photo-hero.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">2</div><h2>攝影師公開檔案</h2></div>
+          <p>Airbnb 式 gallery、錨點導覽、Fiverr 方案、Fresha 空檔 picker、評價分布、行動底欄、現站側欄對照。</p>
+          <div class="hub-card-meta">
+            <span class="badge">消費者 Web</span>
+            <span class="badge badge-gray">[uuid].vue</span>
+          </div>
+          <div class="hub-card-links">Behance · Fresha · Fiverr →</div>
+        </div>
+      </a>
+
+      <a href="03-booking.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/photo-couple.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">3</div><h2>預約漏斗</h2></div>
+          <p>6 步完整內容、Treatwell Summary Bar、結構化時段、雙入口（搜尋 vs 公開頁）、明細計價、Included/Excluded。</p>
+          <div class="hub-card-meta">
+            <span class="badge">消費者 Web</span>
+            <span class="badge badge-gray">booking/index.vue</span>
+          </div>
+          <div class="hub-card-links">Treatwell · Urban Company →</div>
+        </div>
+      </a>
+
+      <a href="04-trust.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/photo-family.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">4</div><h2>信任與社會證明</h2></div>
+          <p>卡片評分誠實化、星級分布圖、UGC 評價圖、動態 badges、現站 hardcode 對照、API distribution 應用。</p>
+          <div class="hub-card-meta">
+            <span class="badge">公開頁 + 搜尋</span>
+          </div>
+          <div class="hub-card-links">Airbnb · GetYourGuide →</div>
+        </div>
+      </a>
+
+      <a href="05-provider.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/photo-office.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">5</div><h2>攝影師端 Workflow</h2></div>
+          <p>Dashboard 統合、完成度 checklist、今日行程、Calendly 分享連結、拍前問卷、訂單 pipeline、交付 portal 預覽。</p>
+          <div class="hub-card-meta">
+            <span class="badge">Provider Web</span>
+            <span class="badge badge-gray">Schedule.vue 等</span>
+          </div>
+          <div class="hub-card-links">Fiverr · ShootProof · Pixieset →</div>
+        </div>
+      </a>
+
+      <a href="06-scheduling.html" class="card hub-card">
+        <div class="hub-card-preview">
+          <img src="assets/photo-calendar.jpg" alt="" />
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-top"><div class="hub-num">6</div><h2>排程與空檔</h2></div>
+          <p>Availability API 示意、消費者月曆 picker、First available、Provider 週視圖、buffer、資料流 diagram。</p>
+          <div class="hub-card-meta">
+            <span class="badge">雙端 + API</span>
+          </div>
+          <div class="hub-card-links">Cal.com · Treatwell →</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="info-box" style="margin-top:48px">
+      <strong>建議落地優先序（確認 UI 後）</strong>
+      <table class="matrix">
+        <thead>
+          <tr><th>優先</th><th>項目</th><th>影響端</th><th>原型頁</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>P0</td><td>Availability API + 公開頁空檔 picker</td><td>API · Web</td><td>02 · 06</td></tr>
+          <tr><td>P0</td><td>搜尋卡片真實作品 + 0 結果 fallback</td><td>Web</td><td>01</td></tr>
+          <tr><td>P1</td><td>Booking Summary Bar + 公開頁 skip 選人</td><td>Web</td><td>03</td></tr>
+          <tr><td>P1</td><td>評價 distribution + 移除假 5.0</td><td>Web</td><td>04</td></tr>
+          <tr><td>P2</td><td>Provider Dashboard checklist + 拍前問卷</td><td>Provider</td><td>05</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>原型 04 — 信任與社會證明</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page { padding: 32px 0 80px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .mini-card { overflow: hidden; max-width: 100%; }
+    .mini-card img { width: 100%; height: 160px; object-fit: cover; }
+    .mini-card .body { padding: 14px; }
+    .trust-full { padding: 28px; }
+    .trust-layout { display: grid; grid-template-columns: 200px 1fr; gap: 32px; }
+    .trust-num { font-size: 56px; font-weight: 800; line-height: 1; }
+    .bar-row { display: grid; grid-template-columns: 36px 1fr 32px; gap: 10px; align-items: center; font-size: 13px; margin-bottom: 8px; }
+    .bar-track { height: 10px; background: var(--wl-bg); border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--wl-warning); border-radius: 5px; transition: width 0.5s; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+    .trust-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 14px; background: var(--wl-bg); border: 1px solid var(--wl-border);
+      border-radius: 10px; font-size: 13px; font-weight: 500;
+    }
+    .review { padding: 18px; border: 1px solid var(--wl-border); border-radius: var(--wl-radius); margin-bottom: 12px; }
+    .review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .review-ugc { display: flex; gap: 8px; margin-top: 12px; }
+    .review-ugc img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid var(--wl-border); }
+    .api-note {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--wl-radius);
+      padding: 16px; font-size: 13px; margin-top: 24px;
+    }
+    @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } .trust-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span>04 信任與社會證明 <span class="proto-ref">Airbnb · GYG</span></span>
+    <div class="proto-bar-actions">
+      <button class="proto-btn-ghost" id="toggleNotes">設計說明</button>
+      <a href="03-booking.html">← 上一頁</a>
+      <a href="05-provider.html">下一頁 →</a>
+    </div>
+  </div>
+
+  <aside class="proto-notes">
+    <h4>現站問題</h4>
+    <div class="note-item"><strong>PhotographerCardInner</strong>rating || '5.0'<span class="gap-tag">假資料</span></div>
+    <div class="note-item"><strong>search.vue</strong>同上 fallback 5.0</div>
+    <div class="note-item"><strong>公開頁</strong>hardcode「48hr 交付」三行 trust</div>
+    <div class="note-item"><strong>API 已有</strong>ratingSummary.distribution 未渲染</div>
+    <h4>建議</h4>
+    <div class="note-item">無評價 →「新加入」或「—」</div>
+    <div class="note-item">動態 badges 來自 feature / orderCount</div>
+    <div class="note-item">評價 optional 附 UGC 圖（需 moderation）</div>
+  </aside>
+
+  <div class="page-wrap">
+    <div class="container page">
+      <h1 class="section-title">信任與社會證明 · 現站 vs 建議</h1>
+      <p class="section-desc">三個場景：搜尋卡片、公開頁 Trust Panel、動態 badges</p>
+
+      <div class="tabs">
+        <button class="chip active" data-tab="cards">搜尋卡片</button>
+        <button class="chip" data-tab="profile">公開頁</button>
+        <button class="chip" data-tab="badges">Trust Badges</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-cards">
+        <div class="compare-row">
+          <div class="compare-panel current">
+            <div class="compare-label">現站 PhotographerCardInner</div>
+            <div class="compare-body">
+              <div class="card mini-card">
+                <img src="assets/photo-couple.jpg" alt="" />
+                <div class="body">
+                  <strong>Lens 大師</strong><br>
+                  <span class="star">★ 5.0</span>
+                  <p style="font-size:12px;color:#b91c1c;margin-top:6px">無評價仍顯示 5.0 · placeholder 圖</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="compare-panel proposed">
+            <div class="compare-label">建議卡片</div>
+            <div class="compare-body">
+              <div class="card mini-card">
+                <img src="assets/photo-couple.jpg" alt="" />
+                <div class="body">
+                  <strong>Lens 大師</strong><br>
+                  <span class="star">★ 4.7</span> · 128 單<br>
+                  <span class="badge badge-green" style="margin-top:8px">最早 7/5 可約</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-grid">
+          <div class="card mini-card">
+            <img src="assets/photo-wedding.jpg" alt="" />
+            <div class="body"><strong>Mia</strong><br><span class="star">★ 4.9</span> · 56 單</div>
+          </div>
+          <div class="card mini-card">
+            <img src="assets/photo-portrait.jpg" alt="" />
+            <div class="body"><strong>小安寫真</strong><br><span class="badge badge-gray">新加入</span></div>
+          </div>
+          <div class="card mini-card">
+            <img src="assets/photo-family.jpg" alt="" />
+            <div class="body"><strong>阿Ken</strong><br><span class="star">★ 4.8</span> · 89 單</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-profile">
+        <div class="card trust-full">
+          <div class="trust-layout">
+            <div>
+              <div class="trust-num">4.7</div>
+              <div class="star" style="font-size:22px;margin:8px 0">★★★★☆</div>
+              <p style="font-size:14px;color:var(--wl-text-secondary)">3 則評價</p>
+              <div style="margin-top:20px" id="bars">
+                <div class="bar-row"><span>5★</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span>2</span></div>
+                <div class="bar-row"><span>4★</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span>1</span></div>
+                <div class="bar-row"><span>3★</span><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><span>0</span></div>
+                <div class="bar-row"><span>2★</span><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><span>0</span></div>
+                <div class="bar-row"><span>1★</span><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><span>0</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="review">
+                <div class="review-top"><strong>王小姐</strong><span class="star">★★★★★ · 2026/05</span></div>
+                <p style="font-size:14px;color:var(--wl-text-regular)">全家福拍得很溫馨，小朋友也很有耐心，整體很滿意。</p>
+                <div class="review-ugc">
+                  <img src="assets/photo-family.jpg" alt="" />
+                  <span style="font-size:12px;color:var(--wl-text-muted);align-self:center">GetYourGuide 式 UGC</span>
+                </div>
+              </div>
+              <div class="review">
+                <div class="review-top"><strong>陳先生</strong><span class="star">★★★★☆</span></div>
+                <p style="font-size:14px;color:var(--wl-text-regular)">交件速度快，色調是我喜歡的電影感，會再預約。</p>
+              </div>
+              <div class="review">
+                <div class="review-top"><strong>林小姐</strong><span class="star">★★★★★</span></div>
+                <p style="font-size:14px;color:var(--wl-text-regular)">攝影師很會引導姿勢，照片自然又有質感，大推！</p>
+              </div>
+            </div>
+          </div>
+          <div class="api-note">
+            <strong>後端已就緒</strong>：`RatingSummaryDto` 含 averageRating、totalCount、distribution、recentRatings — 公開 profile API 已回傳 ratingSummary，前端只需渲染分布圖。
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-badges">
+        <div class="compare-row">
+          <div class="compare-panel current">
+            <div class="compare-label">現站 hardcode</div>
+            <div class="compare-body" style="font-size:14px;line-height:2">
+              ⚡ 48 小時交付<br>🔒 安全付款<br>💬 站內訊息<br>
+              <span style="font-size:12px;color:var(--wl-text-muted)">所有攝影師相同 · 無法反映真實能力</span>
+            </div>
+          </div>
+          <div class="compare-panel proposed">
+            <div class="compare-label">建議動態 badges</div>
+            <div class="compare-body">
+              <div class="badge-row">
+                <span class="trust-badge">✓ 平台驗證身分</span>
+                <span class="trust-badge">✓ 128 筆完成訂單</span>
+                <span class="trust-badge">✓ 平均 48hr 交件</span>
+                <span class="trust-badge">✓ 回覆率 98%</span>
+              </div>
+              <p style="font-size:13px;color:var(--wl-text-regular)">依 provider 資料動態顯示 · 未達門檻不顯示</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    document.querySelectorAll('[data-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-tab]').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

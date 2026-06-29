@@ -37,6 +37,7 @@
         <!-- 一般訊息 -->
         <div v-else class="msg-row" :class="msg.senderId === userId ? 'msg-mine' : 'msg-other'">
           <div class="msg-bubble" :class="msg.senderId === userId ? 'bubble-mine' : 'bubble-other'">
+            <span v-if="msg.senderId !== userId && getSenderLabel(msg.senderId)" class="msg-sender-label">{{ getSenderLabel(msg.senderId) }}</span>
             <p v-if="msg.messageType === 'TEXT'">{{ msg.content }}</p>
             <img v-else-if="msg.messageType === 'IMAGE'" :src="msg.imageUrl" class="msg-image" loading="lazy" />
           </div>
@@ -76,9 +77,28 @@ onMounted(() => { userId.value = Number(localStorage.getItem('wl_user_id') || 0)
 
 const conversation = ref<any>(null)
 const messages = ref<any[]>([])
+const participants = ref<any[]>([])
 const inputText = ref('')
 const sending = ref(false)
 const msgContainer = ref<HTMLElement>()
+
+const senderTypeMap = computed(() => {
+  const map: Record<number, string> = {}
+  for (const p of participants.value) {
+    map[p.userId] = p.userType
+  }
+  return map
+})
+
+const getSenderLabel = (senderId: number) => {
+  if (senderId === 0) return ''
+  const type = senderTypeMap.value[senderId]
+  if (type === 'CONSUMER') return '消費者'
+  if (type === 'PHOTOGRAPHER') return '攝影師'
+  if (type === 'STYLIST') return '造型師'
+  if (type === 'ADMIN') return '站方'
+  return ''
+}
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -125,12 +145,14 @@ const formatDate = (d: string) => {
 
 onMounted(async () => {
   try {
-    const [convRes, msgRes]: any[] = await Promise.all([
+    const [convRes, msgRes, partRes]: any[] = await Promise.all([
       conversationApi.getConversation(Number(route.params.id)),
       conversationApi.getMessages(Number(route.params.id)),
+      conversationApi.getParticipants(Number(route.params.id)),
     ])
     conversation.value = convRes.data
     messages.value = msgRes.data || []
+    participants.value = partRes.data || []
     await scrollToBottom()
   } catch { /* 404 */ }
 })
@@ -169,6 +191,7 @@ onMounted(async () => {
 .msg-image { max-width: 240px; border-radius: 12px; }
 
 .msg-time { font-size: 11px; color: #aaa; margin-top: 2px; padding: 0 4px; }
+.msg-sender-label { display: block; font-size: 11px; font-weight: 700; color: #F37A69; margin-bottom: 2px; }
 
 /* Input */
 .chat-input-bar { padding: 12px 16px; background: white; border-top: 1px solid #eee; position: sticky; bottom: 0; }

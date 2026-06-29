@@ -86,6 +86,14 @@ export default {
   openAdminChannel: (targetUserId: number, initialMessage?: string) =>
     request.post('/conversations/admin-channel', { targetUserId, initialMessage }),
 
+  // 參與者管理
+  getConversationParticipants: (conversationId: number) =>
+    request.get(`/conversations/${conversationId}/participants`),
+  addConversationParticipant: (conversationId: number, userId: number, userType: string) =>
+    request.post(`/conversations/${conversationId}/participants`, { userId, userType }),
+  removeConversationParticipant: (conversationId: number, userId: number) =>
+    request.delete(`/conversations/${conversationId}/participants/${userId}`),
+
   // 優惠券
   getCoupons: () => request.get('/coupons'),
   saveCoupon: (data: any) => request.post('/coupons', data),

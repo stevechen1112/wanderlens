@@ -241,7 +241,11 @@
     "sendImage": "傳送圖片",
     "sendFailed": "發送失敗",
     "imageSendFailed": "圖片發送失敗",
-    "readonly": "此溝通室已轉為唯讀"
+    "readonly": "此溝通室已轉為唯讀",
+    "consumer": "消費者",
+    "photographer": "攝影師",
+    "stylist": "造型師",
+    "admin": "站方"
   },
   "accountDetail": {
     "tabBasic": "基本資料",

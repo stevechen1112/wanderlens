@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>原型 03 — 預約漏斗</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .entry-toggle { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .entry-toggle button { flex: 1; min-width: 200px; padding: 14px; text-align: left; }
+    .entry-toggle button strong { display: block; font-size: 14px; }
+    .entry-toggle button span { font-size: 12px; color: var(--wl-text-secondary); font-weight: 400; }
+    .steps-wrap { max-width: 720px; margin: 0 auto 36px; overflow-x: auto; padding-bottom: 8px; }
+    .steps { display: flex; min-width: 600px; }
+    .step { flex: 1; text-align: center; position: relative; }
+    .step-dot {
+      width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; background: var(--wl-border); color: var(--wl-text-secondary);
+    }
+    .step.active .step-dot { background: var(--wl-primary); color: #fff; box-shadow: 0 2px 10px rgba(243,122,105,0.4); }
+    .step.done .step-dot { background: var(--wl-success); color: #fff; }
+    .step-label { font-size: 11px; color: var(--wl-text-secondary); }
+    .step.active .step-label { color: var(--wl-primary); font-weight: 700; }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; top: 20px; left: calc(50% + 24px);
+      width: calc(100% - 48px); height: 3px; background: var(--wl-border); border-radius: 2px;
+    }
+    .step.done:not(:last-child)::after { background: var(--wl-success); }
+    .booking-layout { display: grid; grid-template-columns: 1fr 320px; gap: 28px; padding-bottom: 100px; align-items: start; }
+    .step-content { display: none; animation: fadeIn 0.3s; }
+    .step-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .type-card { border: 2px solid var(--wl-border); border-radius: var(--wl-radius); overflow: hidden; cursor: pointer; text-align: left; background: #fff; }
+    .type-card.selected { border-color: var(--wl-primary); box-shadow: 0 0 0 3px rgba(243,122,105,0.15); }
+    .type-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+    .type-card div { padding: 12px; font-size: 13px; font-weight: 700; }
+    .config-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .form-card { padding: 24px; }
+    .time-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .provider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .provider-card {
+      border: 2px solid var(--wl-border); border-radius: var(--wl-radius); overflow: hidden; cursor: pointer;
+    }
+    .provider-card.selected { border-color: var(--wl-primary); }
+    .provider-card.disabled { opacity: 0.45; pointer-events: none; }
+    .provider-card img { width: 100%; height: 110px; object-fit: cover; }
+    .provider-card div { padding: 12px; font-size: 13px; }
+    .included-box { background: var(--wl-bg); border-radius: var(--wl-radius); padding: 20px; }
+    .included-box ul { margin: 8px 0 0 18px; font-size: 14px; color: var(--wl-text-regular); }
+    .included-box .exclude { margin-top: 14px; color: var(--wl-text-secondary); }
+    .summary {
+      position: sticky; top: calc(var(--wl-proto-bar-h) + 20px);
+      padding: 22px; border-radius: var(--wl-radius-lg);
+    }
+    .summary h3 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .summary-note { font-size: 11px; color: var(--wl-text-muted); margin-bottom: 14px; }
+    .sum-row { display: flex; justify-content: space-between; font-size: 13px; padding: 9px 0; border-bottom: 1px solid var(--wl-border); }
+    .sum-total { font-size: 24px; font-weight: 800; color: var(--wl-primary); margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--wl-border); display: flex; justify-content: space-between; }
+    .mobile-summary {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 1px solid var(--wl-border);
+      padding: 12px 20px; z-index: 80; box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      align-items: center; justify-content: space-between;
+    }
+    #previewWrap.mobile-preview .mobile-summary { display: flex; }
+    #previewWrap.mobile-preview .booking-layout { grid-template-columns: 1fr; }
+    #previewWrap.mobile-preview .summary { display: none; }
+    #previewWrap.mobile-preview .type-grid { grid-template-columns: repeat(2, 1fr); }
+    #previewWrap.mobile-preview .provider-grid { grid-template-columns: 1fr; }
+    .skip-banner {
+      background: #ecfdf5; border: 1px solid #86efac; border-radius: var(--wl-radius);
+      padding: 12px 16px; font-size: 13px; color: #065f46; margin-bottom: 16px; display: none;
+    }
+    .nav-row { display: flex; gap: 12px; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span>03 預約漏斗 <span class="proto-ref">Treatwell · Fresha</span></span>
+    <div class="proto-bar-actions">
+      <div class="device-toggle hide-mobile">
+        <button class="proto-btn-ghost active" id="viewDesktop">桌面</button>
+        <button class="proto-btn-ghost" id="viewMobile">手機</button>
+      </div>
+      <button class="proto-btn-ghost" id="toggleNotes">設計說明</button>
+      <a href="02-profile.html">← 上一頁</a>
+      <a href="04-trust.html">下一頁 →</a>
+    </div>
+  </div>
+
+  <aside class="proto-notes">
+    <h4>現站 booking/index.vue</h4>
+    <div class="note-item"><strong>6 step 結構</strong>已有 · 方向正確 ✓</div>
+    <div class="note-item"><strong>Step 3</strong>shootingTime 文字 "14:00-16:00"<span class="gap-tag">GAP</span></div>
+    <div class="note-item"><strong>無 Summary</strong>每步看不到已選摘要<span class="gap-tag">GAP</span></div>
+    <div class="note-item"><strong>公開頁</strong>bookNow 未 skip Step 4 選人</div>
+    <h4>建議</h4>
+    <div class="note-item"><strong>雙入口</strong>搜尋路徑 vs 公開頁路徑（本頁可切換）</div>
+    <div class="note-item"><strong>Summary Bar</strong>右側常駐 · 手機改 bottom bar</div>
+    <div class="note-item"><strong>Step 5</strong>Included/Excluded · 明細計價</div>
+  </aside>
+
+  <div class="page-wrap" id="previewWrap">
+    <div class="container-wide" style="padding-top:28px">
+      <div class="entry-toggle">
+        <button class="btn btn-outline active" id="entrySearch" type="button">
+          <strong>🔍 從搜尋進入</strong>
+          <span>完整 6 步 · 含 Step 4 選人</span>
+        </button>
+        <button class="btn btn-outline" id="entryProfile" type="button">
+          <strong>👤 從公開頁進入</strong>
+          <span>已選 Lens 大師 · 跳過 Step 4</span>
+        </button>
+      </div>
+
+      <div class="steps-wrap">
+        <div class="steps" id="stepsEl"></div>
+      </div>
+
+      <div class="booking-layout">
+        <div>
+          <div class="skip-banner" id="skipBanner">✓ 已從公開頁選定 <strong>Lens 大師</strong> · Step 4 選人已略過</div>
+
+          <div class="step-content active" data-step="1">
+            <h2 class="section-title">選擇拍攝類型</h2>
+            <p class="section-desc">Step 1 · 單屏單決策</p>
+            <div class="type-grid">
+              <div class="type-card selected"><img src="assets/photo-couple.jpg" alt="" /><div>情侶寫真 · from $800</div></div>
+              <div class="type-card"><img src="assets/photo-family.jpg" alt="" /><div>全家福</div></div>
+              <div class="type-card"><img src="assets/photo-portrait.jpg" alt="" /><div>個人寫真</div></div>
+              <div class="type-card"><img src="assets/photo-wedding.jpg" alt="" /><div>婚禮紀錄</div></div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="2">
+            <h2 class="section-title">拍攝配置</h2>
+            <div class="card form-card">
+              <p class="form-label">拍攝地點類型</p>
+              <div class="config-btns">
+                <button class="btn btn-outline active">外拍</button>
+                <button class="btn btn-outline">棚拍</button>
+                <button class="btn btn-outline">外拍 + 棚拍</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="3">
+            <h2 class="section-title">時間與地點</h2>
+            <p class="section-desc"><span class="gap-tag">現站</span> 文字輸入 → <span class="new-tag">建議</span> 結構化控件</p>
+            <div class="card form-card">
+              <div class="form-group" style="margin-bottom:16px">
+                <label class="form-label">日期</label>
+                <input class="form-input" type="date" value="2026-07-05" />
+              </div>
+              <div class="time-grid">
+                <div><label class="form-label">開始</label><select class="form-input"><option>14:00</option></select></div>
+                <div><label class="form-label">時數</label><select class="form-input"><option>2hr</option><option selected>3hr</option></select></div>
+                <div><label class="form-label">結束（自動）</label><input class="form-input" value="17:00" readonly style="background:var(--wl-bg)" /></div>
+              </div>
+              <div style="margin-top:16px">
+                <label class="form-label">拍攝地點</label>
+                <input class="form-input" value="台北市大稻埕" />
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="4">
+            <h2 class="section-title">選擇攝影師</h2>
+            <p class="section-desc">卡片顯示可約狀態 + 試算總價</p>
+            <div class="provider-grid">
+              <div class="provider-card selected">
+                <img src="assets/photo-couple.jpg" alt="" />
+                <div><strong>Lens 大師</strong><br><span class="star">★ 4.7</span> · $3,600 · <span style="color:var(--wl-success)">✓ 可約</span></div>
+              </div>
+              <div class="provider-card">
+                <img src="assets/photo-wedding.jpg" alt="" />
+                <div><strong>Mia</strong><br><span class="star">★ 4.9</span> · $4,500 · ✓ 可約</div>
+              </div>
+              <div class="provider-card disabled">
+                <img src="assets/photo-portrait.jpg" alt="" />
+                <div><strong>小安</strong><br>時段已滿 · <a href="#">改 7/6</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="5">
+            <h2 class="section-title">確認訂單</h2>
+            <div class="included-box">
+              <strong>方案包含</strong>
+              <ul><li>3hr 外拍、基本調色 30 張</li><li>姿勢引導、48hr 交件</li><li>站內訊息</li></ul>
+              <div class="exclude"><strong>不包含</strong>：造型師、棚租、額外精修</div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="6">
+            <h2 class="section-title">付款</h2>
+            <div class="card form-card" style="text-align:center;padding:48px;color:var(--wl-text-secondary)">
+              綠界 ECPay 付款區 · 示意
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn btn-outline" id="prevBtn" disabled>上一步</button>
+            <button class="btn btn-primary" id="nextBtn">下一步</button>
+          </div>
+        </div>
+
+        <aside class="card summary" id="summaryPanel">
+          <h3>預約摘要 <span class="proto-ref">Treatwell</span></h3>
+          <p class="summary-note">全程常駐 · 可點「修改」回跳</p>
+          <div class="sum-row"><span>類型</span><span id="sumType">情侶寫真</span></div>
+          <div class="sum-row"><span>配置</span><span>外拍 · 單機</span></div>
+          <div class="sum-row"><span>時間</span><span>7/5 14:00–17:00</span></div>
+          <div class="sum-row"><span>地點</span><span>大稻埕</span></div>
+          <div class="sum-row" id="sumProviderRow"><span>攝影師</span><span>Lens 大師</span></div>
+          <div class="sum-total"><span>總計</span><span>$3,600</span></div>
+          <button class="btn btn-outline btn-sm btn-block" style="margin-top:12px">修改條件</button>
+        </aside>
+      </div>
+    </div>
+
+    <div class="mobile-summary">
+      <div><span style="font-size:18px;font-weight:800;color:var(--wl-primary)">$3,600</span><br><span style="font-size:12px;color:var(--wl-text-secondary)">7/5 · Lens 大師</span></div>
+      <button class="btn btn-primary btn-sm" id="mobileNext">下一步</button>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    var labels = ['類型','配置','時間','選人','確認','付款'];
+    var step = 1;
+    var profileEntry = false;
+    var stepsEl = document.getElementById('stepsEl');
+    labels.forEach(function (l, i) {
+      var d = document.createElement('div');
+      d.className = 'step' + (i === 0 ? ' active' : '');
+      d.dataset.step = i + 1;
+      d.innerHTML = '<div class="step-dot">' + (i + 1) + '</div><div class="step-label">' + l + '</div>';
+      stepsEl.appendChild(d);
+    });
+
+    function render() {
+      document.querySelectorAll('.step-content').forEach(function (p) {
+        p.classList.toggle('active', +p.dataset.step === step);
+      });
+      document.querySelectorAll('.step').forEach(function (s, i) {
+        var n = i + 1;
+        s.classList.remove('active', 'done');
+        if (profileEntry && n === 4) { s.style.opacity = '0.35'; }
+        else { s.style.opacity = '1'; }
+        if (n === step) s.classList.add('active');
+        if (n < step) s.classList.add('done');
+      });
+      document.getElementById('prevBtn').disabled = step === 1;
+      document.getElementById('nextBtn').textContent = step === 6 ? '前往付款' : '下一步';
+      if (profileEntry && step === 3) {
+        setTimeout(function () { step = 5; render(); }, 0);
+      }
+    }
+
+    document.getElementById('nextBtn').onclick = function () {
+      if (profileEntry && step === 3) { step = 5; }
+      else if (step === 3 && !profileEntry) step = 4;
+      else if (step === 4) step = 5;
+      else if (step < 6) step++;
+      render();
+    };
+    document.getElementById('prevBtn').onclick = function () {
+      if (profileEntry && step === 5) step = 3;
+      else if (step > 1) step--;
+      render();
+    };
+    document.getElementById('mobileNext').onclick = function () { document.getElementById('nextBtn').click(); };
+
+    document.getElementById('entrySearch').onclick = function () {
+      profileEntry = false;
+      document.getElementById('skipBanner').style.display = 'none';
+      document.getElementById('entrySearch').classList.add('active');
+      document.getElementById('entryProfile').classList.remove('active');
+      step = 1; render();
+    };
+    document.getElementById('entryProfile').onclick = function () {
+      profileEntry = true;
+      document.getElementById('skipBanner').style.display = 'block';
+      document.getElementById('entryProfile').classList.add('active');
+      document.getElementById('entrySearch').classList.remove('active');
+      step = 1; render();
+    };
+    document.querySelectorAll('.type-card').forEach(function (c) {
+      c.onclick = function () {
+        document.querySelectorAll('.type-card').forEach(function (x) { x.classList.remove('selected'); });
+        c.classList.add('selected');
+      };
+    });
+  </script>
+</body>
+</html>

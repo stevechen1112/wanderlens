@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>原型 02 — 攝影師公開檔案</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    #previewWrap.mobile-preview .page-layout { grid-template-columns: 1fr; }
+    #previewWrap.mobile-preview .booking-sticky { position: static; }
+    #previewWrap.mobile-preview .mobile-book-bar { display: flex; }
+    #previewWrap.mobile-preview .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: 120px 80px 80px; }
+    .hero { height: 320px; position: relative; background: #222; }
+    .hero > img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%); }
+    .hero-inner { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 20px; color: #fff; max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 20px; }
+    .hero-avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid #fff; object-fit: cover; flex-shrink: 0; }
+    .hero-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; margin-top: 8px; opacity: 0.95; }
+    .avail-strip {
+      background: linear-gradient(90deg, #ecfdf5, #fff);
+      border-bottom: 1px solid #a7f3d0;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #065f46;
+    }
+    .gallery-mosaic {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: 200px 200px;
+      gap: 6px;
+      max-width: 1280px;
+      margin: -40px auto 0;
+      padding: 0 20px;
+      position: relative;
+      z-index: 5;
+    }
+    .gallery-mosaic img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--wl-radius); cursor: pointer; }
+    .gallery-mosaic .main { grid-row: span 2; border-radius: var(--wl-radius-lg); }
+    .gallery-mosaic .more {
+      position: absolute; bottom: 16px; right: 36px;
+      background: rgba(255,255,255,0.95); padding: 8px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .anchor-nav {
+      position: sticky; top: calc(var(--wl-proto-bar-h) + var(--wl-header-h));
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--wl-border); z-index: 40;
+    }
+    .anchor-nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; display: flex; gap: 24px; overflow-x: auto; }
+    .anchor-nav a { padding: 14px 0; font-size: 14px; font-weight: 600; color: var(--wl-text-regular); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .anchor-nav a.active { color: var(--wl-primary); border-bottom-color: var(--wl-primary); }
+    .page-layout {
+      display: grid; grid-template-columns: 1fr 360px; gap: 40px;
+      max-width: 1280px; margin: 0 auto; padding: 32px 20px 120px;
+    }
+    .section-block { margin-bottom: 48px; scroll-margin-top: 140px; }
+    .section-label { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+    .intro-text { font-size: 15px; line-height: 1.75; color: var(--wl-text-regular); }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .feature-card { padding: 16px; background: var(--wl-bg); border-radius: var(--wl-radius); border: 1px solid var(--wl-border); }
+    .feature-type { font-size: 11px; font-weight: 700; color: var(--wl-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+    .feature-card p { font-size: 14px; margin-top: 6px; }
+    .project { margin-bottom: 28px; }
+    .project h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .project-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; border-radius: var(--wl-radius); overflow: hidden; }
+    .project-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .project-grid .cover { grid-row: span 2; aspect-ratio: auto; }
+    .pkg-list { display: flex; flex-direction: column; gap: 10px; }
+    .pkg {
+      padding: 18px; border: 2px solid var(--wl-border); border-radius: var(--wl-radius);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .pkg.selected { border-color: var(--wl-primary); background: var(--wl-primary-light); }
+    .pkg-row { display: flex; justify-content: space-between; align-items: start; }
+    .pkg-name { font-weight: 700; font-size: 15px; }
+    .pkg-price { font-size: 20px; font-weight: 800; color: var(--wl-primary); }
+    .pkg-desc { font-size: 13px; color: var(--wl-text-regular); margin-top: 6px; }
+    .trust-inline { display: grid; grid-template-columns: 140px 1fr; gap: 24px; }
+    .trust-big { font-size: 48px; font-weight: 800; line-height: 1; }
+    .bar-row { display: grid; grid-template-columns: 28px 1fr 24px; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 4px; }
+    .bar-track { height: 6px; background: var(--wl-bg); border-radius: 3px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--wl-warning); }
+    .review-card { padding: 16px; border: 1px solid var(--wl-border); border-radius: var(--wl-radius); margin-bottom: 10px; }
+    .booking-sticky { position: sticky; top: 140px; padding: 24px; }
+    .book-price { font-size: 32px; font-weight: 800; color: var(--wl-primary); }
+    .book-price small { font-size: 14px; font-weight: 600; color: var(--wl-text-secondary); }
+    .price-breakdown { font-size: 13px; color: var(--wl-text-regular); margin: 12px 0; padding: 12px; background: var(--wl-bg); border-radius: 8px; }
+    .price-breakdown div { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .cal-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; font-size: 12px; margin: 12px 0; }
+    .cal-mini span { padding: 7px 2px; border-radius: 6px; cursor: pointer; }
+    .cal-mini span:hover { background: var(--wl-primary-light); }
+    .cal-mini span.on { background: var(--wl-primary); color: #fff; font-weight: 700; }
+    .cal-mini span.off { color: #ccc; }
+    .slot-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .slot-btn { padding: 8px 12px; border: 1.5px solid var(--wl-border); border-radius: 8px; font-size: 12px; cursor: pointer; background: #fff; font-family: inherit; }
+    .slot-btn.on { border-color: var(--wl-primary); background: var(--wl-primary-light); font-weight: 600; }
+    .slot-btn.off { opacity: 0.4; text-decoration: line-through; cursor: not-allowed; }
+    .trust-badges { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; font-size: 13px; color: var(--wl-text-regular); }
+    .mobile-book-bar {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 1px solid var(--wl-border);
+      padding: 12px 20px; align-items: center; justify-content: space-between; z-index: 60;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+    .current-sidebar-demo {
+      border: 2px solid #fecaca; border-radius: var(--wl-radius);
+      padding: 16px; margin-bottom: 24px; background: #fef2f2;
+    }
+    .current-sidebar-demo h4 { font-size: 12px; color: #b91c1c; font-weight: 800; margin-bottom: 10px; }
+    @media (max-width: 900px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .trust-inline { grid-template-columns: 1fr; }
+      .gallery-mosaic { margin-top: 0; grid-template-rows: 160px 100px; }
+      .hero-name { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span>02 公開檔案 <span class="proto-ref">Fresha · Behance · Fiverr</span></span>
+    <div class="proto-bar-actions">
+      <div class="device-toggle hide-mobile">
+        <button class="proto-btn-ghost active" id="viewDesktop">桌面</button>
+        <button class="proto-btn-ghost" id="viewMobile">手機</button>
+      </div>
+      <button class="proto-btn-ghost" id="toggleNotes">設計說明</button>
+      <a href="01-discovery.html">← 上一頁</a>
+      <a href="03-booking.html">下一頁 →</a>
+    </div>
+  </div>
+
+  <aside class="proto-notes">
+    <h4>現站 [uuid].vue</h4>
+    <div class="note-item"><strong>SSR 已完成</strong>useAsyncData 首屏 OK · 做得好 ✓</div>
+    <div class="note-item"><strong>側欄預約</strong>自由 date/time input · 未驗證 schedule<span class="gap-tag">GAP</span></div>
+    <div class="note-item"><strong>作品</strong>flat grid · 無 Project 敘事</div>
+    <div class="note-item"><strong>定價</strong>僅 $/hr · 無方案分級</div>
+    <div class="note-item"><strong>評價</strong>有列表 · 缺 distribution 圖</div>
+    <h4>建議</h4>
+    <div class="note-item"><strong>空檔 picker</strong>接 availability API · 灰掉不可約<span class="new-tag">NEW</span></div>
+    <div class="note-item"><strong>bookNow()</strong>帶 photographerId 跳 Step 4<span class="new-tag">NEW</span></div>
+    <div class="note-item"><strong>方案</strong>Fiverr 三級 · 總價試算</div>
+    <h4>Demo 資料</h4>
+    <div class="note-item">UUID: 11111111-1111-1111-1111-111111111111<br>Lens 大師 · rating 4.7</div>
+  </aside>
+
+  <div class="page-wrap" id="previewWrap">
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a href="index.html" class="site-logo">Wander<span>Lens</span></a>
+        <nav class="site-nav hide-mobile"><a href="#">攝影師列表</a></nav>
+        <div class="site-header-actions"><button class="btn btn-primary btn-sm">登入</button></div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <img src="assets/photo-hero.jpg" alt="" />
+      <div class="hero-overlay"></div>
+      <div class="hero-inner">
+        <img class="hero-avatar" src="assets/avatar-1.jpg" alt="" />
+        <div>
+          <h1 class="hero-name">Lens 大師</h1>
+          <div class="hero-meta">
+            <span class="star">★ 4.7 · 3 則評價</span>
+            <span>臺北市 · 中正區</span>
+            <span>5 年 · 全職攝影</span>
+            <span class="badge badge-green">平台驗證</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="avail-strip">
+      ⚡ <strong>最早可約 7/5（週六）14:00–17:00</strong> — 側欄選時段後即時更新總價 · <span class="gap-tag">現站無此串接</span>
+    </div>
+
+    <div class="gallery-mosaic hide-mobile">
+      <img class="main" src="assets/photo-couple.jpg" alt="" />
+      <img src="assets/photo-couple.jpg" alt="" />
+      <img src="assets/photo-family.jpg" alt="" />
+      <img src="assets/photo-couple.jpg" alt="" />
+      <img src="assets/photo-family.jpg" alt="" />
+      <span class="more">+ 12 張作品</span>
+    </div>
+
+    <nav class="anchor-nav">
+      <div class="anchor-nav-inner">
+        <a href="#about" class="active">關於</a>
+        <a href="#works">作品</a>
+        <a href="#packages">方案</a>
+        <a href="#reviews">評價</a>
+        <a href="#areas">服務地區</a>
+      </div>
+    </nav>
+
+    <div class="page-layout">
+      <main>
+        <div class="current-sidebar-demo hide-mobile">
+          <h4>現站側欄問題示意</h4>
+          <p style="font-size:13px;color:var(--wl-text-regular)">任意選 date + hour → 可能下單後才發現無檔期 · hardcode「48hr 交付」</p>
+        </div>
+
+        <section id="about" class="section-block">
+          <h2 class="section-label">關於 Lens 大師</h2>
+          <p class="intro-text">專注人像與旅遊寫真，擅長自然光與街景氛圍。合作過上百組情侶、家庭與個人寫真，致力於捕捉真實情感與獨特光影。</p>
+          <div class="feature-grid" style="margin-top:20px">
+            <div class="feature-card"><span class="feature-type">風格</span><p>自然光、街景隨拍、電影感色調</p></div>
+            <div class="feature-card"><span class="feature-type">服務</span><p>含基本修圖、48 小時交件、姿勢引導</p></div>
+            <div class="feature-card"><span class="feature-type">器材</span><p>全片幅、35mm / 85mm 定焦</p></div>
+          </div>
+        </section>
+
+        <section id="works" class="section-block">
+          <h2 class="section-label">作品集 <span class="proto-ref">Behance Project</span></h2>
+          <div class="project">
+            <h4>大稻埕情侶寫真 · 電影感色調</h4>
+            <div class="project-grid">
+              <img class="cover" src="assets/photo-couple.jpg" alt="" />
+              <img src="assets/photo-couple.jpg" alt="" />
+              <img src="assets/photo-couple.jpg" alt="" />
+            </div>
+          </div>
+          <div class="project">
+            <h4>家庭紀實 · 自然互動</h4>
+            <div class="project-grid">
+              <img class="cover" src="assets/photo-family.jpg" alt="" />
+              <img src="assets/photo-family.jpg" alt="" />
+              <img src="assets/photo-portrait.jpg" alt="" />
+            </div>
+          </div>
+        </section>
+
+        <section id="packages" class="section-block">
+          <h2 class="section-label">服務方案 <span class="proto-ref">Fiverr</span></h2>
+          <div class="pkg-list">
+            <div class="pkg selected" data-price="3600" data-hours="2">
+              <div class="pkg-row"><span class="pkg-name">標準 · 2hr 情侶寫真</span><span class="pkg-price">$3,600</span></div>
+              <div class="pkg-desc">20 張基本調色 · 48hr 交件 · 姿勢引導</div>
+            </div>
+            <div class="pkg" data-price="5200" data-hours="3">
+              <div class="pkg-row"><span class="pkg-name">進階 · 3hr + 精修 30 張</span><span class="pkg-price">$5,200</span></div>
+              <div class="pkg-desc">2 套造型建議 · 72hr 交件</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="reviews" class="section-block">
+          <h2 class="section-label">客戶評價 <span class="proto-ref">Airbnb</span></h2>
+          <div class="trust-inline">
+            <div>
+              <div class="trust-big">4.7</div>
+              <div class="star" style="font-size:18px">★★★★☆</div>
+              <p style="font-size:13px;color:var(--wl-text-secondary);margin-top:4px">3 則評價</p>
+              <div style="margin-top:12px">
+                <div class="bar-row"><span>5★</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span>2</span></div>
+                <div class="bar-row"><span>4★</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span>1</span></div>
+                <div class="bar-row"><span>3★</span><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><span>0</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="review-card">
+                <strong>王小姐</strong> <span class="star">★★★★★</span>
+                <p style="font-size:14px;margin-top:6px;color:var(--wl-text-regular)">全家福拍得很溫馨，小朋友也很有耐心。</p>
+                <img src="assets/photo-family.jpg" style="width:64px;height:64px;object-fit:cover;border-radius:8px;margin-top:8px" alt="" />
+              </div>
+              <div class="review-card">
+                <strong>陳先生</strong> <span class="star">★★★★☆</span>
+                <p style="font-size:14px;margin-top:6px;color:var(--wl-text-regular)">交件速度快，色調是我喜歡的電影感。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="areas" class="section-block">
+          <h2 class="section-label">可服務地區</h2>
+          <p style="font-size:15px">臺北市中正區、臺北市大同區</p>
+        </section>
+      </main>
+
+      <aside class="card booking-sticky">
+        <div class="book-price" id="totalPrice">$3,600 <small>/ 2hr 方案</small></div>
+
+        <div class="price-breakdown" id="priceBreakdown">
+          <div><span>方案</span><span>$3,200</span></div>
+          <div><span>交通費</span><span>$400</span></div>
+          <div style="font-weight:700;border-top:1px solid var(--wl-border);padding-top:6px;margin-top:6px"><span>總計</span><span>$3,600</span></div>
+        </div>
+
+        <p style="font-size:13px;font-weight:600;margin-bottom:8px">選擇日期 <span class="new-tag">接 schedule API</span></p>
+        <div class="cal-mini" id="calMini"></div>
+
+        <p style="font-size:13px;font-weight:600;margin-bottom:8px">7/5 可約時段</p>
+        <div class="slot-row">
+          <button type="button" class="slot-btn off">10–12</button>
+          <button type="button" class="slot-btn on">14–17</button>
+        </div>
+
+        <button class="btn btn-primary btn-block">預約 7/5 14:00–17:00</button>
+        <p style="font-size:11px;text-align:center;color:var(--wl-text-muted);margin-top:8px">→ 跳轉 booking Step 5（跳過選人）</p>
+
+        <div class="trust-badges">
+          <span>✓ 平台驗證身分</span>
+          <span>✓ 128 筆完成訂單</span>
+          <span>✓ 安心支付 · 站內訊息</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="mobile-book-bar">
+      <div><span style="font-size:22px;font-weight:800;color:var(--wl-primary)">$3,600</span> <span style="font-size:13px;color:var(--wl-text-secondary)">2hr</span></div>
+      <button class="btn btn-primary">預約</button>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    (function () {
+      var cal = document.getElementById('calMini');
+      '日一二三四五六'.split('').forEach(function (d) {
+        var s = document.createElement('span'); s.textContent = d; s.className = 'off'; s.style.fontWeight = '700'; cal.appendChild(s);
+      });
+      for (var i = 1; i <= 31; i++) {
+        var s = document.createElement('span');
+        s.textContent = i;
+        if (i === 5) s.className = 'on';
+        else if (i < 5 || i > 28) s.className = 'off';
+        cal.appendChild(s);
+      }
+      document.querySelectorAll('.pkg').forEach(function (p) {
+        p.addEventListener('click', function () {
+          document.querySelectorAll('.pkg').forEach(function (x) { x.classList.remove('selected'); });
+          p.classList.add('selected');
+          var price = p.dataset.price;
+          var hours = p.dataset.hours;
+          document.getElementById('totalPrice').innerHTML = '$' + Number(price).toLocaleString() + ' <small>/ ' + hours + 'hr 方案</small>';
+        });
+      });
+      document.querySelectorAll('.slot-btn:not(.off)').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.slot-btn').forEach(function (x) { x.classList.remove('on'); });
+          b.classList.add('on');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

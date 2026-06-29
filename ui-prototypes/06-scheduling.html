@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>原型 06 — 排程與空檔</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page { padding: 32px 0 80px; }
+    .flow-diagram {
+      background: #fff; border: 1px solid var(--wl-border); border-radius: var(--wl-radius-lg);
+      padding: 24px; margin-bottom: 32px; overflow-x: auto;
+    }
+    .flow-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; font-size: 13px; }
+    .flow-box {
+      padding: 12px 16px; border-radius: 10px; border: 2px solid var(--wl-border);
+      background: var(--wl-bg); text-align: center; min-width: 120px;
+    }
+    .flow-box.highlight { border-color: var(--wl-primary); background: var(--wl-primary-light); font-weight: 700; }
+    .flow-arrow { color: var(--wl-text-muted); font-size: 18px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .panel-head { margin-bottom: 16px; }
+    .panel-head h2 { font-size: 18px; font-weight: 800; }
+    .panel-head p { font-size: 13px; color: var(--wl-text-regular); margin-top: 4px; }
+    .consumer-cal { padding: 22px; }
+    .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-weight: 700; font-size: 15px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 13px; }
+    .cal-grid .h { font-weight: 700; color: var(--wl-text-muted); padding: 8px 0; font-size: 11px; }
+    .cal-grid .d { padding: 10px 4px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+    .cal-grid .d:hover:not(.off):not(.sel) { background: var(--wl-primary-light); }
+    .cal-grid .d.has { font-weight: 700; color: var(--wl-primary); position: relative; }
+    .cal-grid .d.has::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: var(--wl-primary); border-radius: 50%; }
+    .cal-grid .d.sel { background: var(--wl-primary); color: #fff; font-weight: 700; }
+    .cal-grid .d.off { color: #ddd; cursor: default; }
+    .slot-area { margin-top: 18px; }
+    .slot-area h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .slots { display: flex; flex-wrap: wrap; gap: 8px; }
+    .slot {
+      padding: 10px 16px; border: 2px solid var(--wl-border); border-radius: 10px;
+      font-size: 13px; cursor: pointer; background: #fff; font-family: inherit; font-weight: 500;
+    }
+    .slot.on { border-color: var(--wl-primary); background: var(--wl-primary-light); }
+    .slot.off { opacity: 0.4; text-decoration: line-through; cursor: not-allowed; }
+    .fallback {
+      margin-top: 16px; padding: 14px; background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 10px; font-size: 14px;
+    }
+    .price-preview {
+      margin-top: 16px; padding: 14px; background: var(--wl-bg); border-radius: 10px;
+      display: flex; justify-content: space-between; font-weight: 700;
+    }
+    .week-view { padding: 20px; overflow-x: auto; }
+    .week-grid {
+      display: grid; grid-template-columns: 48px repeat(7, minmax(64px, 1fr)); gap: 3px;
+      font-size: 11px; min-width: 560px;
+    }
+    .week-grid .hdr { text-align: center; font-weight: 700; padding: 8px 4px; color: var(--wl-text-secondary); }
+    .week-grid .hr { text-align: right; padding: 4px 6px; color: var(--wl-text-muted); }
+    .cell { min-height: 32px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+    .cell.open { background: #bbf7d0; border-color: #4ade80; }
+    .cell.booked { background: #fecaca; border-color: #f87171; }
+    .cell.buffer { background: #fef3c7; border-color: #fcd34d; }
+    .cell:hover.open { filter: brightness(0.95); }
+    .legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; flex-wrap: wrap; }
+    .settings { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--wl-border); }
+    .settings label { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 10px; cursor: pointer; }
+    .tooltip-box {
+      position: fixed; background: #1a1a2e; color: #fff; padding: 8px 12px;
+      border-radius: 8px; font-size: 12px; pointer-events: none; display: none; z-index: 300;
+    }
+    @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="proto-bar">
+    <span>06 排程與空檔 <span class="proto-ref">Cal.com · Treatwell</span></span>
+    <div class="proto-bar-actions">
+      <button class="proto-btn-ghost" id="toggleNotes">設計說明</button>
+      <a href="05-provider.html">← 上一頁</a>
+      <a href="index.html">目錄</a>
+    </div>
+  </div>
+
+  <aside class="proto-notes">
+    <h4>核心 Gap</h4>
+    <div class="note-item"><strong>Provider Schedule.vue</strong>月曆完整 · 但消費者端看不到</div>
+    <div class="note-item"><strong>公開頁</strong>自由 input · 未接 schedule</div>
+    <div class="note-item"><strong>搜尋媒合</strong>+14 天常 0 人 · 需 availability engine</div>
+    <h4>建議 API</h4>
+    <div class="note-item"><code>GET /providers/{id}/availability</code><br>schedule − orders = slots</div>
+    <div class="note-item">搜尋 / 公開頁 / booking 共用同一引擎</div>
+    <h4>Provider 增強</h4>
+    <div class="note-item">週視圖 · buffer · Google Calendar sync</div>
+  </aside>
+
+  <div class="page-wrap">
+    <div class="container-wide page">
+      <h1 class="section-title">排程與空檔 · 雙端 + API</h1>
+      <p class="section-desc">打通 Provider 設定 ↔ 消費者可見 ↔ 搜尋媒合</p>
+
+      <div class="flow-diagram">
+        <p style="font-size:12px;font-weight:700;color:var(--wl-text-secondary);margin-bottom:14px;text-align:center">資料流（建議）</p>
+        <div class="flow-row">
+          <div class="flow-box">Provider<br>Schedule.vue</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box highlight">availability API</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">公開頁 picker</div>
+          <div class="flow-box">search 媒合</div>
+          <div class="flow-box">booking Step 4</div>
+        </div>
+      </div>
+
+      <div class="split">
+        <div>
+          <div class="panel-head">
+            <h2>消費者端 · 空檔 Picker</h2>
+            <p>Fresha / Cal.com 式 · 灰掉不可約 · 選完顯示總價</p>
+          </div>
+          <div class="card consumer-cal">
+            <div class="cal-nav">
+              <button type="button" style="border:none;background:none;cursor:pointer;font-size:18px">‹</button>
+              <span>Lens 大師 · 2026 年 7 月</span>
+              <button type="button" style="border:none;background:none;cursor:pointer;font-size:18px">›</button>
+            </div>
+            <div class="cal-grid" id="cal"></div>
+            <div class="slot-area">
+              <h4 id="slotTitle">7/5（週六）可約時段</h4>
+              <div class="slots" id="slots">
+                <button type="button" class="slot off">10:00–12:00 已滿</button>
+                <button type="button" class="slot on">14:00–17:00</button>
+              </div>
+            </div>
+            <div class="fallback">
+              <strong>Treatwell First Available</strong> · 7/5 已滿？
+              <button class="btn btn-outline btn-sm" style="margin-left:8px" id="fallbackBtn">改查 7/6 14:00</button>
+            </div>
+            <div class="price-preview">
+              <span>情侶寫真 3hr + 交通</span>
+              <span style="color:var(--wl-primary)">$3,600</span>
+            </div>
+            <button class="btn btn-primary btn-block" style="margin-top:14px">確認並預約</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel-head">
+            <h2>攝影師端 · 週視圖</h2>
+            <p>現站仅有月曆 · 建議加 Today/Week + buffer</p>
+          </div>
+          <div class="card week-view">
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:700">
+              <span>本週 7/1 – 7/7</span>
+              <span style="font-size:13px;font-weight:400;color:var(--wl-text-secondary)">點擊綠格編輯空檔</span>
+            </div>
+            <div class="week-grid" id="weekGrid"></div>
+            <div class="legend">
+              <span>🟩 可約</span><span>🟥 已訂</span><span>🟨 Buffer 30min</span>
+            </div>
+            <div class="settings">
+              <strong style="font-size:14px">Cal.com 式規則</strong>
+              <label style="margin-top:12px"><input type="checkbox" checked /> 預設前後 30 分鐘交通 buffer</label>
+              <label><input type="checkbox" checked /> 已訂單自動佔用時段（防 double-book）</label>
+              <label><input type="checkbox" /> 最早可預約：2 天後</label>
+              <label><input type="checkbox" /> 匯出 Google Calendar</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tooltip-box" id="tooltip"></div>
+
+  <script src="shared.js"></script>
+  <script>
+    (function () {
+      var cal = document.getElementById('cal');
+      '日一二三四五六'.split('').forEach(function (d) {
+        var h = document.createElement('div'); h.className = 'h'; h.textContent = d; cal.appendChild(h);
+      });
+      var hasDays = [5, 6, 8, 12, 15, 19, 22, 26];
+      for (var i = 1; i <= 31; i++) {
+        var d = document.createElement('div');
+        d.className = 'd';
+        d.textContent = i;
+        if (i === 5) d.classList.add('sel');
+        else if (hasDays.indexOf(i) >= 0) d.classList.add('has');
+        else if (i < 5) d.classList.add('off');
+        if (!d.classList.contains('off')) {
+          d.addEventListener('click', function () {
+            document.querySelectorAll('.cal-grid .d').forEach(function (x) { x.classList.remove('sel'); });
+            this.classList.add('sel');
+            document.getElementById('slotTitle').textContent = '7/' + this.textContent + ' 可約時段';
+          });
+        }
+        cal.appendChild(d);
+      }
+      document.querySelectorAll('.slot:not(.off)').forEach(function (s) {
+        s.addEventListener('click', function () {
+          document.querySelectorAll('.slot').forEach(function (x) { x.classList.remove('on'); });
+          s.classList.add('on');
+        });
+      });
+      document.getElementById('fallbackBtn').addEventListener('click', function () {
+        document.querySelectorAll('.cal-grid .d').forEach(function (x) { x.classList.remove('sel'); });
+        var d6 = cal.querySelectorAll('.d')[5 + 6];
+        if (d6) { d6.classList.add('sel'); document.getElementById('slotTitle').textContent = '7/6 可約時段'; }
+        document.getElementById('slots').innerHTML = '<button type="button" class="slot on">14:00–17:00</button>';
+      });
+
+      var grid = document.getElementById('weekGrid');
+      var days = ['', '一', '二', '三', '四', '五', '六', '日'];
+      days.forEach(function (d) {
+        var c = document.createElement('div'); c.className = 'hdr'; c.textContent = d; grid.appendChild(c);
+      });
+      var hours = [9, 10, 11, 14, 15, 16];
+      hours.forEach(function (hr) {
+        var h = document.createElement('div'); h.className = 'hr'; h.textContent = hr + ':00'; grid.appendChild(h);
+        for (var d = 0; d < 7; d++) {
+          var c = document.createElement('div');
+          c.className = 'cell';
+          if (d === 5 && hr >= 14 && hr <= 16) c.classList.add('booked');
+          else if (d === 5 && hr === 11) c.classList.add('buffer');
+          else if (d === 5 && (hr === 9 || hr === 10)) c.classList.add('open');
+          else if (d === 6 && hr >= 10 && hr <= 16) c.classList.add('open');
+          if (c.classList.contains('booked')) c.title = '已訂：情侶寫真 #0842';
+          grid.appendChild(c);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
