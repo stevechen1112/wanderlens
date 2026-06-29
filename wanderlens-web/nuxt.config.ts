@@ -44,7 +44,7 @@ export default defineNuxtConfig({
       { code: 'ka', name: '한국어', file: 'ka.json' },
     ],
     defaultLocale: 'zh',
-    langDir: 'locales',
+    langDir: '../src/locales',
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
       useCookie: true,
